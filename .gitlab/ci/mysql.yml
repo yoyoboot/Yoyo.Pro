@@ -1,7 +1,0 @@
-mysql-build:
-  image: registry.cn-hangzhou.aliyuncs.com/yoyosoft/mysql:8.0.0
-  stage: deploy
-  script:
-    - mysql -v
-  tags:
-    - "docker"

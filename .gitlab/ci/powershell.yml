@@ -1,7 +1,0 @@
-powershell-build:
-  image: registry.cn-hangzhou.aliyuncs.com/yoyosoft/powershell:latest
-  stage: deploy
-  script:
-    - pwsh -v
-  tags:
-    - "docker"
