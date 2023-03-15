@@ -10,8 +10,15 @@ pre_packs:
   image:
     name: registry.cn-shanghai.aliyuncs.com/staneee/powershell:lts-debian-10-dotnet-6
     entrypoint: [ "" ]
+  artifacts: # 产物
+    name: "yoyo.pro.$CI_COMMIT_REF_NAME"
+    when: on_success # 成功时生成
+    expire_in: 1 day # 一天自动清除
+    paths: # 路径
+      - ./nupkg/dist
   script:
     - cd nupkg
+    - pwsh ./pre_config.ps1    
     - pwsh ./pack.ps1
 
 # 推送到gitlab源
@@ -29,20 +36,20 @@ push_gitlab:
     entrypoint: [ "" ]
   script:
     - cd nupkg
-    - pwsh ./pack.ps1
-    - export NUGET_GITLAB_SOURCE="${gitlab_52abp_nuget_source}"
-    - export NUGET_GITLAB_USER="${gitlab_52abp_nuget_user}"
-    - export NUGET_GITLAB_TOKEN="${gitlab_52abp_nuget_token}"
+    - pwsh ./pre_config.ps1
+    - export NUGET_GITLAB_SOURCE="${gitlab_gct_nuget_source}"
+    - export NUGET_GITLAB_USER="${gitlab_gct_pack_user}"
+    - export NUGET_GITLAB_TOKEN="${gitlab_gct_pack_token}"
     - pwsh ./nuget_gitlab_login.ps1
-    - export NUGET_SOURCE="${gitlab_52abp_nuget_source}"
-    - export NUGET_SOURCE_APIKEY="${gitlab_52abp_nuget_token}"
+    - export NUGET_SOURCE="${gitlab_gct_nuget_source}"
+    - export NUGET_SOURCE_APIKEY="${gitlab_gct_pack_token}"
     # - export DISABLE_API_KEY='True'
     - pwsh ./pack_push.ps1
 
 # 推送到Nexus私有源
 push_nexus:
   stage: deploy
-  #when: manual
+  when: manual
   dependencies:
     - pre_packs
   only:
@@ -54,14 +61,15 @@ push_nexus:
     entrypoint: [ "" ]
   script:
     - cd nupkg
-    - pwsh ./pack.ps1
-    - export NUGET_SOURCE="${nexus_nuget}"
+    - pwsh ./pre_config.ps1    
+    - export NUGET_SOURCE="${nexus_nuget_path}"
     - export NUGET_SOURCE_APIKEY="${nexus_nuget_token}"
     - pwsh ./pack_push.ps1
 
 # 推送到nuget源
 push_nuget:
   stage: deploy
+  when: manual
   dependencies:
     - pre_packs
   only:
@@ -73,7 +81,7 @@ push_nuget:
     entrypoint: [ "" ]
   script:
     - cd nupkg
-    - pwsh ./pack.ps1
+    - pwsh ./pre_config.ps1    
     - export NUGET_SOURCE="${nuget}"
     - export NUGET_SOURCE_APIKEY="${nuget_token}"
     - pwsh ./pack_push.ps1

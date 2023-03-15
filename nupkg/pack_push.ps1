@@ -50,3 +50,9 @@ if ($isProduction -eq $True) {
 }
 
 
+# 执行错误判断
+if($Error.Count -eq 0){
+  exit 0
+}else {
+  exit 1
+}

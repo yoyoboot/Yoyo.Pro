@@ -1,0 +1,16 @@
+# 预编译
+dev_packs:
+  stage: build
+  only:
+    refs:
+      - develop
+  tags:
+    - portal-runner
+  retry:
+    max: 2
+  image:
+    name: registry.cn-shanghai.aliyuncs.com/staneee/powershell:lts-debian-10-dotnet-6
+    entrypoint: [ "" ]
+  script:
+    - cd nupkg
+    - pwsh ./pack.ps1

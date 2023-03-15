@@ -11,3 +11,11 @@ dotnet nuget add source  -n "$user" `
 -p "$apikey" `
 --store-password-in-clear-text `
 "$source"
+
+
+# 执行错误判断
+if($Error.Count -eq 0){
+  exit 0
+}else {
+  exit 1
+}

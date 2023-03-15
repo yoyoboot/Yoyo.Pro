@@ -11,12 +11,12 @@
     <Authors>YoyoBoot</Authors>
     <Company>YoyoBoot</Company>
     <Product>YoyoBoot</Product>
-    <Copyright>Copyright © https://github.com/yoyoboot All Rights Reserved</Copyright>
+    <Copyright>Copyright © yoyoboot All Rights Reserved</Copyright>
 
     <!-- 仓库地址 -->
     <ProjectUrl>https://github.com/yoyoboot</ProjectUrl>
     <PackageProjectUrl>https://github.com/yoyoboot</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache License 2.0</PackageLicenseExpression>
     <LicenseUrl>https://github.com/yoyoboot/blob/dev/LICENSE</LicenseUrl>
     <RepositoryType>git</RepositoryType>
 

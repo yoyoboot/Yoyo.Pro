@@ -1,6 +1,6 @@
 # 全局通用的配置变量信息
 $version = "1.0.0"
-$SLN_PATH = 'Yoyo.Pro.sln'
+$SLN_PATH = 'GCT.AbpEx.sln'
 
 # 是否为发布
 $isProduction = $env:IS_PRODUCTION
@@ -52,3 +52,9 @@ Write-Host ('打包完成，包数量： ' + $packageCounter )
 
 # 切换到当前目录
 Set-Location $packFolder
+# 执行错误判断
+if($Error.Count -eq 0){
+  exit 0
+}else {
+  exit 1
+}
