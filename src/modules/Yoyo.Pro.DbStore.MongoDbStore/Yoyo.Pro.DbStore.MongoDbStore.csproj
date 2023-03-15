@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(Std21)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.17.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro.DbStore\Yoyo.Pro.DbStore.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,7 @@
+redis-build:
+  image: registry.cn-hangzhou.aliyuncs.com/yoyosoft/redis:latest
+  stage: deploy
+  script:
+    - redis-server -v
+  tags:
+    - "docker"

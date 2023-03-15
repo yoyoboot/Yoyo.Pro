@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\..\..\..\abpversion.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <AssemblyName>Yoyo.Pro.Identity.Tests</AssemblyName>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+  </PropertyGroup>
+
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="NSubstitute" Version="4.4.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.7" />
+
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- <ProjectReference Include="..\..\..\..\Tests\Yoyo.Pro.TestBase\Yoyo.Pro.TestBase.csproj" /> -->
+    <ProjectReference Include="..\..\src\Yoyo.Pro.Identity.Application\Yoyo.Pro.Identity.Application.csproj" />
+    <ProjectReference Include="..\..\src\Yoyo.Pro.Identity.EntityFrameworkCore\Yoyo.Pro.Identity.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+
+ <!-- nuget -->
+ <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
+   <PackageReference Include="Yoyo.Abp.TestBase" Version="$(AbpVersion)" />
+ </ItemGroup>
+
+ <!-- src -->
+ <ItemGroup Condition="'$(AbpRefMode)'=='src'">
+   <ProjectReference Include="..\..\..\..\..\..\yoyoboot.abp\src\Abp.TestBase\Abp.TestBase.csproj" />
+ </ItemGroup>
+
+</Project>
+

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro.Application\Yoyo.Pro.Application.csproj" />
+    <ProjectReference Include="..\Yoyo.Pro.EntityFrameworkCore\Yoyo.Pro.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\modules\Yoyo.Pro.AspNetCore\Yoyo.Pro.AspNetCore.csproj" />
+  </ItemGroup>
+
+</Project>

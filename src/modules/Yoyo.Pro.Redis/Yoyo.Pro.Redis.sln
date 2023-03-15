@@ -1,0 +1,35 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EFE9B42F-2C75-4955-8A55-4AB480070BE5}"
+	ProjectSection(SolutionItems) = preProject
+		.gitlab-ci.yml = .gitlab-ci.yml
+		abpversion.props = abpversion.props
+		Jenkinsfile = Jenkinsfile
+		build\pack.ps1 = build\pack.ps1
+		build\pack.sh = build\pack.sh
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.Pro.Redis", "Yoyo.Pro.Redis.csproj", "{D9148F82-4F32-4773-9712-0AC6CB7C032A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9148F82-4F32-4773-9712-0AC6CB7C032A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9148F82-4F32-4773-9712-0AC6CB7C032A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9148F82-4F32-4773-9712-0AC6CB7C032A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9148F82-4F32-4773-9712-0AC6CB7C032A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {46186319-8E37-4438-A5A8-D63664D81EBF}
+	EndGlobalSection
+EndGlobal

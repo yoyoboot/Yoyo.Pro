@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Senparc.Weixin.TenPay" Version="1.12.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro\Yoyo.Pro.csproj" />
+  </ItemGroup>
+
+</Project>

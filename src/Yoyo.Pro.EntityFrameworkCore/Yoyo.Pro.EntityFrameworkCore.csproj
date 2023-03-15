@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  
+  <Import Project="..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+  
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+    
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro.Core\Yoyo.Pro.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ShardingCore" Version="6.6.0.23" />
+  </ItemGroup>
+
+   <!-- nuget -->
+ <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
+   <PackageReference Include="Yoyo.Abp.ZeroCore.EntityFrameworkCore" Version="$(AbpVersion)" />
+ </ItemGroup>
+
+ <!-- src -->
+ <ItemGroup Condition="'$(AbpRefMode)'=='src'">
+   <ProjectReference Include="..\..\..\yoyoboot.abp\src\Abp.ZeroCore.EntityFrameworkCore\Abp.ZeroCore.EntityFrameworkCore.csproj" />
+ </ItemGroup>
+
+</Project>

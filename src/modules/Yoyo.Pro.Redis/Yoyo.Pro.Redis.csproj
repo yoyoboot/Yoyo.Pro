@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSRedisCore" Version="3.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro\Yoyo.Pro.csproj" />
+  </ItemGroup>
+
+  <!-- nuget -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
+    <PackageReference Include="Yoyo.Abp.RedisCache" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <!-- src -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='src'">
+    <ProjectReference Include="..\..\..\..\yoyoboot.abp\src\Abp.RedisCache\Abp.RedisCache.csproj" />
+  </ItemGroup>
+
+</Project>

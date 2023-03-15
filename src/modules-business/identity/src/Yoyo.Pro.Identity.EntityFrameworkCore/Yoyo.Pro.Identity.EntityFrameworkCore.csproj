@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\..\..\abpversion.props"></Import>
+  <Import Project="..\..\..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <AssemblyName>Yoyo.Pro.Identity.EntityFrameworkCore</AssemblyName>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro.Identity.Core\Yoyo.Pro.Identity.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Yoyo.Pro.EntityFrameworkCore\Yoyo.Pro.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="EntityFrameworkCore\" />
+  </ItemGroup>
+
+
+
+</Project>
+

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(Std21)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro.DbStore.FreeSqlStore\Yoyo.Pro.DbStore.FreeSqlStore.csproj" />
+    <ProjectReference Include="..\Yoyo.Pro.DbStore.MongoDbStore\Yoyo.Pro.DbStore.MongoDbStore.csproj" />
+  </ItemGroup>
+
+</Project>

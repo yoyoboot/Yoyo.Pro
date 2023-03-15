@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Magicodes.IE.Excel" Version="2.6.4" />
+    <PackageReference Include="Magicodes.IE.Pdf" Version="2.6.4" />
+    <PackageReference Include="Masuit.Tools.Core" Version="2.5.2" />
+    <PackageReference Include="WinInsider.System.Net.Http.Formatting" Version="1.0.14" />
+    <PackageReference Include="GitLabApiClient" Version="1.8.0" />
+  </ItemGroup>
+
+ <!-- nuget -->
+ <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
+   <PackageReference Include="Yoyo.Abp.Web.Common" Version="$(AbpVersion)" />
+ </ItemGroup>
+
+ <!-- src -->
+ <ItemGroup Condition="'$(AbpRefMode)'=='src'">
+   <ProjectReference Include="..\..\..\yoyoboot.abp\src\Abp.Web.Common\Abp.Web.Common.csproj" />
+ </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro.Core\Yoyo.Pro.Core.csproj" />
+  </ItemGroup>
+
+
+</Project>

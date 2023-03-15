@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(Std20)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro\Yoyo.Pro.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\..\..\abpversion.props"></Import>
+  <Import Project="..\..\..\modulecommon.props"></Import>
+  
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <AssemblyName>Yoyo.Pro.Identity.Core</AssemblyName>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+  </PropertyGroup>
+
+
+
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\SourceFiles\*.json" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Yoyo.Pro.Core\Yoyo.Pro.Core.csproj" />
+  </ItemGroup>
+
+
+</Project>
+

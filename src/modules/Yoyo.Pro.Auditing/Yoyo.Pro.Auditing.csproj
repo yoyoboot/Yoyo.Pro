@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+    
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro\Yoyo.Pro.csproj" />
+  </ItemGroup>
+  <!-- nuget -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
+    <PackageReference Include="Yoyo.Abp.ZeroCore.EntityFrameworkCore" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <!-- src -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='src'">
+    <ProjectReference Include="..\..\..\..\yoyoboot.abp\src\Abp.ZeroCore.EntityFrameworkCore\Abp.ZeroCore.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,57 @@
+<Project>
+
+  <!-- nuget包信息 -->
+  <PropertyGroup>
+    <!-- 版本信息 -->
+    <LangVersion>latest</LangVersion>
+    <!-- 警告 -->
+    <NoWarn>$(NoWarn);1701;1702;1591;1572;1570;1573;1574;1584;1587;1658;0414;0436</NoWarn>
+
+    <!-- 产品,作者 信息 -->
+    <Authors>YoyoBoot</Authors>
+    <Company>YoyoBoot</Company>
+    <Product>YoyoBoot</Product>
+    <Copyright>Copyright © https://github.com/yoyoboot All Rights Reserved</Copyright>
+
+    <!-- 仓库地址 -->
+    <ProjectUrl>https://github.com/yoyoboot</ProjectUrl>
+    <PackageProjectUrl>https://github.com/yoyoboot</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <LicenseUrl>https://github.com/yoyoboot/blob/dev/LICENSE</LicenseUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- nuget配置 -->
+    <OutputType>Library</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>false</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <!-- Include symbol files (*.pdb) in the built .nupkg -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+
+  <!-- 依赖产品版本 -->
+  <PropertyGroup>
+    <AbpVersion>7.3.0.11</AbpVersion>
+    <Std20>netstandard2.0</Std20>
+    <Std21>netstandard2.1</Std21>
+    <DotNetVersion>net6.0</DotNetVersion>
+
+  </PropertyGroup>
+
+  <!-- 包引用模式 -->
+  <PropertyGroup>
+    <AbpRefMode>nuget</AbpRefMode>
+  </PropertyGroup>
+
+
+  <!-- 包的icon -->
+  <PropertyGroup>
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+
+</Project>

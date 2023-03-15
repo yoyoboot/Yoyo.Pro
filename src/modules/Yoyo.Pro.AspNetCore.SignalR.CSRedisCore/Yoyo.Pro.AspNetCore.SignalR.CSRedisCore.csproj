@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+    
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSRedisCore" Version="3.8.3" />
+    <PackageReference Include="MessagePack" Version="2.4.35" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.Pro.AspNetCore\Yoyo.Pro.AspNetCore.csproj" />
+    <ProjectReference Include="..\Yoyo.Pro.Redis\Yoyo.Pro.Redis.csproj" />
+  </ItemGroup>
+
+
+</Project>
