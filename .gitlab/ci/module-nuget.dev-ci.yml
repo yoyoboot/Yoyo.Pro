@@ -12,5 +12,6 @@ dev_packs:
     name: registry.cn-shanghai.aliyuncs.com/staneee/powershell:lts-debian-10-dotnet-6
     entrypoint: [ "" ]
   script:
+    - export IS_PRODUCTION="False"  
     - cd nupkg
     - pwsh ./pack.ps1
