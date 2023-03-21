@@ -1,6 +1,6 @@
 # 全局通用的配置变量信息
 $version = "1.0.0"
-$SLN_PATH = 'GCT.AbpEx.sln'
+$SLN_PATH = 'Yoyo.Pro.sln'
 
 # 是否为发布
 $isProduction = $env:IS_PRODUCTION

@@ -37,12 +37,12 @@ push_gitlab:
   script:
     - cd nupkg
     - pwsh ./pre_config.ps1
-    - export NUGET_GITLAB_SOURCE="${gitlab_gct_nuget_source}"
-    - export NUGET_GITLAB_USER="${gitlab_gct_pack_user}"
-    - export NUGET_GITLAB_TOKEN="${gitlab_gct_pack_token}"
+    - export NUGET_GITLAB_SOURCE="${gitlab_52abp_nuget_source}"
+    - export NUGET_GITLAB_USER="${gitlab_52abp_nuget_user}"
+    - export NUGET_GITLAB_TOKEN="${gitlab_52abp_nuget_token}"
     - pwsh ./nuget_gitlab_login.ps1
-    - export NUGET_SOURCE="${gitlab_gct_nuget_source}"
-    - export NUGET_SOURCE_APIKEY="${gitlab_gct_pack_token}"
+    - export NUGET_SOURCE="${gitlab_52abp_nuget_source}"
+    - export NUGET_SOURCE_APIKEY="${gitlab_52abp_nuget_token}"
     # - export DISABLE_API_KEY='True'
     - pwsh ./pack_push.ps1
 
@@ -62,7 +62,7 @@ push_nexus:
   script:
     - cd nupkg
     - pwsh ./pre_config.ps1    
-    - export NUGET_SOURCE="${nexus_nuget_path}"
+    - export NUGET_SOURCE="${nexus_nuget}"
     - export NUGET_SOURCE_APIKEY="${nexus_nuget_token}"
     - pwsh ./pack_push.ps1
 
