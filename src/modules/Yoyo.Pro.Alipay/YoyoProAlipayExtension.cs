@@ -5,7 +5,7 @@ using Yoyo.Pro.FTF;
 
 namespace Yoyo.Pro
 {
-    public static class YoYoAlipayExtension
+    public static class YoyoProAlipayExtension
     {
         /// <summary>
         /// 添加 YoYo Alipay 全局配置
