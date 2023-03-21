@@ -29,10 +29,10 @@ namespace Yoyo.Pro
         /// <param name="serviceCollection"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddYoYoSenparc(this IServiceCollection serviceCollection, IConfiguration configuration)
+        public static IServiceCollection AddYoyoProSenparc(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            return serviceCollection.AddYoYoSenparcCo2Net(configuration)
-                                    .AddYoYoSenparcWeixin(configuration);
+            return serviceCollection.AddYoyoProSenparcCo2Net(configuration)
+                                    .AddYoyoProSenparcWeixin(configuration);
         }
 
 
@@ -42,7 +42,7 @@ namespace Yoyo.Pro
         /// <param name="serviceCollection"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddYoYoSenparcCo2Net(this IServiceCollection serviceCollection, IConfiguration configuration)
+        public static IServiceCollection AddYoyoProSenparcCo2Net(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
             SenparcDI.GlobalServiceCollection = serviceCollection;
 
@@ -66,7 +66,7 @@ namespace Yoyo.Pro
         /// <param name="serviceCollection"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection AddYoYoSenparcWeixin(this IServiceCollection serviceCollection, IConfiguration configuration)
+        public static IServiceCollection AddYoyoProSenparcWeixin(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
             serviceCollection.Configure<SenparcWeixinSetting>(configuration.GetSection("SenparcWeixinSetting"));
 
