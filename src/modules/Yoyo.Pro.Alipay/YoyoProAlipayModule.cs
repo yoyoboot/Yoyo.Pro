@@ -3,16 +3,16 @@ using Abp.Reflection.Extensions;
 
 namespace Yoyo.Pro
 {
-    public class YoYoAlipayModule : AbpModule
+    public class YoyoProAlipayModule : AbpModule
     {
-        public YoYoAlipayModule()
+        public YoyoProAlipayModule()
         {
 
         }
 
         public override void Initialize()
         {
-            var thisAssembly = typeof(YoYoAlipayModule).GetAssembly();
+            var thisAssembly = typeof(YoyoProAlipayModule).GetAssembly();
 
             IocManager.RegisterAssemblyByConvention(thisAssembly);
         }

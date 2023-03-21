@@ -18,7 +18,9 @@ namespace Yoyo.Pro
 
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
+            var thisAssembly = typeof(YoyoProAliyunVodModule).GetAssembly();
+
+            IocManager.RegisterAssemblyByConvention(thisAssembly);
 
         }
 
