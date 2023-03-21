@@ -48,7 +48,7 @@ paket add Yoyo.Pro.Alipay
 *注意: 必须在  services.AddAbp 调用之前!*
 
 ``` cs
-services.AddYoYoAlipay(() =>
+services.AddYoyoProAlipay(() =>
 {
 	// 加载 appsetting.json中的配置,配置详情见上方方配置文件说明
     var res = _appConfiguration.GetSection("Pay:Alipay").Get<AlipayOptions>();
