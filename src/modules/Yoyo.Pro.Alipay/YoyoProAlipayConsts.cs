@@ -3,7 +3,7 @@ namespace Yoyo.Pro
     /// <summary>
     /// 常量
     /// </summary>
-    public class YoYoAlipayConsts
+    public class YoyoProAlipayConsts
     {
         /// <summary>
         /// 销售产品码 PC支付 FAST_INSTANT_TRADE_PAY

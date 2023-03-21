@@ -97,7 +97,7 @@ namespace Yoyo.Pro
 
             if (input.Data.ProductCode.IsNullOrWhiteSpace())
             {
-                input.Data.ProductCode = YoYoAlipayConsts.ProductCode_FAST_INSTANT_TRADE_PAY;
+                input.Data.ProductCode = YoyoProAlipayConsts.ProductCode_FAST_INSTANT_TRADE_PAY;
             }
 
 
@@ -135,7 +135,7 @@ namespace Yoyo.Pro
             // 设置产品代码
             if (input.Data.ProductCode.IsNullOrWhiteSpace())
             {
-                input.Data.ProductCode = YoYoAlipayConsts.ProductCode_QUICK_WAP_WAY;
+                input.Data.ProductCode = YoyoProAlipayConsts.ProductCode_QUICK_WAP_WAY;
             }
             // 设置支付中途退出返回商户网站地址
             if (input.Data.QuitUrl.IsNullOrWhiteSpace())
