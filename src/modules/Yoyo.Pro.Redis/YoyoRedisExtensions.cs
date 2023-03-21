@@ -10,12 +10,12 @@ namespace Yoyo.Pro
 {
     public static class YoyoRedisExtensions
     {
-        public static void UseYoyoRedis(this ICachingConfiguration cachingConfiguration)
+        public static void UseYoyoProRedis(this ICachingConfiguration cachingConfiguration)
         {
-            cachingConfiguration.UseYoyoRedis(null);
+            cachingConfiguration.UseYoyoProRedis(null);
         }
 
-        public static void UseYoyoRedis(this ICachingConfiguration cachingConfiguration,
+        public static void UseYoyoProRedis(this ICachingConfiguration cachingConfiguration,
             Action<CSRedisCacheOptions> optionsAction)
         {
             var iocManager = cachingConfiguration.AbpConfiguration.IocManager;
@@ -28,7 +28,7 @@ namespace Yoyo.Pro
             iocManager.RegisterIfNot<ICacheManager, CSRedisCacheManager>();
         }
 
-        public static IServiceCollection UseYoyoRedis(this IServiceCollection services, Action<CSRedisCacheOptions> optionsAction)
+        public static IServiceCollection UseYoyoProRedis(this IServiceCollection services, Action<CSRedisCacheOptions> optionsAction)
         {
             Check.NotNull(optionsAction, nameof(optionsAction));
 
