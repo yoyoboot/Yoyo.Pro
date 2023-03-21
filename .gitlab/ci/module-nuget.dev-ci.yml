@@ -3,7 +3,7 @@ dev_packs:
   stage: build
   only:
     refs:
-      - develop
+      - dev-7.3.0
   tags:
     - portal-runner
   retry:
