@@ -17,7 +17,7 @@ namespace Yoyo.Pro
     public static class YoyoProWechatTenPayExtensions
     {
         /// <summary>
-        /// 注册微信支付Tenpay（注意：新注册账号请使用 UseYoYoSenparcTenpayV3！
+        /// 注册微信支付Tenpay（注意：新注册账号请使用 UseYoyoProSenparcTenpayV3！
         /// </summary>
         /// <param name="registerService">RegisterService</param>
         /// <param name="tenPayInfo">微信支付（旧版本）参数</param>
@@ -25,13 +25,13 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV2<UserKeyType, TenantKeyType>(this IRegisterService registerService, Func<TenPayInfo> tenPayInfo, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
+        public static IRegisterService UseYoyoProSenparcTenpayV2<UserKeyType, TenantKeyType>(this IRegisterService registerService, Func<TenPayInfo> tenPayInfo, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
         {
             RegisterInfoCollection<UserKeyType, TenantKeyType>.Register(userId, tenantId, tenPayInfo().PartnerId);
             return registerService.RegisterTenpayOld(tenPayInfo, name);
         }
         /// <summary>
-        /// 注册微信支付Tenpay（注意：新注册账号请使用 UseYoYoSenparcTenpayV3！
+        /// 注册微信支付Tenpay（注意：新注册账号请使用 UseYoyoProSenparcTenpayV3！
         /// </summary>
         /// <param name="registerService">RegisterService</param>
         /// <param name="tenPayInfo">微信支付（旧版本）参数</param>
@@ -39,7 +39,7 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV2(this IRegisterService registerService, Func<TenPayInfo> tenPayInfo, string name, long userId, long tenantId)
+        public static IRegisterService UseYoyoProSenparcTenpayV2(this IRegisterService registerService, Func<TenPayInfo> tenPayInfo, string name, long userId, long tenantId)
         {
             RegisterInfoCollection.Register(userId, tenantId, tenPayInfo().PartnerId);
             return registerService.RegisterTenpayOld(tenPayInfo, name);
@@ -47,7 +47,7 @@ namespace Yoyo.Pro
 
 
         /// <summary>
-        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoYoSenparcTenpayV3！）
+        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoyoProSenparcTenpayV3！）
         /// </summary>
         /// <param name="registerService">RegisterService</param>
         /// <param name="weixinSettingForOldTepay">ISenparcWeixinSetting</param>
@@ -55,13 +55,13 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV2<UserKeyType, TenantKeyType>(this IRegisterService registerService, ISenparcWeixinSettingForOldTenpay weixinSettingForOldTepay, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
+        public static IRegisterService UseYoyoProSenparcTenpayV2<UserKeyType, TenantKeyType>(this IRegisterService registerService, ISenparcWeixinSettingForOldTenpay weixinSettingForOldTepay, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
         {
             RegisterInfoCollection<UserKeyType, TenantKeyType>.Register(userId, tenantId, weixinSettingForOldTepay.WeixinPay_PartnerId);
             return registerService.RegisterTenpayOld(weixinSettingForOldTepay, name ?? weixinSettingForOldTepay.ItemKey);
         }
         /// <summary>
-        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoYoSenparcTenpayV3！）
+        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoyoProSenparcTenpayV3！）
         /// </summary>
         /// <param name="registerService">RegisterService</param>
         /// <param name="weixinSettingForOldTepay">ISenparcWeixinSetting</param>
@@ -69,7 +69,7 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV2(this IRegisterService registerService, ISenparcWeixinSettingForOldTenpay weixinSettingForOldTepay, string name, long userId, long tenantId)
+        public static IRegisterService UseYoyoProSenparcTenpayV2(this IRegisterService registerService, ISenparcWeixinSettingForOldTenpay weixinSettingForOldTepay, string name, long userId, long tenantId)
         {
             RegisterInfoCollection.Register(userId, tenantId, weixinSettingForOldTepay.WeixinPay_PartnerId);
             return registerService.RegisterTenpayOld(weixinSettingForOldTepay, name ?? weixinSettingForOldTepay.ItemKey);
@@ -85,7 +85,7 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV3<UserKeyType, TenantKeyType>(this IRegisterService registerService, Func<TenPayV3Info> tenPayV3Info, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
+        public static IRegisterService UseYoyoProSenparcTenpayV3<UserKeyType, TenantKeyType>(this IRegisterService registerService, Func<TenPayV3Info> tenPayV3Info, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
         {
             RegisterV3InfoCollection<UserKeyType, TenantKeyType>.Register(userId, tenantId, tenPayV3Info().MchId);
             return registerService.RegisterTenpayV3(tenPayV3Info, name);
@@ -99,14 +99,14 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV3(this IRegisterService registerService, Func<TenPayV3Info> tenPayV3Info, string name, long userId, long tenantId)
+        public static IRegisterService UseYoyoProSenparcTenpayV3(this IRegisterService registerService, Func<TenPayV3Info> tenPayV3Info, string name, long userId, long tenantId)
         {
             RegisterV3InfoCollection.Register(userId, tenantId, tenPayV3Info().MchId);
             return registerService.RegisterTenpayV3(tenPayV3Info, name);
         }
 
         /// <summary>
-        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoYoSenparcTenpayV3！
+        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoyoProSenparcTenpayV3！
         /// </summary>
         /// <param name="registerService">RegisterService</param>
         /// <param name="weixinSettingForTenpayV3">ISenparcWeixinSetting</param>
@@ -114,13 +114,13 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV3<UserKeyType, TenantKeyType>(this IRegisterService registerService, ISenparcWeixinSettingForTenpayV3 weixinSettingForTenpayV3, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
+        public static IRegisterService UseYoyoProSenparcTenpayV3<UserKeyType, TenantKeyType>(this IRegisterService registerService, ISenparcWeixinSettingForTenpayV3 weixinSettingForTenpayV3, string name, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
         {
             RegisterV3InfoCollection<UserKeyType, TenantKeyType>.Register(userId, tenantId, weixinSettingForTenpayV3.TenPayV3_MchId);
             return registerService.RegisterTenpayV3(weixinSettingForTenpayV3, name);
         }
         /// <summary>
-        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoYoSenparcTenpayV3！
+        /// 根据 SenparcWeixinSetting 自动注册微信支付Tenpay（注意：新注册账号请使用 UseYoyoProSenparcTenpayV3！
         /// </summary>
         /// <param name="registerService">RegisterService</param>
         /// <param name="weixinSettingForTenpayV3">ISenparcWeixinSetting</param>
@@ -128,7 +128,7 @@ namespace Yoyo.Pro
         /// <param name="userId"></param>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcTenpayV3(this IRegisterService registerService, ISenparcWeixinSettingForTenpayV3 weixinSettingForTenpayV3, string name, long userId, long tenantId)
+        public static IRegisterService UseYoyoProSenparcTenpayV3(this IRegisterService registerService, ISenparcWeixinSettingForTenpayV3 weixinSettingForTenpayV3, string name, long userId, long tenantId)
         {
             RegisterV3InfoCollection.Register(userId, tenantId, weixinSettingForTenpayV3.TenPayV3_MchId);
             return registerService.RegisterTenpayV3(weixinSettingForTenpayV3, name);

@@ -20,7 +20,7 @@ namespace Yoyo.Pro
         /// <param name="weixinCorpSecret">weixinCorpSecret</param>
         /// <param name="name">标记AccessToken名称（如微信公众号名称），帮助管理员识别</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcWorkAccount(this IRegisterService registerService, string weixinCorpId, string weixinCorpSecret, string name = null)
+        public static IRegisterService UseYoyoProSenparcWorkAccount(this IRegisterService registerService, string weixinCorpId, string weixinCorpSecret, string name = null)
         {
             return registerService.RegisterWorkAccount(weixinCorpId, weixinCorpSecret, name);
         }
@@ -32,7 +32,7 @@ namespace Yoyo.Pro
         /// <param name="weixinSettingForWork">SenparcWeixinSetting</param>
         /// <param name="name">统一标识，如果为null，则使用 SenparcWeixinSetting.ItemKey </param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcWorkAccount(this IRegisterService registerService, Senparc.Weixin.Entities.ISenparcWeixinSettingForWork weixinSettingForWork,
+        public static IRegisterService UseYoyoProSenparcWorkAccount(this IRegisterService registerService, Senparc.Weixin.Entities.ISenparcWeixinSettingForWork weixinSettingForWork,
             string name = null)
         {
             return registerService.RegisterWorkAccount(weixinSettingForWork, name);

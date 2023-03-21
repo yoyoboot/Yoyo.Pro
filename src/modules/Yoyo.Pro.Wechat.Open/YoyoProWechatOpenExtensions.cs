@@ -24,7 +24,7 @@ namespace Yoyo.Pro
         /// <param name="authorizerTokenRefreshedFunc">AuthorizerAccessToken更新后的回调</param>
         /// <param name="name">标记名称（如开放平台名称），帮助管理员识别</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcOpenComponent(this IRegisterService registerService,
+        public static IRegisterService UseYoyoProSenparcOpenComponent(this IRegisterService registerService,
             string componentAppId, string componentAppSecret,
             Func<string, Task<string>> getComponentVerifyTicketFunc,
             Func<string, string, Task<string>> getAuthorizerRefreshTokenFunc,
@@ -51,7 +51,7 @@ namespace Yoyo.Pro
         /// <param name="authorizerTokenRefreshedFunc"></param>
         /// <param name="name">统一标识，如果为null，则使用 SenparcWeixinSetting.ItemKey</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcOpenComponent(this IRegisterService registerService,
+        public static IRegisterService UseYoyoProSenparcOpenComponent(this IRegisterService registerService,
             Senparc.Weixin.Entities.ISenparcWeixinSettingForOpen weixinSettingForOpen,
             Func<string, Task<string>> getComponentVerifyTicketFunc,
             Func<string, string, Task<string>> getAuthorizerRefreshTokenFunc,

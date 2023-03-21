@@ -28,7 +28,7 @@ namespace Yoyo.Pro
         /// <param name="userId">用户Id</param>
         /// <param name="tenantId">租户Id</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcMpAccount<UserKeyType,TenantKeyType>(this IRegisterService registerService, string appId, string appSecret, string name, string token, string encodingAESKey, string key, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
+        public static IRegisterService UseYoyoProSenparcMpAccount<UserKeyType,TenantKeyType>(this IRegisterService registerService, string appId, string appSecret, string name, string token, string encodingAESKey, string key, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
         {
             MpInfoContainer<UserKeyType, TenantKeyType>.Register(key, appId, appSecret, token, encodingAESKey, name, default(UserKeyType), default(TenantKeyType));
             return registerService.RegisterMpAccount(appId, appSecret, name);
@@ -47,7 +47,7 @@ namespace Yoyo.Pro
         /// <param name="userId">用户Id</param>
         /// <param name="tenantId">租户Id</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcMpAccount(this IRegisterService registerService, string appId, string appSecret, string name, string token, string encodingAESKey, string key, long userId = default(long), long tenantId = default(long))
+        public static IRegisterService UseYoyoProSenparcMpAccount(this IRegisterService registerService, string appId, string appSecret, string name, string token, string encodingAESKey, string key, long userId = default(long), long tenantId = default(long))
         {
             MpInfoContainer.Register(appId,appSecret,name,token,encodingAESKey,key, userId, tenantId);
             return registerService.RegisterMpAccount(appId, appSecret, name);
@@ -65,7 +65,7 @@ namespace Yoyo.Pro
         /// <param name="userId">用户Id</param>
         /// <param name="tenantId">租户Id</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcMpAccount<UserKeyType, TenantKeyType>(this IRegisterService registerService, ISenparcWeixinSettingForMP weixinSettingForMP, string token, string encodingAESKey, string key, string name = null, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
+        public static IRegisterService UseYoyoProSenparcMpAccount<UserKeyType, TenantKeyType>(this IRegisterService registerService, ISenparcWeixinSettingForMP weixinSettingForMP, string token, string encodingAESKey, string key, string name = null, UserKeyType userId = default(UserKeyType), TenantKeyType tenantId = default(TenantKeyType))
         {
             MpInfoContainer.Register(key, weixinSettingForMP.WeixinAppId, weixinSettingForMP.WeixinAppSecret, token, encodingAESKey, name, default(long), default(long));
             return registerService.RegisterMpAccount(weixinSettingForMP, name);
@@ -82,7 +82,7 @@ namespace Yoyo.Pro
         /// <param name="userId">用户Id</param>
         /// <param name="tenantId">租户Id</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcMpAccount(this IRegisterService registerService, ISenparcWeixinSettingForMP weixinSettingForMP, string token, string encodingAESKey, string key, string name = null, long userId = default(long), long tenantId = default(long))
+        public static IRegisterService UseYoyoProSenparcMpAccount(this IRegisterService registerService, ISenparcWeixinSettingForMP weixinSettingForMP, string token, string encodingAESKey, string key, string name = null, long userId = default(long), long tenantId = default(long))
         {
             MpInfoContainer.Register(key, weixinSettingForMP.WeixinAppId, weixinSettingForMP.WeixinAppSecret, token, encodingAESKey, name, userId, tenantId);
             return registerService.RegisterMpAccount(weixinSettingForMP, name);
@@ -96,7 +96,7 @@ namespace Yoyo.Pro
         /// <param name="appSecret">微信公众号后台的【开发】>【基本配置】中的“AppSecret(应用密钥)”</param>
         /// <param name="name">标记AccessToken名称（如微信公众号名称），帮助管理员识别</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcMpJsApiTicket(this IRegisterService registerService, string appId, string appSecret, string name)
+        public static IRegisterService UseYoyoProSenparcMpJsApiTicket(this IRegisterService registerService, string appId, string appSecret, string name)
         {
             return registerService.RegisterMpJsApiTicket(appId, appSecret, name);
         }

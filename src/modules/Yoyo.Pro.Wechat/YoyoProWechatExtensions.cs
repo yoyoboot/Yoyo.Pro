@@ -128,7 +128,7 @@ namespace Yoyo.Pro
         /// <summary>
         /// 开始YoYo Senparc.CO2NET SDK 初始化参数流程
         /// 
-        /// (关于 UseYoYoSenparc() 的更多用法见 CO2NET Demo 中的 UseSenparcGlobal：https://github.com/Senparc/Senparc.CO2NET/blob/master/Sample/Senparc.CO2NET.Sample.netcore/Startup.cs)
+        /// (关于 UseYoyoProSenparc() 的更多用法见 CO2NET Demo 中的 UseSenparcGlobal：https://github.com/Senparc/Senparc.CO2NET/blob/master/Sample/Senparc.CO2NET.Sample.netcore/Startup.cs)
         /// </summary>
         /// <param name="senparcSetting"></param>
         /// <param name="contentRootPath">提供网站根目录(env.ContentRootPath,env类型为IHostingEnvironment)</param>
@@ -139,7 +139,7 @@ namespace Yoyo.Pro
         /// <para>如果设置为 null（注意：不是委托返回 null，是整个委托参数为 null），则自动使用反射扫描所有可能存在的扩展缓存策略</para>
         /// </param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcCO2NET(
+        public static IRegisterService UseYoyoProSenparcCO2NET(
             this SenparcSetting senparcSetting,
             string contentRootPath = "",
             bool autoScanExtensionCacheStrategies = false,
@@ -168,7 +168,7 @@ namespace Yoyo.Pro
         /// <param name="customCacheNamespace">当同一个分布式缓存同时服务于多个网站（应用程序池）时，可以使用命名空间将其隔离（非必须）</param>
         /// <param name="configRedisAction">配置全局使用Redis缓存（按需，独立）,此函数返回结果为true将启用redis</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcCO2NETGlobalCache(
+        public static IRegisterService UseYoyoProSenparcCO2NETGlobalCache(
             this IRegisterService registerService,
             IApplicationBuilder applicationBuilder,
             SenparcSetting senparcSetting,
@@ -205,7 +205,7 @@ namespace Yoyo.Pro
         /// <param name="registerService"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcCO2NETTraceLog(this IRegisterService registerService, Action action)
+        public static IRegisterService UseYoyoProSenparcCO2NETTraceLog(this IRegisterService registerService, Action action)
         {
             action();
             return registerService;
@@ -219,7 +219,7 @@ namespace Yoyo.Pro
         /// <param name="senparcWeixinSetting">微信全局设置参数，必填</param>
         /// <param name="senparcSetting">用于提供 SenparcSetting.Cache_Redis_Configuration 和 Cache_Memcached_Configuration 两个参数，如果不使用这两种分布式缓存可传入null</param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcWeixin(
+        public static IRegisterService UseYoyoProSenparcWeixin(
             this IRegisterService registerService,
             SenparcWeixinSetting senparcWeixinSetting,
             SenparcSetting senparcSetting = null)

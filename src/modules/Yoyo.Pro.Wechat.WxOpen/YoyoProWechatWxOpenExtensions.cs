@@ -19,7 +19,7 @@ namespace Yoyo.Pro
         /// <param name="weixinSettingForWxOpen">SenparcWeixinSetting</param>
         /// <param name="name">统一标识，如果为null，则使用 SenparcWeixinSetting.ItemKey </param>
         /// <returns></returns>
-        public static IRegisterService UseYoYoSenparcWxOpenAccount(this IRegisterService registerService, ISenparcWeixinSettingForWxOpen weixinSettingForWxOpen, string name = null)
+        public static IRegisterService UseYoyoProSenparcWxOpenAccount(this IRegisterService registerService, ISenparcWeixinSettingForWxOpen weixinSettingForWxOpen, string name = null)
         {
             return registerService.RegisterWxOpenAccount(weixinSettingForWxOpen, name);
         }
