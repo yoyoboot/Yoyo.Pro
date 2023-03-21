@@ -19,7 +19,7 @@ namespace Yoyo.Pro.WorkflowCore
 
             IocManager.Resolve<WorkflowDefinitionManager>().Initialize();
 
-            //移动至 FoundationEntityFrameworkModule进行初始化
+            //移动至应用的 EntityFrameworkModule进行初始化
             // 解决种子数据没初始化完就开始初始化工作流了
             // var host = IocManager.Resolve<IWorkflowHost>();
             //
