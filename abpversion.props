@@ -16,7 +16,7 @@
     <!-- 仓库地址 -->
     <ProjectUrl>https://github.com/yoyoboot</ProjectUrl>
     <PackageProjectUrl>https://github.com/yoyoboot</PackageProjectUrl>
-    <PackageLicenseExpression>Apache License 2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <LicenseUrl>https://github.com/yoyoboot/blob/dev/LICENSE</LicenseUrl>
     <RepositoryType>git</RepositoryType>
 
