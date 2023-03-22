@@ -50,7 +50,7 @@
 
   <!-- 包的icon -->
   <PropertyGroup>
-    <PackageIcon>icon.png</PackageIcon>
+    <!-- <PackageIcon>icon.png</PackageIcon> -->
   </PropertyGroup>
 
 
