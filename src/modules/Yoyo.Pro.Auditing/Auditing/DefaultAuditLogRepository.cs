@@ -14,17 +14,10 @@ namespace Yoyo.Pro.Auditing
       where TAuditLog : AuditLogs2, new()
     {
         readonly IRepository<TAuditLog, string> _auditLogRepository;
-        readonly IGuidGenerator _guidGenerator;
 
-        public DefaultAuditLogRepository(IRepository<TAuditLog, string> auditLogRepository, IGuidGenerator guidGenerator = null)
+        public DefaultAuditLogRepository(IRepository<TAuditLog, string> auditLogRepository)
         {
             _auditLogRepository = auditLogRepository;
-            _guidGenerator = guidGenerator;
-
-            if (_guidGenerator == null)
-            {
-                _guidGenerator = SequentialGuidGenerator.Instance;
-            }
         }
 
         public IQueryable<TAuditLog> GetAll()
@@ -34,13 +27,11 @@ namespace Yoyo.Pro.Auditing
 
         public void Insert(TAuditLog auditLog)
         {
-            auditLog.Id = _guidGenerator.Create().ToString("N");
             _auditLogRepository.Insert(GetAuditLog(auditLog));
         }
 
         public async Task InsertAsync(TAuditLog auditLog)
         {
-            auditLog.Id = _guidGenerator.Create().ToString("N");
             await _auditLogRepository.InsertAsync(GetAuditLog(auditLog));
         }
 
