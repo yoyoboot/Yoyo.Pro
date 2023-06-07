@@ -42,7 +42,7 @@ namespace Yoyo.Pro.Auditing
                 ClientName = auditInfo.ClientName,
                 BrowserInfo = auditInfo.BrowserInfo,
                 Exception = abpClearException,
-                ExceptionMessage = auditInfo.Exception?.Message,
+                ExceptionMessage = auditInfo.Exception?.Message.TruncateWithPostfix(AuditLogs2.MaxExceptionMessageLength),
                 ImpersonatorUserId = auditInfo.ImpersonatorUserId,
                 ImpersonatorTenantId = auditInfo.ImpersonatorTenantId,
                 CustomData = auditInfo.CustomData,
