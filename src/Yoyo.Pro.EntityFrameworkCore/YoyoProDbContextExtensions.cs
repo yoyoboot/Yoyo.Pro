@@ -1,4 +1,4 @@
-// Licensed to the .NET under one or more agreements.
+﻿// Licensed to the .NET under one or more agreements.
 // The .NET licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -78,22 +78,6 @@ namespace Yoyo.Pro
             });
 
             return services;
-        }
-
-
-        /// <summary>
-        /// 初始化 Sharding Core - IShardingBootstrapper.Start()
-        /// </summary>
-        /// <param name="iocManager"></param>
-        public static void InitShardingCore(this Abp.Dependency.IIocManager iocManager)
-        {
-            if (!iocManager.IsRegistered<IShardingBootstrapper>())
-            {
-                return;
-            }
-
-            var shardingBootstrapper = iocManager.Resolve<IShardingBootstrapper>();
-            shardingBootstrapper.AutoShardingCreate();
         }
     }
 }

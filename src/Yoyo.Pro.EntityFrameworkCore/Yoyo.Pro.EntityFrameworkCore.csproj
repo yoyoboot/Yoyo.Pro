@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ShardingCore" Version="6.6.0.23" />
+    <PackageReference Include="ShardingCore" Version="7.6.1.8" />
   </ItemGroup>
 
    <!-- nuget -->
