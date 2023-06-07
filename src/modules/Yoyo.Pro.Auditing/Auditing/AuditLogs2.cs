@@ -20,6 +20,11 @@ namespace Yoyo.Pro.Auditing
     [Table("AbpAuditLogs2")]
     public class AuditLogs2 : Entity<string>, IMayHaveTenant
     {
+
+        [NotMapped]
+        public static int MaxExceptionMessageLength { get; set; } = 1024;
+
+
         [MaxLength(32)]
         public override string Id { get; set; }
 
