@@ -107,6 +107,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.Pro.Identity.Web.Core"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.Pro.Identity.Tests", "src\modules-business\identity\tests\Yoyo.Pro.Identity.Tests\Yoyo.Pro.Identity.Tests.csproj", "{8299E3D4-6444-4756-A033-CC960600249E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yoyo.Pro.MessagePusher", "src\modules\Yoyo.Pro.MessagePusher\Yoyo.Pro.MessagePusher.csproj", "{9B21E758-5F19-435E-A091-AB2C603A1ACB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -249,6 +251,10 @@ Global
 		{8299E3D4-6444-4756-A033-CC960600249E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8299E3D4-6444-4756-A033-CC960600249E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8299E3D4-6444-4756-A033-CC960600249E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B21E758-5F19-435E-A091-AB2C603A1ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B21E758-5F19-435E-A091-AB2C603A1ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B21E758-5F19-435E-A091-AB2C603A1ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B21E758-5F19-435E-A091-AB2C603A1ACB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -294,6 +300,7 @@ Global
 		{CAC2C418-3553-4EE9-82B2-FE494EB67E5D} = {167941F4-4E13-47B7-88A5-AB46A09558C8}
 		{DB0CE991-752D-4EB0-AF26-E3F131682FC5} = {167941F4-4E13-47B7-88A5-AB46A09558C8}
 		{8299E3D4-6444-4756-A033-CC960600249E} = {A3EECCE6-22D0-48B0-A1F2-330B2913E0C6}
+		{9B21E758-5F19-435E-A091-AB2C603A1ACB} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46186319-8E37-4438-A5A8-D63664D81EBF}
