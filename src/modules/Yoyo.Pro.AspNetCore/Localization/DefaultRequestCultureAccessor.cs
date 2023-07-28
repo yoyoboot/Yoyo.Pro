@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using System.Threading.Tasks;
 using System;
@@ -168,7 +168,8 @@ namespace Yoyo.Pro.Localization
             }
 
             var orderedLanguages = localizationHeader.OrderByDescending(h => h, StringWithQualityHeaderValueComparer.QualityComparer)
-               .Select(x => x.Value.Value)
+                .Where(x=>x.Value.Value != "null")
+                .Select(x => x.Value.Value)
                .ToList();
 
             var cultureResult = ParseHeaderValue(string.Join('|', orderedLanguages));

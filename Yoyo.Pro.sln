@@ -109,6 +109,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.Pro.Identity.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.Pro.EventBus.RabbitMQ", "src\modules\Yoyo.Pro.EventBus.RabbitMQ\Yoyo.Pro.EventBus.RabbitMQ.csproj", "{0988A47F-6F2D-4352-9F2E-26998DE11CF4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.Pro.MessagePusher", "src\modules\Yoyo.Pro.MessagePusher\Yoyo.Pro.MessagePusher.csproj", "{3F2B8F7F-12D5-4750-8BEB-2E9E028B5CE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,10 @@ Global
 		{0988A47F-6F2D-4352-9F2E-26998DE11CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0988A47F-6F2D-4352-9F2E-26998DE11CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0988A47F-6F2D-4352-9F2E-26998DE11CF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F2B8F7F-12D5-4750-8BEB-2E9E028B5CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F2B8F7F-12D5-4750-8BEB-2E9E028B5CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F2B8F7F-12D5-4750-8BEB-2E9E028B5CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F2B8F7F-12D5-4750-8BEB-2E9E028B5CE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -301,6 +307,7 @@ Global
 		{DB0CE991-752D-4EB0-AF26-E3F131682FC5} = {167941F4-4E13-47B7-88A5-AB46A09558C8}
 		{8299E3D4-6444-4756-A033-CC960600249E} = {A3EECCE6-22D0-48B0-A1F2-330B2913E0C6}
 		{0988A47F-6F2D-4352-9F2E-26998DE11CF4} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
+		{3F2B8F7F-12D5-4750-8BEB-2E9E028B5CE4} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46186319-8E37-4438-A5A8-D63664D81EBF}
