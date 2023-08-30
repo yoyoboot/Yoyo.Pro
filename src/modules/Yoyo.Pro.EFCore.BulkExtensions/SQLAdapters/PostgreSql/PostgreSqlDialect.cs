@@ -1,8 +1,6 @@
-﻿namespace EFCore.BulkExtensions.SQLAdapters.PostgreSql
-{
+﻿namespace EFCore.BulkExtensions.SqlAdapters.PostgreSql;
 
-    /// <inheritdoc/>
-    public class PostgreSqlDialect : SqlDefaultDialect
-    {
-    }
+/// <inheritdoc/>
+public class PostgreSqlDialect : SqlDefaultDialect
+{
 }

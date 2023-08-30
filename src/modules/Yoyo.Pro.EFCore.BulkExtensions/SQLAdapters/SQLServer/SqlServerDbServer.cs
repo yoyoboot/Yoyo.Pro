@@ -1,35 +1,32 @@
 ﻿using EFCore.BulkExtensions.SqlAdapters;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Text;
 
-namespace EFCore.BulkExtensions.SQLAdapters.SQLServer
+namespace EFCore.BulkExtensions.SqlAdapters.SqlServer;
+
+/// <inheritdoc/>
+public class SqlServerDbServer : IDbServer
 {
-    public class SqlServerDbServer : IDbServer
-    {
-        DbServerType IDbServer.Type => DbServerType.SQLServer;
+    DbServerType IDbServer.Type => DbServerType.SQLServer;
 
-        SqlOperationsServerAdapter _adapter = new();
-        ISqlOperationsAdapter IDbServer.Adapter => _adapter;
+    SqlOperationsServerAdapter _adapter = new ();
+    ISqlOperationsAdapter IDbServer.Adapter => _adapter;
 
-        SqlServerDialect _dialect = new();
-        IQueryBuilderSpecialization IDbServer.Dialect => _dialect;
+    SqlServerDialect _dialect = new();
+    IQueryBuilderSpecialization IDbServer.Dialect => _dialect;
 
-        /// <inheritdoc/>
-        public DbConnection? DbConnection { get; set; }
+    /// <inheritdoc/>
+    public DbConnection? DbConnection { get; set; }
 
-        /// <inheritdoc/>
-        public DbTransaction? DbTransaction { get; set; }
+    /// <inheritdoc/>
+    public DbTransaction? DbTransaction { get; set; }
 
-        QueryBuilderExtensions _queryBuilder = new SqlQueryBuilderSqlServer();
-        /// <inheritdoc/>
-        public QueryBuilderExtensions QueryBuilder => _queryBuilder;
+    SqlAdapters.QueryBuilderExtensions _queryBuilder = new SqlQueryBuilderSqlServer();
+    /// <inheritdoc/>
+    public QueryBuilderExtensions QueryBuilder => _queryBuilder;
 
-        string IDbServer.ValueGenerationStrategy => nameof(SqlServerValueGenerationStrategy);
+    string IDbServer.ValueGenerationStrategy => nameof(SqlServerValueGenerationStrategy);
 
-        bool IDbServer.PropertyHasIdentity(IAnnotation annotation) => (SqlServerValueGenerationStrategy?)annotation.Value == SqlServerValueGenerationStrategy.IdentityColumn;
-    }
+    bool IDbServer.PropertyHasIdentity(IAnnotation annotation) => (SqlServerValueGenerationStrategy?)annotation.Value == SqlServerValueGenerationStrategy.IdentityColumn;
 }
