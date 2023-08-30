@@ -1,5 +1,4 @@
-﻿using EFCore.BulkExtensions;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,8 +11,11 @@ namespace EFCore.BulkExtensions.SqlAdapters.SQLite;
 /// <summary>
 /// Contains a compilation of SQL queries used in EFCore.
 /// </summary>
-public class SqlQueryBuilderSqlite : SQLAdapters.QueryBuilderExtensions
+public class SqlQueryBuilderSqlite : SqlAdapters.QueryBuilderExtensions
 {
+    /// <summary>
+    /// Generates SQL query to retrieve the last inserted row id
+    /// </summary>
     public static string SelectLastInsertRowId()
     {
         return "SELECT last_insert_rowid();";
@@ -21,12 +23,18 @@ public class SqlQueryBuilderSqlite : SQLAdapters.QueryBuilderExtensions
 
     // In Sqlite if table has AutoIncrement then InsertOrUpdate is not supported in one call,
     // we can not simultaneously Insert without PK(being 0,0,...) and Update with PK(1,2,...), separate calls Insert, Update are required.
-    public static string InsertIntoTable(TableInfo tableInfo, OperationType operationType, string tableName = null)
+    /// <summary>
+    /// Generates SQL query to insert data into table
+    /// </summary>
+    /// <param name="tableInfo"></param>
+    /// <param name="operationType"></param>
+    /// <param name="tableName"></param>
+    public static string InsertIntoTable(TableInfo tableInfo, OperationType operationType, string? tableName = null)
     {
         tableName ??= tableInfo.InsertToTempTable ? tableInfo.TempTableName : tableInfo.TableName;
 
         var tempDict = tableInfo.PropertyColumnNamesDict;
-        if (operationType == OperationType.Insert && tableInfo.PropertyColumnNamesDict.Any()) // Only OnInsert ommite colums with Default values
+        if (operationType == OperationType.Insert && tableInfo.PropertyColumnNamesDict.Any()) // Only OnInsert omit colums with Default values
         {
             tableInfo.PropertyColumnNamesDict = tableInfo.PropertyColumnNamesDict.Where(a => !tableInfo.DefaultValueProperties.Contains(a.Key)).ToDictionary(a => a.Key, a => a.Value);
         }
@@ -71,7 +79,13 @@ public class SqlQueryBuilderSqlite : SQLAdapters.QueryBuilderExtensions
         return q + ";";
     }
 
-    public static string UpdateSetTable(TableInfo tableInfo, string tableName = null)
+
+    /// <summary>
+    /// Generates SQL query to update table record data
+    /// </summary>
+    /// <param name="tableInfo"></param>
+    /// <param name="tableName"></param>
+    public static string UpdateSetTable(TableInfo tableInfo, string? tableName = null)
     {
         tableName ??= tableInfo.TableName;
         List<string> columnsList = tableInfo.PropertyColumnNamesDict.Values.ToList();
@@ -85,7 +99,12 @@ public class SqlQueryBuilderSqlite : SQLAdapters.QueryBuilderExtensions
         return q;
     }
 
-    public static string DeleteFromTable(TableInfo tableInfo, string tableName = null)
+    /// <summary>
+    /// Generates SQL query to delete from table
+    /// </summary>
+    /// <param name="tableInfo"></param>
+    /// <param name="tableName"></param>
+    public static string DeleteFromTable(TableInfo tableInfo, string? tableName = null)
     {
         tableName ??= tableInfo.TableName;
         List<string> primaryKeys = tableInfo.PrimaryKeysPropertyColumnNameDict.Select(k => tableInfo.PropertyColumnNamesDict[k.Key]).ToList();
@@ -96,38 +115,52 @@ public class SqlQueryBuilderSqlite : SQLAdapters.QueryBuilderExtensions
         return q;
     }
 
+    /// <summary>
+    /// Generates SQL query to create table copy
+    /// </summary>
+    /// <param name="existingTableName"></param>
+    /// <param name="newTableName"></param>
     public static string CreateTableCopy(string existingTableName, string newTableName) // Used for BulkRead
     {
         var q = $"CREATE TABLE {newTableName} AS SELECT * FROM {existingTableName} WHERE 0;";
         return q;
     }
 
+    /// <summary>
+    /// Generates SQL query to drop table
+    /// </summary>
+    /// <param name="tableName"></param>
     public static string DropTable(string tableName)
     {
         string q = $"DROP TABLE IF EXISTS {tableName}";
         return q;
     }
 
-    public override string SelectFromOutputTable(TableInfo tableInfo)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override string RestructureForBatch(string sql, bool isDelete = false)
-    {
-        throw new NotImplementedException();
-    }
-
+    /// <inheritdoc/>
     public override object CreateParameter(SqlParameter sqlParameter)
     {
         throw new NotImplementedException();
     }
 
+    /// <inheritdoc/>
     public override object Dbtype()
     {
         throw new NotImplementedException();
     }
 
+    /// <inheritdoc/>
+    public override string RestructureForBatch(string sql, bool isDelete = false)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public override string SelectFromOutputTable(TableInfo tableInfo)
+    {
+        return EFCore.BulkExtensions.SqlQueryBuilder.SelectFromOutputTable(tableInfo);
+    }
+
+    /// <inheritdoc/>
     public override void SetDbTypeParam(object npgsqlParameter, object dbType)
     {
         throw new NotImplementedException();

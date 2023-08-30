@@ -3,10 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.Internal;
 using System.Data.Common;
 
-namespace EFCore.BulkExtensions.SQLAdapters.PostgreSql
-{
-
-
+namespace EFCore.BulkExtensions.SqlAdapters.PostgreSql;
 
 /// <inheritdoc/>
 public class PostgreSqlDbServer : IDbServer
@@ -25,7 +22,7 @@ public class PostgreSqlDbServer : IDbServer
     /// <inheritdoc/>
     public DbTransaction? DbTransaction { get; set; }
 
-    QueryBuilderExtensions _queryBuilder = new SqlQueryBuilderPostgreSql();
+    SqlAdapters.QueryBuilderExtensions _queryBuilder = new SqlQueryBuilderPostgreSql();
     /// <inheritdoc/>
     public QueryBuilderExtensions QueryBuilder => _queryBuilder;
 
@@ -34,5 +31,4 @@ public class PostgreSqlDbServer : IDbServer
 #pragma warning restore EF1001
 
     bool IDbServer.PropertyHasIdentity(IAnnotation annotation) => (Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy?)annotation.Value == Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.NpgsqlValueGenerationStrategy.IdentityByDefaultColumn;
-}
 }

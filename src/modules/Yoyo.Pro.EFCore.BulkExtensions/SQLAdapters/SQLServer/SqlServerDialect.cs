@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq.Expressions;
 
-namespace EFCore.BulkExtensions.SQLAdapters.SQLServer
+namespace EFCore.BulkExtensions.SqlAdapters.SqlServer;
+
+/// <inheritdoc/>
+public class SqlServerDialect : SqlDefaultDialect
 {
-    public class SqlServerDialect : SqlDefaultDialect
-    {
-    }
 }
