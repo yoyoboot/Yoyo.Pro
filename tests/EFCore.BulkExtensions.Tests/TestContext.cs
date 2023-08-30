@@ -1,900 +1,830 @@
 using EFCore.BulkExtensions.SqlAdapters;
-using EFCore.BulkExtensions.SqlAdapters.SQLite;
-using EFCore.BulkExtensions.SQLAdapters;
-using EFCore.BulkExtensions.SQLAdapters.MySql;
-using EFCore.BulkExtensions.SQLAdapters.Oracle;
-using EFCore.BulkExtensions.SQLAdapters.SQLServer;
-using GCT.MedPro.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 using NetTopologySuite.Geometries;
-using Microsoft.EntityFrameworkCore.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using EFCore.BulkExtensions.SQLAdapters.PostgreSql;
+using System.Net.WebSockets;
+using System.Text.Json;
 
-namespace EFCore.BulkExtensions.Tests
+namespace EFCore.BulkExtensions.Tests;
+
+public class TestContext : DbContext
 {
-    public class TestContext : DbContext
+    public DbSet<Item> Item { get; set; } = null!;
+    //public DbSet<ItemHistory> ItemHistories { get; set; } = null!;
+
+    //public DbSet<UserRole> UserRoles { get; set; } = null!;
+
+    public DbSet<Documents> DOCUMENTS { get; set; } = null!;
+    //public DbSet<Letter> Letters { get; set; } = null!;
+
+    //public DbSet<Storage> Storages { get; set; } = null!;
+
+    //public DbSet<File> Files { get; set; } = null!;
+
+    //public DbSet<Box> Boxes { get; set; } = null!;
+    //public DbSet<Person> Persons { get; set; } = null!;
+    //public DbSet<Student> Students { get; set; } = null!;
+    //public DbSet<Teacher> Teachers { get; set; } = null!;
+    //public DbSet<Entry> Entries { get; set; } = null!;
+    //public DbSet<EntryArchive> EntryArchives { get; set; } = null!;
+    //public DbSet<EntryPrep> EntryPreps { get; set; } = null!;
+    //public DbSet<Modul> Moduls { get; set; } = null!;
+    //public DbSet<Info> Infos { get; set; } = null!;
+    //public DbSet<ChangeLog> ChangeLogs { get; set; } = null!;
+    //public DbSet<Tracker> Trackers { get; set; } = null!;
+    //public DbSet<ItemLink> ItemLinks { get; set; } = null!;
+    //public DbSet<Address> Addresses { get; set; } = null!;
+    //public DbSet<Category> Categories { get; set; } = null!;
+
+    //public DbSet<Parent> Parents { get; set; } = null!;
+    //public DbSet<ParentDetail> ParentDetails { get; set; } = null!;
+    //public DbSet<Child> Children { get; set; } = null!;
+
+    //public DbSet<Animal> Animals { get; set; } = null!;
+
+    //public DbSet<Setting> Settings { get; set; } = null!;
+
+    //public DbSet<LogPersonReport> LogPersonReports { get; set; } = null!;
+
+    //public DbSet<AtypicalRowVersionEntity> AtypicalRowVersionEntities { get; set; } = null!;
+
+    //public DbSet<AtypicalRowVersionConverterEntity> AtypicalRowVersionConverterEntities { get; set; } = null!;
+
+    //public DbSet<Event> Events { get; set; } = null!;
+
+    //public DbSet<Archive> Archives { get; set; } = null!;
+
+    //public DbSet<Counter> Counters { get; set; } = null!;
+
+    //public DbSet<Source> Sources { get; set; } = null!;
+
+    //public DbSet<Department> Departments { get; set; } = null!;
+    //public DbSet<Division> Divisions { get; set; } = null!;
+    //public DbSet<PrivateKey> PrivateKeys { get; set; } = null!;
+    //public DbSet<Wall> Walls { get; set; } = null!;
+
+    public TestContext(DbContextOptions options) : base(options)
     {
-        //public DbSet<Item> Items { get; set; }
-        //public DbSet<ItemHistory> ItemHistories { get; set; }
+        Database.EnsureCreated();
 
-        //public DbSet<UserRole> UserRoles { get; set; }
-
-        public DbSet<Documents> Documents { get; set; }
-        public DbSet<Documentss> Documentss { get; set; }
-        public DbSet<Product> Product { get; set; }
-        //public DbSet<File> Files { get; set; }
-        //public DbSet<Person> Persons { get; set; }
-        //public DbSet<Student> Students { get; set; }
-        //public DbSet<Teacher> Teachers { get; set; }
-        //public DbSet<Modul> Moduls { get; set; }
-        //public DbSet<Info> Infos { get; set; }
-        //public DbSet<ChangeLog> ChangeLogs { get; set; }
-        //public DbSet<ItemLink> ItemLinks { get; set; }
-        //public DbSet<Address> Addresses { get; set; }
-
-        //public DbSet<Parent> Parents { get; set; }
-        //public DbSet<ParentDetail> ParentDetails { get; set; }
-        //public DbSet<Child> Children { get; set; }
-
-        //public DbSet<Animal> Animals { get; set; }
-
-        //public DbSet<Setting> Settings { get; set; }
-
-        //public DbSet<LogPersonReport> LogPersonReports { get; set; }
-
-        //public DbSet<AtypicalRowVersionEntity> AtypicalRowVersionEntities { get; set; }
-
-        //public DbSet<AtypicalRowVersionConverterEntity> AtypicalRowVersionConverterEntities { get; set; }
-
-        //public DbSet<Event> Events { get; set; }
-
-        //public DbSet<Archive> Archives { get; set; }
-
-        //public DbSet<Source> Sources { get; set; }
-
-        //public DbSet<Department> Departments { get; set; }
-        //public DbSet<Division> Divisions { get; set; }
-
-        public TestContext(DbContextOptions options) : base(options)
+        if (Database.IsSqlServer())
         {
-            Database.EnsureCreated();
+            Database.ExecuteSqlRaw(@"if exists(select 1 from systypes where name='UdttIntInt') drop type UdttIntInt");
+            Database.ExecuteSqlRaw(@"create type UdttIntInt AS TABLE(C1 int not null, C2 int not null)");
+        }
+    }
 
-            if (Database.IsSqlServer())
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        //modelBuilder.RemovePluralizingTableNameConvention();
+
+        //modelBuilder.Entity<UserRole>().HasKey(a => new { a.UserId, a.RoleId });
+
+        //modelBuilder.Entity<Info>(e => { e.Property(p => p.ConvertedTime).HasConversion((value) => value.AddDays(1), (value) => value.AddDays(-1)); });
+        //modelBuilder.Entity<Info>().Property(p => p.InfoType).HasConversion(new EnumToStringConverter<InfoType>());
+        //modelBuilder.Entity<Info>().Property(p => p.DateTimeOff).HasConversion(new DateTimeOffsetToBinaryConverter());
+
+        //modelBuilder.Entity<Wall>().HasKey(x => x.Id);
+        //modelBuilder.Entity<Wall>().Property(x => x.Id).ValueGeneratedNever();
+        //modelBuilder.Entity<Wall>().Property(x => x.WallTypeValue).HasConversion(new EnumToStringConverter<WallType>());
+
+        //modelBuilder.Entity<Info>(e => { e.Property("LogData"); });
+        //modelBuilder.Entity<Info>(e => { e.Property("TimeCreated"); });
+        //modelBuilder.Entity<Info>(e => { e.Property("Remark"); });
+
+        //modelBuilder.Entity<ChangeLog>().OwnsOne(a => a.Audit,
+        //    b => b.Property(p => p.InfoType).HasConversion(new EnumToStringConverter<InfoType>()));
+
+        //modelBuilder.Entity<Person>().HasIndex(a => a.Name)
+        //    .IsUnique(); // In SQLite UpdateByColumn(nonPK) requires it has UniqueIndex
+
+        modelBuilder.Entity<Documents>().HasKey(c=>c.DOCUMENTID);
+        modelBuilder.Entity<Documents>().Property(p => p.ISACTIVE).HasDefaultValue(true);
+        modelBuilder.Entity<Documents>().Property(p => p.TAG).HasDefaultValue("DefaultData");
+
+        //modelBuilder.Entity<Log>().ToTable(nameof(Log));
+        //modelBuilder.Entity<LogPersonReport>().ToTable(nameof(LogPersonReport));
+
+        //if (Database.IsSqlServer())
+        //{
+        //    modelBuilder.Entity<Document>().Property(p => p.DocumentId).HasDefaultValueSql("NEWID()");
+        //    modelBuilder.Entity<Document>().Property(p => p.ContentLength).HasComputedColumnSql($"(CONVERT([int], len([{nameof(Document.Content)}])))");
+
+        //    modelBuilder.Entity<Storage>().ToTable(nameof(Storage), b => b.IsTemporal());
+
+        //    modelBuilder.Entity<UdttIntInt>(entity => { entity.HasNoKey(); });
+
+        //    modelBuilder.Entity<Address>().Property(p => p.LocationGeometry).HasColumnType("geometry");
+        //    modelBuilder.Entity<Category>().Property(p => p.HierarchyDescription).HasColumnType("hierarchyid");
+
+        //    modelBuilder.Entity<Division>().Property(p => p.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+        //    modelBuilder.Entity<Department>().Property(p => p.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+        //    //modelBuilder.Entity<SequentialInfo>().HasKey(a => a.Id);
+        //    //SqlServerPropertyBuilderExtensions.UseHiLo(modelBuilder.Entity<SequentialInfo>().Property(a => a.Id), name: "SequenceData", schema: "dbo");
+        //    //modelBuilder.HasSequence<int>("SequenceData", "dbo").StartsAt(10).IncrementsBy(5);
+
+        //    modelBuilder.Entity<Tracker>().OwnsOne(t => t.Location);
+        //}
+        //else
+        //{
+        //    modelBuilder.Entity<Tracker>().OwnsOne(t => t.Location).Ignore(p => p.Location); // Point only on SqlServer
+        //}
+
+        //if (Database.IsSqlite() || Database.IsNpgsql() || Database.IsMySql())
+        //{
+        //    modelBuilder.Entity<Address>().Ignore(p => p.LocationGeography);
+        //    modelBuilder.Entity<Address>().Ignore(p => p.LocationGeometry);
+        //    modelBuilder.Entity<Category>().Ignore(p => p.HierarchyDescription);
+
+        //    modelBuilder.Entity<Event>().Ignore(p => p.TimeCreated);
+        //}
+
+        //if (Database.IsSqlite())
+        //{
+        //   // modelBuilder.Entity<File>().Property(p => p.VersionChange).ValueGeneratedOnAddOrUpdate().IsConcurrencyToken().HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        //    modelBuilder.Entity<ItemHistory>().ToTable(nameof(ItemHistory));
+        //}
+
+        //if (Database.IsNpgsql())
+        //{
+        //    modelBuilder.Entity<Event>().Property(p => p.TimeCreated).HasColumnType("timestamp"); // with annotation defined as "datetime2(3)" so here corrected for PG ("timestamp" in short for "timestamp without time zone")
+
+        //    modelBuilder.Entity<Box>().Property(p => p.ElementContent).HasColumnType("jsonb"); // with annotation not mapped since not used for others DBs
+        //    modelBuilder.Entity<Box>().Property(p => p.DocumentContent).HasColumnType("jsonb"); // with annotation not mapped since not used for others DBs
+        //}
+
+        ////modelBuilder.Entity<Modul>(buildAction => { buildAction.HasNoKey(); });
+        //modelBuilder.Entity<Modul>().Property(et => et.Code).ValueGeneratedNever();
+
+        //modelBuilder.Entity<Setting>().Property(e => e.Settings).HasConversion<string>();
+
+        //modelBuilder.Entity<AtypicalRowVersionEntity>().HasKey(e => e.Id);
+        //modelBuilder.Entity<AtypicalRowVersionEntity>().Property(e => e.RowVersion).HasDefaultValue(0).IsConcurrencyToken().ValueGeneratedOnAddOrUpdate().Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
+        //modelBuilder.Entity<AtypicalRowVersionEntity>().Property(e => e.SyncDevice).IsRequired(true).IsConcurrencyToken().HasDefaultValue("");
+
+        //if (!Database.IsNpgsql() && !Database.IsMySql())
+        //{
+        //    modelBuilder.Entity<AtypicalRowVersionConverterEntity>().Property(e => e.RowVersionConverted).HasConversion(new NumberToBytesConverter<long>()).HasColumnType("timestamp").IsRowVersion().IsConcurrencyToken();
+        //}
+
+        //modelBuilder.Entity<Parent>().Property(parent => parent.PhoneNumber)
+        //    .HasColumnType("varchar(12)").HasMaxLength(12).HasField("_phoneNumber").IsRequired();
+        
+        //modelBuilder.Entity<PrivateKey>(c =>
+        //{
+        //    c.HasKey("Id");
+        //});
+
+        //modelBuilder.Entity<Person>().HasDiscriminator<string>("Discriminator").HasValue<Student>("Student").HasValue<Teacher>("Teacher"); // name of classes are default values
+
+        // [Timestamp] alternative:
+        //modelBuilder.Entity<Document>().Property(x => x.RowVersion).HasColumnType("timestamp").ValueGeneratedOnAddOrUpdate().HasConversion(new NumberToBytesConverter<ulong>()).IsConcurrencyToken();
+
+        //modelBuilder.Entity<Item>().HasQueryFilter(p => p.Description != "1234"); // For testing Global Filter
+    }
+}
+
+public static class ContextUtil
+{
+    static IDbServer? _dbServerMapping;
+    static DbServerType _dbServerValue;
+
+    // TODO: Pass DbService through all the GetOptions methods as a parameter and eliminate this property so the automated tests
+    // are thread safe
+    public static DbServerType DbServer
+    {
+        get => _dbServerValue;
+        set
+        {
+            _dbServerValue = value;
+            _dbServerMapping = value switch
             {
-                Database.ExecuteSqlRaw(@"if exists(select 1 from systypes where name='UdttIntInt') drop type UdttIntInt");
-                Database.ExecuteSqlRaw(@"create type UdttIntInt AS TABLE(C1 int not null, C2 int not null)");
+                DbServerType.SQLServer => new SqlAdapters.SqlServer.SqlServerDbServer(),
+                DbServerType.SQLite => new SqlAdapters.SQLite.SqlLiteDbServer(),
+                DbServerType.PostgreSQL => new SqlAdapters.PostgreSql.PostgreSqlDbServer(),
+                DbServerType.MySQL => new SqlAdapters.MySql.MySqlDbServer(),
+                DbServerType.Oracle => new SqlAdapters.Oracle.OracleDbServer(),
+                _ => throw new NotImplementedException(),
+            };
+        }
+    }
+
+    public static DbContextOptions GetOptions(IInterceptor dbInterceptor) => GetOptions(new[] { dbInterceptor });
+    public static DbContextOptions GetOptions(IEnumerable<IInterceptor>? dbInterceptors = null) => GetOptions<TestContext>(dbInterceptors);
+
+    public static DbContextOptions GetOptions<TDbContext>(IEnumerable<IInterceptor>? dbInterceptors = null, string databaseName = nameof(EFCoreBulkTest))
+        where TDbContext : DbContext
+        => GetOptions<TDbContext>(ContextUtil.DbServer, dbInterceptors, databaseName);
+
+    public static DbContextOptions GetOptions<TDbContext>(DbServerType dbServerType, IEnumerable<IInterceptor>? dbInterceptors = null, string databaseName = nameof(EFCoreBulkTest))
+        where TDbContext : DbContext
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
+
+        if (dbServerType == DbServerType.SQLServer)
+        {
+            var connectionString = GetSqlServerConnectionString(databaseName);
+
+            // ALTERNATIVELY (Using MSSQLLocalDB):
+            //var connectionString = $@"Data Source=(localdb)\MSSQLLocalDB;Database={databaseName};Trusted_Connection=True;MultipleActiveResultSets=True";
+
+            //optionsBuilder.UseSqlServer(connectionString); // Can NOT Test with UseInMemoryDb (Exception: Relational-specific methods can only be used when the context is using a relational)
+            optionsBuilder.UseSqlServer(connectionString, opt => opt.UseNetTopologySuite()); // NetTopologySuite for Geometry / Geometry types
+            optionsBuilder.UseSqlServer(connectionString, conf =>
+            {
+                conf.UseHierarchyId();
+            });
+        }
+        else if (dbServerType == DbServerType.SQLite)
+        {
+            string connectionString = GetSqliteConnectionString(databaseName);
+            optionsBuilder.UseSqlite(connectionString);
+            SQLitePCL.Batteries.Init();
+
+            // ALTERNATIVELY:
+            //string connectionString = (new SqliteConnectionStringBuilder { DataSource = $"{databaseName}Lite.db" }).ToString();
+            //optionsBuilder.UseSqlite(new SqliteConnection(connectionString));
+        }
+        else if (DbServer == DbServerType.PostgreSQL)
+        {
+            string connectionString = GetPostgreSqlConnectionString(databaseName);
+            optionsBuilder.UseNpgsql(connectionString);
+        }
+        else if (DbServer == DbServerType.MySQL)
+        {
+            string connectionString = GetMySqlConnectionString(databaseName);
+            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        }
+        else if (DbServer == DbServerType.Oracle)
+        {
+            string connectionString = GetOracleConnectionString(databaseName);
+            optionsBuilder.UseOracle(connectionString);
+        }
+        else
+        {
+            throw new NotSupportedException($"Database {dbServerType} is not supported. Only SQL Server and SQLite are Currently supported.");
+        }
+
+        if (dbInterceptors?.Any() == true)
+        {
+            optionsBuilder.AddInterceptors(dbInterceptors);
+        }
+
+        return optionsBuilder.Options;
+    }
+
+    private static IConfiguration GetConfiguration()
+    {
+        var configBuilder = new ConfigurationBuilder()
+            .AddJsonFile("testsettings.json", optional: false)
+            .AddJsonFile("testsettings.local.json", optional: true);
+
+        return configBuilder.Build();
+    }
+
+    public static string GetSqlServerConnectionString(string databaseName)
+    {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        return GetConfiguration().GetConnectionString("SqlServer").Replace("{databaseName}", databaseName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+    }
+
+    public static string GetSqliteConnectionString(string databaseName)
+    {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        return GetConfiguration().GetConnectionString("Sqlite").Replace("{databaseName}", databaseName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+    }
+
+    public static string GetPostgreSqlConnectionString(string databaseName)
+    {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        return GetConfiguration().GetConnectionString("PostgreSql").Replace("{databaseName}", databaseName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+    }
+
+    public static string GetOracleConnectionString(string databaseName)
+    {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        return GetConfiguration().GetConnectionString("Oracle").Replace("{databaseName}", databaseName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+    }
+
+    public static string GetMySqlConnectionString(string databaseName)
+    {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        return GetConfiguration().GetConnectionString("MySql").Replace("{databaseName}", databaseName);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+    }
+}
+
+public static class ModelBuilderExtensions
+{
+    public static void RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
+    {
+        foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
+        {
+            if (!entity.IsOwned() && entity.BaseType == null) // without this exclusion OwnedType would not be by default in Owner Table
+            {
+                entity.SetTableName(entity.ClrType.Name);
             }
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.RemovePluralizingTableNameConvention();
-
-            //modelBuilder.Entity<UserRole>().HasKey(a => new { a.UserId, a.RoleId });
-
-            //modelBuilder.Entity<Info>(e => { e.Property(p => p.ConvertedTime).HasConversion((value) => value.AddDays(1), (value) => value.AddDays(-1)); });
-            //modelBuilder.Entity<Info>().Property(e => e.InfoType).HasConversion(new EnumToStringConverter<InfoType>());
-
-            //modelBuilder.Entity<Info>(e => { e.Property("LogData"); });
-            //modelBuilder.Entity<Info>(e => { e.Property("TimeCreated"); });
-            //modelBuilder.Entity<Info>(e => { e.Property("Remark"); });
-
-            //modelBuilder.Entity<ChangeLog>().OwnsOne(e => e.Audit, b => b.Property(e => e.InfoType).HasConversion(new EnumToStringConverter<InfoType>()));
-
-            //modelBuilder.Entity<Person>().HasIndex(a => a.Name).IsUnique(); // In SQLite UpdateByColumn(nonPK) requires it has UniqueIndex
-
-            modelBuilder.Entity<Documents>().Property(p => p.IsActive).HasDefaultValue(true);
-            modelBuilder.Entity<Documents>().Property(p => p.Tag).HasDefaultValue("DefaultData");
-            modelBuilder.Entity<Documents>().HasKey(p => p.Id);
-
-            if (ContextUtil.DbServer == DbServerType.Oracle)
-            {
-                modelBuilder.MedProUseOracleTableMapping();
-            }
-
-
-
-
-            //modelBuilder.Entity<Log>().ToTable("Log");
-            //modelBuilder.Entity<LogPersonReport>().ToTable("LogPersonReport");
-
-            if (Database.IsSqlServer())
-            {
-
-
-                modelBuilder.Entity<UdttIntInt>(entity => { entity.HasNoKey(); });
-
-                modelBuilder.Entity<Address>().Property(p => p.LocationGeometry).HasColumnType("geometry");
-
-                modelBuilder.Entity<Division>().Property(p => p.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
-                modelBuilder.Entity<Department>().Property(p => p.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
-            }
-            //else if (Database.IsSqlite())
-            //{
-            //    modelBuilder.Entity<File>().Property(p => p.VersionChange).ValueGeneratedOnAddOrUpdate().IsConcurrencyToken().HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-            //    modelBuilder.Entity<Address>().Ignore(p => p.LocationGeography);
-            //    modelBuilder.Entity<Address>().Ignore(p => p.LocationGeometry);
-
-            //    modelBuilder.Entity<ItemHistory>().ToTable(nameof(ItemHistory));
-            //}
-
-            ////modelBuilder.Entity<Modul>(buildAction => { buildAction.HasNoKey(); });
-            //modelBuilder.Entity<Modul>().Property(et => et.Code).ValueGeneratedNever();
-
-            //modelBuilder.Entity<Setting>().Property(e => e.Settings).HasConversion<string>();
-
-            //modelBuilder.Entity<AtypicalRowVersionEntity>().HasKey(e => e.Id);
-            //modelBuilder.Entity<AtypicalRowVersionEntity>().Property(e => e.RowVersion).HasDefaultValue(0).IsConcurrencyToken().ValueGeneratedOnAddOrUpdate().Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
-            //modelBuilder.Entity<AtypicalRowVersionEntity>().Property(e => e.SyncDevice).IsRequired(true).IsConcurrencyToken().HasDefaultValue("");
-
-            //modelBuilder.Entity<AtypicalRowVersionConverterEntity>().Property(e => e.RowVersionConverted).HasConversion(new NumberToBytesConverter<long>()).HasColumnType("timestamp").IsRowVersion().IsConcurrencyToken();
-
-            //modelBuilder.Entity<Parent>().Property(parent => parent.PhoneNumber)
-            //    .HasColumnType("varchar(12)").HasMaxLength(12).HasField("_phoneNumber").IsRequired();
-
-            //modelBuilder.Entity<Person>().HasDiscriminator<string>("Discriminator").HasValue<Student>("Student").HasValue<Teacher>("Teacher"); // name of classes are default values
-
-            // [Timestamp] alternative:
-            //modelBuilder.Entity<Document>().Property(x => x.RowVersion).HasColumnType("timestamp").ValueGeneratedOnAddOrUpdate().HasConversion(new NumberToBytesConverter<ulong>()).IsConcurrencyToken();
-
-            //modelBuilder.Entity<Item>().HasQueryFilter(p => p.Description != "1234"); // For testing Global Filter
-        }
     }
+}
 
-
-    public static class ContextUtil
+public class Item
+{
+    public Item()
     {
-        // TODO: Pass DbService through all the GetOptions methods as a parameter and eliminate this property so the automated tests
-        // are thread safe
-        static IDbServer? _dbServerMapping;
-        static DbServerType _dbServerValue;
 
-
-        // TODO: Pass DbService through all the GetOptions methods as a parameter and eliminate this property so the automated tests
-        // are thread safe
-        public static DbServerType DbServer
-        {
-            get => _dbServerValue;
-            set
-            {
-                _dbServerValue = value;
-                _dbServerMapping = value switch
-                {
-                    DbServerType.SQLServer => new SqlServerDbServer(),
-                    DbServerType.SQLite => new SqlLiteDbServer(),
-                    // DbServerType.PostgreSQL => new SqlAdapters.PostgreSql.PostgreSqlDbServer(),
-                    DbServerType.MySQL => new MySqlDbServer(),
-                    DbServerType.Oracle => new OracleDbServer(),
-                    DbServerType.PostgreSQL => new PostgreSqlDbServer(),
-                    _ => throw new NotImplementedException(),
-                };
-            }
-        }
-
-        public static DbContextOptions GetOptions(IInterceptor dbInterceptor) => GetOptions(new[] { dbInterceptor });
-        public static DbContextOptions GetOptions(IEnumerable<IInterceptor> dbInterceptors = null) => GetOptions<TestContext>(dbInterceptors);
-
-        public static DbContextOptions GetOptions<TDbContext>(IEnumerable<IInterceptor> dbInterceptors = null, string databaseName = nameof(EFCoreBulkTest))
-            where TDbContext : DbContext
-            => GetOptions<TDbContext>(ContextUtil.DbServer, dbInterceptors, databaseName);
-
-        public static DbContextOptions GetOptions<TDbContext>(DbServerType dbServerType, IEnumerable<IInterceptor> dbInterceptors = null, string databaseName = nameof(EFCoreBulkTest))
-            where TDbContext : DbContext
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<TDbContext>();
-
-            if (dbServerType == DbServerType.SQLServer)
-            {
-                var connectionString = GetSqlServerConnectionString(databaseName);
-
-                // ALTERNATIVELY (Using MSSQLLocalDB):
-                //var connectionString = $@"Data Source=(localdb)\MSSQLLocalDB;Database={databaseName};Trusted_Connection=True;MultipleActiveResultSets=True";
-
-                //optionsBuilder.UseSqlServer(connectionString); // Can NOT Test with UseInMemoryDb (Exception: Relational-specific methods can only be used when the context is using a relational)
-                optionsBuilder.UseSqlServer(connectionString, opt => opt.UseNetTopologySuite()); // NetTopologySuite for Geometry / Geometry types
-            }
-            else if (dbServerType == DbServerType.SQLite)
-            {
-                string connectionString = GetSqliteConnectionString(databaseName);
-                optionsBuilder.UseSqlite(connectionString);
-                SQLitePCL.Batteries.Init();
-
-                // ALTERNATIVELY:
-                //string connectionString = (new SqliteConnectionStringBuilder { DataSource = $"{databaseName}Lite.db" }).ToString();
-                //optionsBuilder.UseSqlite(new SqliteConnection(connectionString));
-            }
-            else if (dbServerType == DbServerType.MySQL)
-            {
-                string connectionString = GetMySqlConnectionString(databaseName);
-                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-            }
-            else if (dbServerType == DbServerType.Oracle)
-            {
-                string connectionString = GetOracleConnectionString(databaseName);
-                optionsBuilder.UseOracle(connectionString);
-            }
-            else if (dbServerType == DbServerType.PostgreSQL)
-            {
-                string connectionString = GetPostgreSQLConnectionString();
-                optionsBuilder.UseNpgsql(connectionString);
-            }
-            else
-            {
-                throw new NotSupportedException($"Database {dbServerType} is not supported. Only SQL Server and SQLite are Currently supported.");
-            }
-
-            if (dbInterceptors?.Any() == true)
-            {
-                optionsBuilder.AddInterceptors(dbInterceptors);
-            }
-
-            return optionsBuilder.Options;
-        }
-
-        private static IConfiguration GetConfiguration()
-        {
-            var configBuilder = new ConfigurationBuilder()
-                .AddJsonFile("testsettings.json", optional: false)
-                .AddJsonFile("testsettings.local.json", optional: true);
-
-            return configBuilder.Build();
-        }
-
-        public static string GetSqlServerConnectionString(string databaseName)
-        {
-            return GetConfiguration().GetConnectionString("SqlServer");
-        }
-
-        public static string GetSqliteConnectionString(string databaseName)
-        {
-            return GetConfiguration().GetConnectionString("Sqlite").Replace("{databaseName}", databaseName);
-        }
-
-        public static string GetMySqlConnectionString(string databaseName)
-        {
-            return GetConfiguration().GetConnectionString("MySql");
-        }
-
-        public static string GetOracleConnectionString(string databaseName)
-        {
-            return GetConfiguration().GetConnectionString("Oracle");
-        }
-
-        public static string GetPostgreSQLConnectionString()
-        {
-            return GetConfiguration().GetConnectionString("PostgreSql");
-        }
     }
-
-    public static class ModelBuilderExtensions
+    public Item(int itemId, string name, string description, int quantity, decimal? price, DateTime? timeUpdated, ICollection<ItemHistory> itemHistories)
     {
-        public static void RemovePluralizingTableNameConvention(this ModelBuilder modelBuilder)
-        {
-            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
-            {
-                if (!entity.IsOwned() && entity.BaseType == null) // without this exclusion OwnedType would not be by default in Owner Table
-                {
-                    entity.SetTableName(entity.ClrType.Name);
-                }
-            }
-        }
+        ItemId = itemId;
+        Name = name;
+        Description = description;
+        Quantity = quantity;
+        Price = price;
+        TimeUpdated = timeUpdated;
+        ItemHistories = itemHistories;
     }
 
-    public class Item
+    public int ItemId { get; set; }
+
+    [MaxLength(50)]
+    public string? Name { get; set; }
+
+    public string? Description { get; set; }
+
+    public int Quantity { get; set; }
+
+    public decimal? Price { get; set; }
+
+    //[Column(TypeName = (nameof(DateTime)))] // Column to be of DbType 'datetime' instead of default 'datetime2'
+    public DateTime? TimeUpdated { get; set; }
+
+    public ICollection<ItemHistory> ItemHistories { get; set; } = null!;
+
+}
+
+// ItemHistory is used to test bulk Ops to multiple tables(Item and ItemHistory), to test Guid as PK and to test other Schema(his)
+[Table(nameof(ItemHistory)/*, Schema = "his"*/)] // different schema is not supported in Sqlite
+public class ItemHistory
+{
+    public Guid ItemHistoryId { get; set; }
+
+    public int ItemId { get; set; }
+    public virtual Item Item { get; set; } = null!;
+
+    public string Remark { get; set; } = null!;
+}
+
+
+public class ItemCategory
+{
+    [Key]
+    public int Id { get; set; }
+
+    [MaxLength(50)]
+    public string? Name { get; set; }
+
+}
+
+// UserRole is used to test tables with Composite PrimaryKey
+public class UserRole
+{
+    public UserRole()
     {
-        public int ItemId { get; set; }
 
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        public int Quantity { get; set; }
-
-        public decimal? Price { get; set; }
-
-        //[Column(TypeName = (nameof(DateTime)))] // Column to be of DbType 'datetime' instead of default 'datetime2'
-        public DateTime TimeUpdated { get; set; }
-
-        public ICollection<ItemHistory> ItemHistories { get; set; }
     }
-
-    // ItemHistory is used to test bulk Ops to multiple tables(Item and ItemHistory), to test Guid as PK and to test other Schema(his)
-    [Table(nameof(ItemHistory), Schema = "his")] // different schema is not supported in Sqlite
-    public class ItemHistory
+    public UserRole(int userId, int roleId, string description)
     {
-        public Guid ItemHistoryId { get; set; }
-
-        public int ItemId { get; set; }
-        public virtual Item Item { get; set; }
-
-        public string Remark { get; set; }
+        UserId = userId;
+        RoleId = roleId;
+        Description = description;
     }
 
-    // UserRole is used to test tables with Composite PrimaryKey
-    public class UserRole
+    [Key]
+    public int UserId { get; set; }
+
+    [Key]
+    public int RoleId { get; set; }
+
+    public string? Description { get; set; }
+}
+
+// User Defined Table Type
+public class UdttIntInt
+{
+    public int C1 { get; set; }
+    public int C2 { get; set; }
+}
+
+// Person, Instructor nad Student are used to test Bulk with Shadow Property and Discriminator column
+public abstract class Person
+{
+    public int PersonId { get; set; }
+
+    public string Name { get; set; } = null!;
+}
+
+public class Wall
+{
+    public long Id { get; set; }
+    public WallType WallTypeValue { get; set; } = WallType.Clay;
+}
+
+public enum WallType
+{
+    Brick,
+    Clay
+}
+
+public class Student : Person
+{
+    public string Subject { get; set; } = null!;
+}
+
+// To Test custom Destination and Source tables
+public class Entry
+{
+    public int EntryId { get; set; }
+
+    public string Name { get; set; } = null!;
+}
+public class EntryArchive
+{
+    [Key]
+    public int EntryId { get; set; }
+
+    public string Name { get; set; } = null!;
+}
+public class EntryPrep
+{
+    [Key]
+    public int EntryPrepId { get; set; }
+
+    public string NameInfo { get; set; } = null!;
+}
+
+public class Address
+{
+    public int AddressId { get; set; }
+    public string Street { get; set; } = null!;
+
+    public Geometry LocationGeography { get; set; } = null!;
+    public Geometry LocationGeometry { get; set; } = null!;
+}
+
+public class Category
+{
+    public int CategoryId { get; set; }
+    public string Name { get; set; } = null!;
+    public HierarchyId HierarchyDescription { get; set; } = null!;
+}
+
+public class Teacher : Person
+{
+    public string Class { get; set; } = null!;
+}
+
+// For testing Computed columns Default values
+public class Documents
+{
+    //[DefaultValueSql("NEWID()")] // no native [DefaultValueSql] annotation so this is configured via FluentAPI in modelBuilder
+    public Guid DOCUMENTID { get; set; }
+
+    //[DefaultValue(true)] // EF doesn't use DefaultValue attribute, not annotation, so this is configured via FluentAPI as well
+    public bool? ISACTIVE { get; set; }
+
+
+    //HasDefaultValueSql
+    [Required]
+    public string CONTENT { get; set; } = null!;
+
+    //HasComputedColumnSql
+    public string? TAG { get; set; }
+
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)] // Computed columns also have to be configured with FluentAPI
+    public int CONTENTLENGTH { get; set; }
+}
+
+// For testing parameterless constructor
+public class Letter
+{
+    public Letter(string note)
     {
-        [Key]
-        public int UserId { get; set; }
-
-        [Key]
-        public int RoleId { get; set; }
-
-        public string Description { get; set; }
+        Note = note;
     }
+    public int LetterId { get; set; }
 
-    // User Defined Table Type
-    public class UdttIntInt
+    public string Note { get; set; }
+}
+
+// For testing Temporal tables (configured via FluentAPI )
+public class Storage
+{
+    public Guid StorageId { get; set; }
+
+    public string Data { get; set; } = null!;
+}
+
+// For testing type 'jsonb' on Postgres
+public class Box
+{
+    public int BoxId { get; set; }
+
+    [NotMapped] // used only for Postgres so mapped wiht FluentAPI 
+    public System.Text.Json.JsonElement ElementContent { get; set; }
+
+    [NotMapped] // used only for Postgres so mapped wiht FluentAPI 
+    public JsonDocument DocumentContent { get; set; } = null!;
+}
+
+// For testing TimeStamp Property and Column with Concurrency Lock
+public class File
+{
+    [Column("Id")] // test different column Name, PK in this case
+    public int FileId { get; set; }
+
+    [Required]
+    public string Description { get; set; } = null!;
+
+    public byte[]? DataBytes { get; set; }
+
+    //[Timestamp]
+    //public byte[] VersionChange { get; set; } = null!;
+    //public ulong RowVersion { get; set; }
+}
+
+public enum InfoType
+{
+    InfoTypeA,
+    InfoTypeB
+}
+
+public class Modul
+{
+
+    [Key]
+    [Required]
+    public string Code { get; set; } = null!;
+    public string Name { get; set; } = null!;
+}
+
+// For testring ValueConversion
+public class Info
+{
+    public Info()
     {
-        public int C1 { get; set; }
-        public int C2 { get; set; }
+        logData = "logged";
+        TimeCreated = DateTime.Now;
     }
+    [Required]
+    private string logData; // To test private Field with protected explicit getter/setter
 
-    // Person, Instructor nad Student are used to test Bulk with Shadow Property and Discriminator column
-    public abstract class Person
-    {
-        public int PersonId { get; set; }
-
-        public string Name { get; set; }
-    }
-
-    public class Student : Person
-    {
-        public string Subject { get; set; }
-    }
-
-    public class Address
-    {
-        public int AddressId { get; set; }
-        public string Street { get; set; }
-
-        public Geometry LocationGeography { get; set; }
-        public Geometry LocationGeometry { get; set; }
-    }
-
-    public class Teacher : Person
-    {
-        public string Class { get; set; }
-    }
-
-    // For testing Computed columns Default values
-    public class Documents : Entity<Guid>
-    {
-        //[DefaultValueSql("NEWID()")] // no native [DefaultValueSql] annotation so this is configured via FluentAPI in modelBuilder
-        public Guid DocumentId { get; set; }
-
-        //[DefaultValue(true)] // EF doesn't use DefaultValue attribute, not annotation, so this is configured via FluentAPI as well
-        public bool? IsActive { get; set; }
-
-        [Required]
-        public string Content { get; set; }
-
-        public string Tag { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)] // Computed columns also have to be configured with FluentAPI
-        public int ContentLength { get; set; }
-    }
-
-    public class Product : Entity<Guid>
-    {
-        /// <summary>
-        /// 所属租户
-        /// </summary>
-        [Comment("所属租户")]
-        public int? TenantId { get; set; }
-
-        /// <summary>
-        /// 版本
-        /// </summary>
-        [Required]
-        [Comment("版本")]
-        public string ProductRevision { get; set; }
-
-        /// <summary>
-        /// 产品Id
-        /// </summary>
-        [Comment("产品Id")]
-        public Guid ProductBaseId { get; set; }
-
-
-        /// <summary>
-        /// 产品类型
-        /// </summary>
-        [Comment("产品类型")]
-        public Guid? ProductTypeId { get; set; }
-
-
-        /// <summary>
-        /// 描述
-        /// </summary>
-        [Comment("描述")]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// 备注
-        /// </summary>
-        [Comment("备注")]
-        public string Notes { get; set; }
-
-        /// <summary>
-        /// BomBaseId
-        /// </summary>
-        [Comment("BomBaseId")]
-        public Guid? BomBaseId { get; set; }
-
-        /// <summary>
-        /// BomId
-        /// </summary>
-        [Comment("BomId")]
-        public Guid? BomId { get; set; }
-
-
-        /// <summary>
-        /// 文档集
-        /// </summary>
-        [Comment("文档集")]
-        public Guid? DocumentSetId { get; set; }
-
-
-        /// <summary>
-        /// 产品家族
-        /// </summary>
-        [Comment("产品家族")]
-        public Guid? ProductFamilyId { get; set; }
-
-
-        /// <summary>
-        /// 工作流BaseId
-        /// </summary>
-        [Comment("工作流BaseId")]
-        public Guid? WorkFlowBaseId { get; set; }
-
-        /// <summary>
-        /// 工作流
-        /// </summary>
-        [Comment("工作流")]
-        public Guid? WorkFlowId { get; set; }
-
-        /// <summary>
-        /// 工厂
-        /// </summary>
-        [Comment("工厂")]
-        public Guid? FactoryId { get; set; }
-
-        /// <summary>
-        /// 培训需求组Id
-        /// </summary>
-        [Comment("培训需求组Id")]
-        public Guid? TrainingRequirementGroupId { get; set; }
-
-        /// <summary>
-        /// 物料的度量单位，关联UOM的GUID
-        /// </summary>
-        [Comment("物料的度量单位，关联UOM的GUID")]
-        public Guid? UOMId { get; set; }
-
-        /// <summary>
-        /// 物料规格
-        [Comment("物料规格")]
-        public string MaterialSpec { get; set; }
-
-        public bool IsMainMaterial { get; set; }
-
-        /// <summary>
-        /// 流水号规则
-        /// </summary>
-        [Comment("流水号规则")]
-        public Guid? NumberRuleId { get; set; }
-
-        //[NotMapped]
-        //public NumberingRule NumberRule { get; set; }
-
-
-        /// <summary>
-        /// SN号置换规则
-        /// </summary>
-        [Comment("SN号置换规则")]
-        public Guid? SNCodeRuleId { get; set; }
-
-
-        /// <summary>
-        /// 包装规则
-        /// </summary>
-        [Comment("包装规则")]
-        public Guid? PackageRuleId { get; set; }
-
-        /// <summary>
-        /// 包装规则Base
-        /// </summary>
-        [Comment("包装规则")]
-        public Guid? PackageRuleBaseId { get; set; }
-
-        public void SetBaseId(Guid baseId)
-        {
-            this.ProductBaseId = baseId;
-        }
-
-        /// <summary>
-        /// 物料上下限Id
-        /// </summary>
-        [Comment("物料上下限Id")]
-        public Guid? MaterialLimitId { get; set; }
-
-        /// <summary>
-        /// 配方BaseId
-        /// </summary>
-        [Comment("配方BaseId")]
-        public Guid? RecipeBaseId { get; set; }
-
-        /// <summary>
-        /// 配方Id
-        /// </summary>
-        [Comment("配方Id")]
-        public Guid? RecipeId { get; set; }
-
-        public Guid GetBaseId()
-        {
-            return this.ProductBaseId;
-        }
-    }
-
-    public class Documentss : Entity<Guid>
-    {
-        /// <summary>
-        /// 所属租户
-        /// </summary>
-        [Comment("所属租户")]
-        public int? TenantId { get; set; }
-
-        /// <summary>
-        /// 文档Base
-        /// </summary>
-        [Required]
-        [Comment("文档Base")]
-        public Guid DocumentBaseId { get; set; }
-
-
-        /// <summary>
-        /// 描述
-        /// </summary>
-        [Comment("描述")]
-        public string Description { get; set; }
-
-        /// <summary>
-        /// 文档的版本号
-        /// </summary>
-        [Comment("文档的版本号")]
-        public string DocumentRevision { get; set; }
-
-        /// <summary>
-        /// 文档路径
-        /// </summary>
-        [Comment("文档路径")]
-        public string FileNamePath { get; set; }
-
-        /// <summary>
-        /// 关联表SysFile
-        /// </summary>
-        [Comment("关联表SysFile")]
-        public Guid? SysFileId { get; set; }
-
-        /// <summary>
-        /// 备注信息
-        /// </summary>
-        [Comment("备注信息")]
-        public string Notes { get; set; }
-
-        /// <summary>
-        /// 有效期开始时间
-        /// </summary>
-        [Comment("有效期开始时间")]
-        public DateTime? ActiveStartTime { get; set; }
-
-        /// <summary>
-        /// 有效期结束时间
-        /// </summary>
-        [Comment("有效期结束时间")]
-        public DateTime? ActiveEndTime { get; set; }
-
-        /// <summary>
-        /// 当前实例的状态
-        /// </summary>
-        [Comment("当前实例的状态")]
-        public string StatusString { get; set; }
-
-        public string ConcurrencyToken { get; set; }
-
-        public virtual string DeleterUserName { get; set; }
-
-        [MaxLength(32)]
-        public virtual string CreatorUserName { get; set; }
-
-        [MaxLength(32)]
-        public virtual string LastModifierUserName { get; set; }
-
-        public virtual bool IsDeleted { get; set; }
-        public virtual DateTime? LastModificationTime { get; set; }
-
-        /// <summary>
-        /// Last modifier user of this entity.
-        /// </summary>
-        public virtual long? LastModifierUserId { get; set; }
-
-        public virtual DateTime CreationTime { get; set; }
-
-        /// <summary>
-        /// Creator of this entity.
-        /// </summary>
-        public virtual long? CreatorUserId { get; set; }
-
-        /// <summary>
-        /// Reference to the deleter user of this entity.
-        /// </summary>
-
-        /// <summary>
-        /// Which user deleted this entity?
-        /// </summary>
-        public virtual long? DeleterUserId { get; set; }
-
-        /// <summary>
-        /// Deletion time of this entity.
-        /// </summary>
-        public virtual DateTime? DeletionTime { get; set; }
-    }
-
-    // For testing TimeStamp Property and Column with Concurrency Lock
-    public class File
-    {
-        [Column("Id")] // test different column Name, PK in this case
-        public int FileId { get; set; }
-
-        [Required]
-        public string Description { get; set; }
-
-        public byte[] DataBytes { get; set; }
-
-        [Timestamp]
-        public byte[] VersionChange { get; set; }
-        //public ulong RowVersion { get; set; }
-    }
-
-    public enum InfoType
-    {
-        InfoTypeA,
-        InfoTypeB
-    }
-
-    public class Modul
-    {
-        [Key]
-        [Required]
-        public string Code { get; set; }
-        public string Name { get; set; }
-    }
-
-    // For testring ValueConversion
-    public class Info
-    {
-        public Info()
-        {
-            logData = "logged";
-            TimeCreated = DateTime.Now;
-        }
-        [Required]
-        private string logData; // To test private Field with protected explicit getter/setter
-
-        public long InfoId { get; set; }
-
-        public string Message { get; set; }
-
-        public DateTime ConvertedTime { get; set; }
-
-        public InfoType InfoType { get; set; }
-
-        public string Note { get; protected set; } = "NN"; // To test protected Setter
-
-        public string Remark { get; } // To test without Setter
-
-        private DateTime TimeCreated { get; set; } // To test private Property
-
-        [Required]
-        private string LogData { get { return logData; } set { logData = value; } }
-
-        public string GetLogData() { return logData; }
-        public DateTime GetDateCreated() { return TimeCreated.Date; }
-    }
-
-
-    public class Animal
-    {
-        public int AnimalId { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-    }
-
-    public class Mammal : Animal
-    {
-        public string Category { get; set; }
-    }
-
-    public enum SettingsEnum
-    {
-        Sett1,
-        Sett2
-    }
-    // For testing Convertible Property (Key Settings in modelBuilder configured as 'nvarchar' insted of 'int')
-    public class Setting
-    {
-        [Key]
-        public SettingsEnum Settings { get; set; }
-        [Required]
-        [MaxLength(20)]
-        public string Value { get; set; }
-    }
-
-
-    // For testing ForeignKey Shadow Properties
-    public class ItemLink
-    {
-        public int ItemLinkId { get; set; }
-        public virtual Item Item { get; set; }
-    }
-
-    // For testing OwnedTypes
-    public class ChangeLog
-    {
-        public int ChangeLogId { get; set; }
-
-        public string Description { get; set; }
-
-        public Audit Audit { get; set; }
-
-        //public AuditExtended AuditExtended { get; set; }
-
-        //public AuditExtended AuditExtendedSecond { get; set; }
-    }
-
-    [Owned]
-    public class Audit
-    {
-        [Column(nameof(ChangedBy))] // for setting custom column name, in this case prefix OwnedType_ ('Audit_') removed, so column would be only ('ChangedBy')
-        public string ChangedBy { get; set; } // default Column name for Property of OwnedType is OwnedType_Property ('Audit_ChangedBy')
-
-        public bool IsDeleted { get; set; }
-
-        [NotMapped] // alternatively in OnModelCreating(): modelBuilder.Entity<Audit>().Ignore(a => a.ChangedTime);
-        public DateTime? ChangedTime { get; set; }
-
-        public InfoType InfoType { get; set; }
-    }
-
-    [Owned]
-    public class AuditExtended
-    {
-        public string CreatedBy { get; set; }
-
-        [NotMapped]
-        public DateTime? CreatedTime { get; set; }
-
-        [NotMapped]
-        public string Remark { get; set; }
-    }
-
-    // For testing BatchUpdate expressions that use nested queries
-    public class Parent
-    {
-        public ICollection<Child> Children { get; set; }
-        public decimal CombinedChildBalance { get; set; }
-        public string Description { get; set; }
-        public virtual ParentDetail Details { get; set; }
-        public int ParentId { get; set; }
-
-        private string _phoneNumber;
-        public string PhoneNumber { get => _phoneNumber; set => _phoneNumber = value; }
-
-        public decimal Value { get; set; }
-    }
-
-    public class ParentDetail
-    {
-        public int ParentDetailId { get; set; }
-
-        public virtual Parent Parent { get; set; }
-        public int ParentId { get; set; }
-
-        public string Notes { get; set; }
-    }
-
-    public class Child
-    {
-        public int ChildId { get; set; }
-        public bool IsEnabled { get; set; }
-        public decimal Value { get; set; }
-
-        public virtual Parent Parent { get; set; }
-        public int ParentId { get; set; }
-    }
-
-    public abstract class Log // To Test TPT (TablePerType) - https://docs.microsoft.com/en-us/ef/core/modeling/inheritance#table-per-type-configuration
-    {
-        public int LogId { get; set; }
-        public int PersonId { get; set; }
-        public int RegBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-    }
-    public class LogPersonReport : Log
-    {
-        public int ReportId { get; set; }
-        public int LogPersonReportTypeId { get; set; }
-    }
-
-    public class AtypicalRowVersionEntity
-    {
-        public Guid Id { get; set; }
-        public long RowVersion { get; set; }
-        public string SyncDevice { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class AtypicalRowVersionConverterEntity
-    {
-        public Guid Id { get; set; }
-        public long RowVersionConverted { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class Event // CustomPrecision DateTime Test (SqlServer only)
-    {
-        public int EventId { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-
-        [Column(TypeName = "datetime2(3)")]
-        public DateTime TimeCreated { get; set; }
-    }
-
-    public class Archive
-    {
-        public byte[] ArchiveId { get; set; }
-        public string Description { get; set; }
-    }
-
-    public class Source
-    {
-        public int SourceId { get; set; }
-        public Status StatusId { get; set; }
-        public Type TypeId { get; set; }
-    }
-    public enum Status : byte { Init, Changed }
-    public enum Type : byte { Undefined, Type1, Type2 }
-
-    public class Department
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-
-        public ICollection<Division> Divisions { get; set; }
-    }
-
-    public class Division
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-
-        public Guid DepartmentId { get; set; }
-        public Department Department { get; set; }
-    }
+    public long InfoId { get; set; }
+
+    public string Message { get; set; } = null!;
+
+    public DateTime ConvertedTime { get; set; }
+
+    public InfoType InfoType { get; set; }
+
+    public string Note { get; protected set; } = "NN"; // To test protected Setter
+
+    public string? Remark { get; } // To test without Setter
+
+    private DateTime TimeCreated { get; set; } // To test private Property
+
+    [Required]
+    private string LogData { get { return logData; } set { logData = value; } }
+
+    public DateTimeOffset DateTimeOff { get; set; } // ValueConverter to Binary
+
+    public string GetLogData() { return logData; }
+    public DateTime GetDateCreated() { return TimeCreated.Date; }
+}
+
+
+public class Animal
+{
+    public int AnimalId { get; set; }
+
+    [Required]
+    public string Name { get; set; } = null!;
+}
+
+public class Mammal : Animal
+{
+    public string Category { get; set; } = null!;
+}
+
+public enum SettingsEnum
+{
+    Sett1,
+    Sett2
+}
+// For testing Convertible Property (Key Settings in modelBuilder configured as 'nvarchar' insted of 'int')
+public class Setting
+{
+    [Key]
+    public SettingsEnum Settings { get; set; }
+    [Required]
+    [MaxLength(20)]
+    public string? Value { get; set; }
+}
+
+
+// For testing ForeignKey Shadow Properties
+public class ItemLink
+{
+    public int ItemLinkId { get; set; }
+    public virtual Item Item { get; set; } = null!;
+}
+
+// For testing OwnedTypes
+public class ChangeLog
+{
+    public int ChangeLogId { get; set; }
+
+    public string Description { get; set; } = null!;
+
+    public Audit Audit { get; set; } = null!;
+
+    public AuditExtended AuditExtended { get; set; } = null!;
+
+    public AuditExtended AuditExtendedSecond { get; set; } = null!;
+}
+
+[Owned]
+public class Audit
+{
+
+    [Column(nameof(ChangedBy))] // for setting custom column name, in this case prefix OwnedType_ ('Audit_') removed, so column would be only ('ChangedBy')
+    public string ChangedBy { get; set; } = null!; // default Column name for Property of OwnedType is OwnedType_Property ('Audit_ChangedBy')
+
+    public bool IsDeleted { get; set; }
+
+    [NotMapped] // alternatively in OnModelCreating(): modelBuilder.Entity<Audit>().Ignore(a => a.ChangedTime);
+    public DateTime? ChangedTime { get; set; }
+
+    public InfoType InfoType { get; set; }
+}
+
+[Owned]
+public class AuditExtended
+{
+    public string CreatedBy { get; set; } = null!;
+
+    [NotMapped]
+    public DateTime? CreatedTime { get; set; }
+
+    [NotMapped]
+    public string Remark { get; set; } = null!;
+}
+public class Tracker
+{
+    public int TrackerId { get; set; }
+
+    public string Description { get; set; } = null!;
+
+    public TrackerLocation Location { get; set; } = null!;
+}
+[Owned]
+public class TrackerLocation
+{
+    public string LocationName { get; set; } = null!;
+    public Point Location { get; set; } = null!;
+}
+
+// For testing BatchUpdate expressions that use nested queries
+public class Parent
+{
+    public ICollection<Child> Children { get; set; } = null!;
+    public decimal CombinedChildBalance { get; set; }
+    public string Description { get; set; } = null!;
+    public virtual ParentDetail Details { get; set; } = null!;
+    public int ParentId { get; set; }
+
+    private string _phoneNumber = null!;
+    public string PhoneNumber { get => _phoneNumber; set => _phoneNumber = value; }
+
+    public decimal Value { get; set; }
+}
+
+public class ParentDetail
+{
+    public int ParentDetailId { get; set; }
+
+    public virtual Parent Parent { get; set; } = null!;
+    public int ParentId { get; set; }
+
+    public string? Notes { get; set; }
+}
+
+public class Child
+{
+    public int ChildId { get; set; }
+    public bool IsEnabled { get; set; }
+    public decimal Value { get; set; }
+
+    public virtual Parent Parent { get; set; } = null!;
+    public int ParentId { get; set; }
+}
+
+public abstract class Log // To Test TPT (TablePerType) - https://docs.microsoft.com/en-us/ef/core/modeling/inheritance#table-per-type-configuration
+{
+    public int LogId { get; set; }
+    public int PersonId { get; set; }
+    public int RegBy { get; set; }
+    public DateTime CreatedDate { get; set; }
+}
+public class LogPersonReport : Log
+{
+    public int ReportId { get; set; }
+    public int LogPersonReportTypeId { get; set; }
+}
+
+public class AtypicalRowVersionEntity
+{
+    public Guid Id { get; set; }
+    public long RowVersion { get; set; }
+    public string SyncDevice { get; set; } = null!;
+    public string Name { get; set; } = null!;
+}
+
+public class AtypicalRowVersionConverterEntity
+{
+    public Guid Id { get; set; }
+    public long RowVersionConverted { get; set; }
+    public string Name { get; set; } = null!;
+}
+
+public class Event // CustomPrecision DateTime Test (SqlServer only)
+{
+
+    public int EventId { get; set; }
+
+    [Required]
+    public string Name { get; set; } = null!;
+
+    public string Description { get; set; } = null!;
+
+    [Column(TypeName = "datetime2(3)")]
+    public DateTime TimeCreated { get; set; }
+}
+
+public class Archive
+{
+    //public byte[] ArchiveId { get; set; } = null!;
+    //public string Description { get; set; } = null!;
+}
+
+public class Counter
+{
+    public uint CounterId { get; set; }
+    public string? Name { get; set; }
+}
+
+public class Source
+{
+    public int SourceId { get; set; }
+    public Status StatusId { get; set; }
+    public Type TypeId { get; set; }
+}
+public enum Status : byte { Init, Changed }
+public enum Type : byte { Undefined, Type1, Type2 }
+
+public class Department
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = null!;
+
+    public ICollection<Division> Divisions { get; set; } = null!;
+}
+
+public class Division
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = null!;
+
+    public Guid DepartmentId { get; set; }
+    public Department? Department { get; set; }
+}
+
+public class PrivateKey
+{
+    private long Id { get; set; }
+    public string Name { get; set; } = null!;
 }
