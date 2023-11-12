@@ -124,6 +124,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{F88DEF87-FAE3-
 		.gitlab\ci\module-nuget.tag-ci.yml = .gitlab\ci\module-nuget.tag-ci.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lowcode", "lowcode", "{7E418DD7-A6A7-4D4D-A38F-A10A20615778}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.LowCode.DbStore", "src\modules-business\lowcode\Yoyo.LowCode.DbStore\Yoyo.LowCode.DbStore.csproj", "{E8E1A351-A4B5-4BFA-9F80-DBEFB1B8FC55}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.LowCode.Shared.Application", "src\modules-business\lowcode\Yoyo.LowCode.Shared.Application\Yoyo.LowCode.Shared.Application.csproj", "{D68B6CB6-DDDA-4DFD-ACF3-E8ABE800055A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.LowCode.Shared.Core", "src\modules-business\lowcode\Yoyo.LowCode.Shared.Core\Yoyo.LowCode.Shared.Core.csproj", "{89313A70-18B6-4520-B2C6-5C6C52C12734}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.LowCode.Shared.EntityFrameworkCore", "src\modules-business\lowcode\Yoyo.LowCode.Shared.EntityFrameworkCore\Yoyo.LowCode.Shared.EntityFrameworkCore.csproj", "{7531B4D4-5123-4D1B-9C28-EEE52E7F7CA2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.LowCode.Shared.Web.Core", "src\modules-business\lowcode\Yoyo.LowCode.Shared.Web.Core\Yoyo.LowCode.Shared.Web.Core.csproj", "{F258862F-8EE9-4FC6-AE17-F6CE66854742}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -282,6 +294,26 @@ Global
 		{BDEAB181-2526-4698-B580-066A956C9265}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDEAB181-2526-4698-B580-066A956C9265}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDEAB181-2526-4698-B580-066A956C9265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8E1A351-A4B5-4BFA-9F80-DBEFB1B8FC55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8E1A351-A4B5-4BFA-9F80-DBEFB1B8FC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8E1A351-A4B5-4BFA-9F80-DBEFB1B8FC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8E1A351-A4B5-4BFA-9F80-DBEFB1B8FC55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D68B6CB6-DDDA-4DFD-ACF3-E8ABE800055A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68B6CB6-DDDA-4DFD-ACF3-E8ABE800055A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68B6CB6-DDDA-4DFD-ACF3-E8ABE800055A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68B6CB6-DDDA-4DFD-ACF3-E8ABE800055A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89313A70-18B6-4520-B2C6-5C6C52C12734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89313A70-18B6-4520-B2C6-5C6C52C12734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89313A70-18B6-4520-B2C6-5C6C52C12734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89313A70-18B6-4520-B2C6-5C6C52C12734}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7531B4D4-5123-4D1B-9C28-EEE52E7F7CA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7531B4D4-5123-4D1B-9C28-EEE52E7F7CA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7531B4D4-5123-4D1B-9C28-EEE52E7F7CA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7531B4D4-5123-4D1B-9C28-EEE52E7F7CA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F258862F-8EE9-4FC6-AE17-F6CE66854742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F258862F-8EE9-4FC6-AE17-F6CE66854742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F258862F-8EE9-4FC6-AE17-F6CE66854742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F258862F-8EE9-4FC6-AE17-F6CE66854742}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -332,6 +364,12 @@ Global
 		{9ED1ACC9-F216-4F84-90C3-B958A2E2B187} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
 		{BDEAB181-2526-4698-B580-066A956C9265} = {F78DFBE2-6371-4DC1-8B52-DCEB15E5D074}
 		{F88DEF87-FAE3-404C-B9B4-F6DCDB190FA2} = {EFE9B42F-2C75-4955-8A55-4AB480070BE5}
+		{7E418DD7-A6A7-4D4D-A38F-A10A20615778} = {6FB9D28F-9F06-4EB0-B0CD-B4B415B2D47A}
+		{E8E1A351-A4B5-4BFA-9F80-DBEFB1B8FC55} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
+		{D68B6CB6-DDDA-4DFD-ACF3-E8ABE800055A} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
+		{89313A70-18B6-4520-B2C6-5C6C52C12734} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
+		{7531B4D4-5123-4D1B-9C28-EEE52E7F7CA2} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
+		{F258862F-8EE9-4FC6-AE17-F6CE66854742} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46186319-8E37-4438-A5A8-D63664D81EBF}
