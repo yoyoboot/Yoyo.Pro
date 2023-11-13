@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\..\abpversion.props"></Import>
+  <Import Project="..\..\modulecommon.props"></Import>
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.LowCode</RootNamespace>
+  </PropertyGroup>
+  <!-- Yoyo.Pro -->
+  <ItemGroup Condition="'$(YoyoProRefMode)'=='nuget'">
+    <PackageReference Include="Yoyo.Pro.Identity.EntityFrameworkCore" Version="$(YoyoProVersion)" />
+  </ItemGroup>
+
+  <!-- Yoyo.Pro -->
+  <ItemGroup Condition="'$(YoyoProRefMode)'=='src'">
+    <ProjectReference Include="..\..\..\..\..\Yoyo.abp.extensions\src\modules-business\identity\src\Yoyo.Pro.Identity.EntityFrameworkCore\Yoyo.Pro.Identity.EntityFrameworkCore.csproj" />    
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.19" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="6.21.90" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Json.Microsoft" Version="6.0.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Json.Newtonsoft" Version="6.0.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.NetTopologySuite" Version="6.0.2" />
+    <PackageReference Include="Riven.EntityFrameworkCore.Oracle" Version="0.8.15" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.LowCode.Shared.Core\Yoyo.LowCode.Shared.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EntityFrameworkCore\Repositories\" />
+  </ItemGroup>
+</Project>
