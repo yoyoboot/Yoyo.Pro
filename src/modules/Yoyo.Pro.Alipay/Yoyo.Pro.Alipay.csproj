@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Alipay.AopSdk.AspnetCore" Version="2.5.0.1" />
-    <PackageReference Include="QRCoder" Version="1.3.6" />
+    <PackageReference Include="QRCoder" Version="1.3.9" />
   </ItemGroup>
 
   <ItemGroup>

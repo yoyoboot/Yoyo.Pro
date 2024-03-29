@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -494,10 +494,8 @@ namespace Yoyo.Pro
                 {
                     using (var qrCode = new QRCode(qrCodeData))
                     {
-
-                        var bp = qrCode.GetGraphic(20, Color.Black, Color.White,
-                            new Bitmap(fTFConfig == null ? this._fTFConfig?.QRCodeIconFullPath : fTFConfig.QRCodeIconFullPath),
-                            15);
+                        var qrcodeIcon = new Bitmap(fTFConfig == null ? this._fTFConfig?.QRCodeIconFullPath : fTFConfig.QRCodeIconFullPath);
+                        var bp = qrCode.GetGraphic(20, System.Drawing.Color.Black, System.Drawing.Color.White, qrcodeIcon, 15);
                         return bp;
                     }
                 }
