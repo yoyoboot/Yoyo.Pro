@@ -3,7 +3,7 @@
   <Import Project="..\modulecommon.props"></Import>
 
   <PropertyGroup>
-    <TargetFramework>$(Std20)</TargetFramework>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
     <RootNamespace>Yoyo.Pro</RootNamespace>
     
     

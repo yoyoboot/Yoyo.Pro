@@ -1,3 +1,4 @@
+﻿using Abp.BlobStoring;
 using Abp.Dependency;
 using Abp.Localization;
 

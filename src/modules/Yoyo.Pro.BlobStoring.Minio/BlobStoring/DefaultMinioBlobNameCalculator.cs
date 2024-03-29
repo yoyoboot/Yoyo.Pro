@@ -1,9 +1,10 @@
-using Abp.Dependency;
+﻿using Abp.Dependency;
 using Abp.MultiTenancy;
 
 using System.Collections.Generic;
 using System.Text;
 using Abp;
+using Abp.BlobStoring;
 
 namespace Yoyo.Pro.BlobStoring
 {

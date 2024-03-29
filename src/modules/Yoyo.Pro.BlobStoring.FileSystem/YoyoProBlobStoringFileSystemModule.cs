@@ -1,9 +1,10 @@
+﻿using Abp.BlobStoring.FileSystem;
 using Abp.Modules;
 
 
 namespace Yoyo.Pro
 {
-    [DependsOn(typeof(YoyoProBlobStoringModule))]
+    [DependsOn(typeof(AbpBlobStoringFileSystemModule))]
     public class YoyoProBlobStoringFileSystemModule : AbpModule
     {
         public override void Initialize()

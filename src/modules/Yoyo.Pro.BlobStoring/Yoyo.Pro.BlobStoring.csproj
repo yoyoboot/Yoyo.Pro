@@ -3,7 +3,7 @@
   <Import Project="..\modulecommon.props"></Import>
 
   <PropertyGroup>
-    <TargetFramework>$(Std20)</TargetFramework>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
     <RootNamespace>Yoyo.Pro</RootNamespace>
     
     
@@ -11,6 +11,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Yoyo.Pro\Yoyo.Pro.csproj" />
+  </ItemGroup>
+
+
+  <!-- nuget -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
+    <PackageReference Include="Yoyo.Abp.BlobStoring" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <!-- src -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='src'">
+    <ProjectReference Include="..\..\..\..\yoyoboot.abp\src\Abp.BlobStoring\Abp.BlobStoring.csproj" />
   </ItemGroup>
 
 </Project>

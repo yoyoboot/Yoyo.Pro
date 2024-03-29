@@ -1,6 +1,7 @@
-using Abp.Dependency;
+﻿using Abp.Dependency;
 using Abp.MultiTenancy;
 using Abp;
+using Abp.BlobStoring;
 
 namespace Yoyo.Pro.BlobStoring
 {

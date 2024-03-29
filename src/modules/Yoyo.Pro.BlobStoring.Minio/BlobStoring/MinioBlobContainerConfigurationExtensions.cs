@@ -1,4 +1,5 @@
-
+﻿
+using Abp.BlobStoring;
 using Abp.Collections;
 
 using System;

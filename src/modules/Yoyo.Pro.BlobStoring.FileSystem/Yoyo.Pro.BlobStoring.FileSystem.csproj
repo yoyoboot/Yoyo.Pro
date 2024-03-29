@@ -1,20 +1,24 @@
-
+﻿
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\abpversion.props"></Import>
   <Import Project="..\modulecommon.props"></Import>
 
   <PropertyGroup>
-    <TargetFramework>$(Std20)</TargetFramework>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
     <RootNamespace>Yoyo.Pro</RootNamespace>
-    
-    
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Polly" Version="7.2.3" />
+    <ProjectReference Include="..\Yoyo.Pro.BlobStoring\Yoyo.Pro.BlobStoring.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Yoyo.Pro.BlobStoring\Yoyo.Pro.BlobStoring.csproj" />
+
+  <!-- nuget -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
+    <PackageReference Include="Yoyo.Abp.BlobStoring.FileSystem" Version="$(AbpVersion)" />
+  </ItemGroup>
+  <!-- src -->
+  <ItemGroup Condition="'$(AbpRefMode)'=='src'">
+    <ProjectReference Include="..\..\..\..\yoyoboot.abp\src\Abp.BlobStoring.FileSystem\Abp.BlobStoring.FileSystem.csproj" />
   </ItemGroup>
 </Project>

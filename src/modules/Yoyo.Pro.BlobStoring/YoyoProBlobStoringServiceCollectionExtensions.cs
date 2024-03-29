@@ -1,4 +1,4 @@
-// Licensed to the .NET under one or more agreements.
+﻿// Licensed to the .NET under one or more agreements.
 // The .NET licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using Abp;
 using JetBrains.Annotations;
-using Yoyo.Pro.BlobStoring;
+using Abp.BlobStoring;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Yoyo.Pro

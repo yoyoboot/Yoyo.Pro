@@ -1,5 +1,5 @@
-using Abp;
-
+﻿using Abp;
+using Abp.BlobStoring;
 using System;
 
 namespace Yoyo.Pro.BlobStoring
