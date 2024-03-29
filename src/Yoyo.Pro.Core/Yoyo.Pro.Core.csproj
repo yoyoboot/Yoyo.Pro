@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\abpversion.props"></Import>
   <Import Project="..\modulecommon.props"></Import>
   <PropertyGroup>
@@ -14,18 +14,18 @@
     <ProjectReference Include="..\modules\Yoyo.Pro\Yoyo.Pro.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="3.4.0" />
+    <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="4.1.0" />
     <PackageReference Include="Riven.System.Linq.Dynamic.Core.Extensions" Version="0.1.6" />
     <PackageReference Include="Markdig.Signed" Version="0.30.2" />
   </ItemGroup>
   <!-- nuget -->
   <ItemGroup Condition="'$(AbpRefMode)'=='nuget'">
     <PackageReference Include="Yoyo.Abp.ZeroCore" Version="$(AbpVersion)" />
-    <PackageReference Include="Yoyo.Abp.ZeroCore.IdentityServer4.EntityFrameworkCore" Version="$(AbpVersion)" />
+    <PackageReference Include="Yoyo.Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore" Version="$(AbpVersion)" />
   </ItemGroup>
   <!-- src -->
   <ItemGroup Condition="'$(AbpRefMode)'=='src'">
    <ProjectReference Include="..\..\..\yoyoboot.abp\src\Abp.ZeroCore\Abp.ZeroCore.csproj" />
-   <ProjectReference Include="..\..\..\yoyoboot.abp\src\Abp.ZeroCore.IdentityServer4.EntityFrameworkCore\Abp.ZeroCore.IdentityServer4.EntityFrameworkCore.csproj" />
+   <ProjectReference Include="..\..\..\yoyoboot.abp\src\Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore\Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore.csproj" />
   </ItemGroup>
 </Project>
