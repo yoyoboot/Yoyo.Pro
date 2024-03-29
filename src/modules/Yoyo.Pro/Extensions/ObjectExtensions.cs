@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -131,20 +131,20 @@ namespace Yoyo.Pro.Extensions
             return JsonConvert.DeserializeObject<T>(value, settings);
         }
 
-          /// <summary>
+        /// <summary>
         ///     将对象转换为流
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static byte[] ToBytes(this object value)
-        {
-            using (var ms = new MemoryStream())
-            {
-                IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(ms, value);
-                return ms.GetBuffer();
-            }
-        }
+        //public static byte[] ToBytes(this object value)
+        //{
+        //    using (var ms = new MemoryStream())
+        //    {
+        //        IFormatter formatter = new BinaryFormatter();
+        //        formatter.Serialize(ms, value);
+        //        return ms.GetBuffer();
+        //    }
+        //}
 
         #endregion 公共方法
     }
