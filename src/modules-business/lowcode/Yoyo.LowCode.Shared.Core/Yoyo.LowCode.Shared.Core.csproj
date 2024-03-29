@@ -8,11 +8,13 @@
   <!-- Yoyo.Pro -->
   <ItemGroup Condition="'$(YoyoProRefMode)'=='nuget'">
     <PackageReference Include="Yoyo.Pro.Identity.Core" Version="$(YoyoProVersion)" />
+    <PackageReference Include="Yoyo.Pro.EFCore.BulkExtensions" Version="$(YoyoProVersion)" />
   </ItemGroup>
 
   <!-- Yoyo.Pro -->
   <ItemGroup Condition="'$(YoyoProRefMode)'=='src'">
-    <ProjectReference Include="..\..\..\..\..\Yoyo.abp.extensions\src\modules-business\identity\src\Yoyo.Pro.Identity.Core\Yoyo.Pro.Identity.Core.csproj" />
+    <ProjectReference Include="..\..\..\modules-business\identity\src\Yoyo.Pro.Identity.Core\Yoyo.Pro.Identity.Core.csproj" />
+    <ProjectReference Include="..\..\..\modules\Yoyo.Pro.EFCore.BulkExtensions\Yoyo.Pro.EFCore.BulkExtensions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Localization\SourceFiles\YoyoLowCode-zh-Hans.json" />
@@ -22,10 +24,6 @@
       <EmbeddedResource Include="Localization\SourceFiles\YoyoLowCode-zh-Hans.json" />
        <EmbeddedResource Include="Localization\SourceFiles\YoyoLowCode.json" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Yoyo.Pro.EFCore.BulkExtensions" Version="$(YoyoProVersion)" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Yoyo.LowCode.DbStore\Yoyo.LowCode.DbStore.csproj" />
   </ItemGroup>

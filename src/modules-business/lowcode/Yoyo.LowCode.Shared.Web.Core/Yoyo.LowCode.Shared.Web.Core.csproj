@@ -12,10 +12,10 @@
 
   <!-- Yoyo.Pro -->
   <ItemGroup Condition="'$(YoyoProRefMode)'=='src'">
-    <ProjectReference Include="..\..\..\..\..\Yoyo.abp.extensions\src\modules-business\identity\src\Yoyo.Pro.Identity.Web.Core\Yoyo.Pro.Identity.Web.Core.csproj" />  
+    <ProjectReference Include="..\..\..\modules-business\identity\src\Yoyo.Pro.Identity.Web.Core\Yoyo.Pro.Identity.Web.Core.csproj" />  
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Polly" Version="8.2.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yoyo.LowCode.Shared.Application\Yoyo.LowCode.Shared.Application.csproj" />

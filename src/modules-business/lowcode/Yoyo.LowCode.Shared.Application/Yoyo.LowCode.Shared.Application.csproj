@@ -14,10 +14,10 @@
 
   <!-- Yoyo.Pro -->
   <ItemGroup Condition="'$(YoyoProRefMode)'=='src'">
-    <ProjectReference Include="..\..\..\..\..\Yoyo.abp.extensions\src\modules-business\identity\src\Yoyo.Pro.Identity.Application\Yoyo.Pro.Identity.Application.csproj" />
+    <ProjectReference Include="..\..\..\modules-business\identity\src\Yoyo.Pro.Identity.Application\Yoyo.Pro.Identity.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Minio" Version="3.1.13" />
+    <PackageReference Include="Minio" Version="6.0.2" />
     <PackageReference Include="NSwag.SwaggerGeneration.AspNetCore" Version="12.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
     <PackageReference Include="System.Web.Services.Description" Version="4.10.2" />
