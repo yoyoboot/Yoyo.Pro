@@ -1,4 +1,4 @@
-using Abp.Authorization.Users;
+﻿using Abp.Authorization.Users;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Organizations;
@@ -20,7 +20,9 @@ namespace Yoyo.Pro.Users
             IRepository<UserClaim> userClaimRepository,
             IRepository<UserPermissionSetting> userPermissionSettingRepository,
             IRepository<UserOrganizationUnit> userOrganizationUnitRepository,
-            IRepository<OrganizationUnitRole> organizationUnitRoleRepository)
+            IRepository<OrganizationUnitRole> organizationUnitRoleRepository,
+            IRepository<UserToken, string> userTokenRepository
+            )
             : base(
                 unitOfWorkManager,
                 userRepository,
@@ -30,7 +32,8 @@ namespace Yoyo.Pro.Users
                 userClaimRepository,
                 userPermissionSettingRepository,
                 userOrganizationUnitRepository,
-                organizationUnitRoleRepository
+                organizationUnitRoleRepository,
+                userTokenRepository
                 )
         {
         }

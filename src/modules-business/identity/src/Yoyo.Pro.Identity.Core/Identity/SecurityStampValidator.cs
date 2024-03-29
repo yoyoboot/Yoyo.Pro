@@ -1,4 +1,4 @@
-using Abp.Authorization;
+﻿using Abp.Authorization;
 using Abp.Domain.Uow;
 using Yoyo.Pro.MultiTenancy;
 using Yoyo.Pro.MultiTenancy.Tenants;
@@ -16,10 +16,10 @@ namespace Yoyo.Pro.Identity
         public SecurityStampValidatorBase(
             IOptions<SecurityStampValidatorOptions> options,
             AbpSignInManager<Tenant, Role, User> signInManager,
-            ISystemClock systemClock,
             ILoggerFactory loggerFactory, IUnitOfWorkManager unitOfWorkManager)
-            : base(options, signInManager, systemClock, loggerFactory, unitOfWorkManager)
+            : base(options, signInManager, loggerFactory, unitOfWorkManager)
         {
+
         }
     }
 }
