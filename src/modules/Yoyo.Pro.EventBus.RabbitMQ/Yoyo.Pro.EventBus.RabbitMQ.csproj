@@ -4,7 +4,7 @@
   <Import Project="..\modulecommon.props"></Import>
 
   <PropertyGroup>
-    <TargetFramework>$(Std20)</TargetFramework>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
     <RootNamespace>Yoyo.Pro</RootNamespace>
 
 
@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="MessagePack" Version="2.5.108" />
-    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Polly" Version="8.2.1" />
     <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
   </ItemGroup>
   
