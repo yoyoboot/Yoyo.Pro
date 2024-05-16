@@ -35,16 +35,18 @@
 
   <!-- 依赖产品版本 -->
   <PropertyGroup>
-    <AbpVersion>7.3.0.11</AbpVersion>
+    <AbpVersion>7.3.0.12</AbpVersion>
     <Std20>netstandard2.0</Std20>
     <Std21>netstandard2.1</Std21>
     <DotNetVersion>net6.0</DotNetVersion>
+    <YoyoProVersion>7.3.0.18</YoyoProVersion>
 
   </PropertyGroup>
 
   <!-- 包引用模式 -->
   <PropertyGroup>
     <AbpRefMode>nuget</AbpRefMode>
+    <YoyoProRefMode>nuget</YoyoProRefMode>
   </PropertyGroup>
 
 

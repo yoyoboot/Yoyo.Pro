@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\..\abpversion.props"></Import>
+  <Import Project="..\..\modulecommon.props"></Import>
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.LowCode</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>bin\Debug\LowCodeShared.Application.xml</DocumentationFile>
+  </PropertyGroup>
+  <!-- Yoyo.Pro -->
+  <ItemGroup Condition="'$(YoyoProRefMode)'=='nuget'">
+    <PackageReference Include="Yoyo.Pro.Identity.Application" Version="$(YoyoProVersion)" />
+  </ItemGroup>
+
+  <!-- Yoyo.Pro -->
+  <ItemGroup Condition="'$(YoyoProRefMode)'=='src'">
+    <ProjectReference Include="..\..\..\..\..\Yoyo.abp.extensions\src\modules-business\identity\src\Yoyo.Pro.Identity.Application\Yoyo.Pro.Identity.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Minio" Version="3.1.13" />
+    <PackageReference Include="NSwag.SwaggerGeneration.AspNetCore" Version="12.3.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
+    <PackageReference Include="System.Web.Services.Description" Version="4.10.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.LowCode.Shared.Core\Yoyo.LowCode.Shared.Core.csproj" />
+  </ItemGroup>
+
+
+</Project>

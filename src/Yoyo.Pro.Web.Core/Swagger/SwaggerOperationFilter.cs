@@ -1,4 +1,4 @@
-using Abp.Collections.Extensions;
+﻿using Abp.Collections.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -23,7 +23,7 @@ namespace Yoyo.Pro.Swagger
                     continue;
                 }
 
-                var schema = context.SchemaRepository.Schemas.GetOrAdd($"#/definitions/{enumType.Name}", () =>
+                var schema = context.SchemaRepository.Schemas.GetOrAdd($"{enumType.Name}", () =>
                     context.SchemaGenerator.GenerateSchema(enumType, context.SchemaRepository)
                 );
 

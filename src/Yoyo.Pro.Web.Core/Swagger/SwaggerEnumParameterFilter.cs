@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using Abp.Collections.Extensions;
@@ -27,7 +27,7 @@ namespace Yoyo.Pro.Swagger
 
         private static void AddEnumSpec(OpenApiParameter parameter, Type type, ParameterFilterContext context)
         {
-            var schema = context.SchemaRepository.Schemas.GetOrAdd($"#/definitions/{type.Name}", () =>
+            var schema = context.SchemaRepository.Schemas.GetOrAdd($"{type.Name}", () =>
                 context.SchemaGenerator.GenerateSchema(type, context.SchemaRepository)
             );
 

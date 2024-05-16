@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Authorization.Users;
 using Abp.Extensions;
@@ -19,6 +19,16 @@ namespace Yoyo.Pro.Users
         /// 手机号最大长度
         /// </summary>
         public new const int MaxPhoneNumberLength = 18;
+
+        /// <summary>
+        /// 真实姓名最大长度
+        /// </summary>
+        public const int MaxRealNameLength = 1024;
+
+        /// <summary>
+        /// 工号最大长度
+        /// </summary>
+        public const int MaxEmployeeNumberLength = 1024;
 
         #endregion
 
@@ -61,6 +71,17 @@ namespace Yoyo.Pro.Users
         [Required(AllowEmptyStrings = true)]
         public override string Surname { get; set; } = string.Empty;
 
+        /// <summary>
+        /// 真实姓名
+        /// </summary>
+        [MaxLength(MaxRealNameLength)]
+        public virtual string RealName { get; set; }
+
+        /// <summary>
+        /// 工号
+        /// </summary>
+        [MaxLength(MaxEmployeeNumberLength)]
+        public virtual string EmployeeNumber { get; set; }
 
         #endregion
 

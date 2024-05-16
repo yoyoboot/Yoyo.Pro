@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\..\abpversion.props"></Import>
+  <Import Project="..\..\modulecommon.props"></Import>
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.LowCode</RootNamespace>
+  </PropertyGroup>
+  <!-- Yoyo.Pro -->
+  <ItemGroup Condition="'$(YoyoProRefMode)'=='nuget'">
+    <PackageReference Include="Yoyo.Pro.Identity.Web.Core" Version="$(YoyoProVersion)" />
+  </ItemGroup>
+
+  <!-- Yoyo.Pro -->
+  <ItemGroup Condition="'$(YoyoProRefMode)'=='src'">
+    <ProjectReference Include="..\..\..\..\..\Yoyo.abp.extensions\src\modules-business\identity\src\Yoyo.Pro.Identity.Web.Core\Yoyo.Pro.Identity.Web.Core.csproj" />  
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Polly" Version="7.2.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Yoyo.LowCode.Shared.Application\Yoyo.LowCode.Shared.Application.csproj" />
+  </ItemGroup>
+
+</Project>

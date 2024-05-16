@@ -1,4 +1,4 @@
-using Abp.Domain.Repositories;
+﻿using Abp.Domain.Repositories;
 using Abp.EntityFrameworkCore.Configuration;
 using Abp.Modules;
 using Abp.Zero.EntityFrameworkCore;
@@ -95,7 +95,7 @@ namespace Yoyo.Pro
 
         public override void PostInitialize()
         {
-            IocManager.InitShardingCore();
+
         }
 
 
