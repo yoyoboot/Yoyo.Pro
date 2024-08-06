@@ -23,7 +23,7 @@ namespace Yoyo.Pro.PushServices
     /// </summary>
     public class EmailPushService : IEmailPushService
     {
-        private readonly ILogger _logger;
+        protected readonly ILogger _logger;
 
         public EmailPushService(ILogger logger = null)
         {
@@ -34,7 +34,7 @@ namespace Yoyo.Pro.PushServices
         /// 邮件通知服务
         /// </summary>
         /// <param name="data">邮件通知内容</param>
-        public async Task<string> SendMessage(EmailMessagePushData data)
+        public virtual async Task<string> SendMessage(EmailMessagePushData data)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(data.FromName, data.UserName));

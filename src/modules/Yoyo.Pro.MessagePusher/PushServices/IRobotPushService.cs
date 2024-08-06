@@ -38,7 +38,7 @@ namespace Yoyo.Pro.PushServices
         /// </summary>
         /// <param name="data">消息通知内容</param>
         /// <returns></returns>
-        public async Task<string> SendMessage(RobotMessagePushData data)
+        public virtual async Task<string> SendMessage(RobotMessagePushData data)
         {
             var contentData = default(object);
             switch (data.PushChannelType)
@@ -105,7 +105,7 @@ namespace Yoyo.Pro.PushServices
         /// <param name="timeStamp"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        private string GetDingdingSign(string timeStamp, string secret)
+        protected virtual string GetDingdingSign(string timeStamp, string secret)
         {
             string sign = null;
             var encoding = new UTF8Encoding();
@@ -124,7 +124,7 @@ namespace Yoyo.Pro.PushServices
         /// <param name="timeStamp"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        private string GetFeishuSign(string timeStamp, string secret)
+        protected virtual string GetFeishuSign(string timeStamp, string secret)
         {
             string sign = null;
             var encoding = new UTF8Encoding();
@@ -136,10 +136,11 @@ namespace Yoyo.Pro.PushServices
             }
             return sign;
         }
-        private TimeSpan GetTimeSpan()
+        protected virtual TimeSpan GetTimeSpan()
         {
             return DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
         }
+
         #endregion
     }
 }

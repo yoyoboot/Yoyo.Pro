@@ -19,9 +19,9 @@ namespace Yoyo.Pro.RequestData
         /// </summary>
         public string AccessKeySecret { get; set; }
         /// <summary>
-        /// API网关地址
+        /// API网关地址，默认为：dysmsapi.aliyuncs.com
         /// </summary>
-        public string Endpoint => "dysmsapi.aliyuncs.com";
+        public string Endpoint { get; set; } = "dysmsapi.aliyuncs.com";
         /// <summary>
         ///接收短信的手机号码，半角逗号（,）分隔。上限为1000个
         /// </summary>

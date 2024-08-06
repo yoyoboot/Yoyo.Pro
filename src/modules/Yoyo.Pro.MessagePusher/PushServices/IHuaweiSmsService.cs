@@ -26,8 +26,8 @@ namespace Yoyo.Pro.PushServices
     /// </summary>
     public class HuaweiSmsService : IHuaweiSmsService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger _logger;
+        protected readonly IHttpClientFactory _httpClientFactory;
+        protected readonly ILogger _logger;
 
         public HuaweiSmsService(IHttpClientFactory httpClientFactory, ILogger logger = null)
         {
@@ -39,7 +39,7 @@ namespace Yoyo.Pro.PushServices
         /// 官方地址：https://support.huaweicloud.com/api-msgsms/sms_05_0001.html
         /// </summary>
         /// <param name="data">华为云短信通知内容</param>
-        public async Task<HttpResponseMessage> SendMessage(HuaweiSmsMessagePushData data)
+        public virtual async Task<HttpResponseMessage> SendMessage(HuaweiSmsMessagePushData data)
         {
             string apiAddress = data.ApiAddress; //APP接入地址(在控制台"应用管理"页面获取)+接口访问URI
             string appKey = data.AppKey; //APP_Key
@@ -86,7 +86,7 @@ namespace Yoyo.Pro.PushServices
         /// <param name="appKey"></param>
         /// <param name="appSecret"></param>
         /// <returns></returns>
-        static string BuildWSSEHeader(string appKey, string appSecret)
+        protected virtual string BuildWSSEHeader(string appKey, string appSecret)
         {
             string now = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ"); //Created
             string nonce = Guid.NewGuid().ToString().Replace("-", ""); //Nonce
