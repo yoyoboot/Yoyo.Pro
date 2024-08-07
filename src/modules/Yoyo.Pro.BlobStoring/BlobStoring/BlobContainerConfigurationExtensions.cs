@@ -1,8 +1,6 @@
-using Abp;
-
 using JetBrains.Annotations;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public static class BlobContainerConfigurationExtensions
     {
@@ -26,7 +24,4 @@ namespace Yoyo.Pro.BlobStoring
             return value;
         }
     }
-
 }
-
-

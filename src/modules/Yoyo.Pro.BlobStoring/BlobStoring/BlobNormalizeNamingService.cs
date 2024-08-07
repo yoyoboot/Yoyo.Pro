@@ -1,13 +1,10 @@
-
-using Abp.Dependency;
-using Abp.Extensions;
-
-using Microsoft.Extensions.DependencyInjection;
-
 using System;
 using System.Linq;
+using Abp.Dependency;
+using Abp.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobNormalizeNamingService : IBlobNormalizeNamingService, ITransientDependency
     {
@@ -65,5 +62,4 @@ namespace Yoyo.Pro.BlobStoring
             return NormalizeNaming(configuration, null, blobName).BlobName;
         }
     }
-
 }

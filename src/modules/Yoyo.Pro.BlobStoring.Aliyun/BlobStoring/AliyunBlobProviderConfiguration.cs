@@ -1,4 +1,5 @@
 using Abp;
+using Abp.BlobStoring;
 
 using System;
 

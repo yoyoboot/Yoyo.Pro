@@ -5,6 +5,7 @@ using Aliyun.OSS;
 
 using System.IO;
 using System.Threading.Tasks;
+using Abp.BlobStoring;
 
 namespace Yoyo.Pro.BlobStoring
 {

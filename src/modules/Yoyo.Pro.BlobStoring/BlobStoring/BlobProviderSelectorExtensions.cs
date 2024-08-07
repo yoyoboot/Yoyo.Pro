@@ -1,9 +1,6 @@
-
-using Abp;
-
 using JetBrains.Annotations;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public static class BlobProviderSelectorExtensions
     {
@@ -15,7 +12,4 @@ namespace Yoyo.Pro.BlobStoring
             return selector.Get(BlobContainerNameAttribute.GetContainerName<TContainer>());
         }
     }
-
 }
-
-

@@ -1,3 +1,4 @@
+﻿using Abp.BlobStoring;
 using Abp.Collections;
 
 using System;
@@ -18,6 +19,7 @@ namespace Yoyo.Pro.BlobStoring
         {
             containerConfiguration.ProviderType = typeof(AliyunBlobProvider);
             containerConfiguration.NamingNormalizers.TryAdd<IBlobNamingNormalizer, AliyunBlobNamingNormalizer>();
+            //containerConfiguration.NamingNormalizers.TryAdd<AliyunBlobNamingNormalizer>();
 
             aliyunConfigureAction(new AliyunBlobProviderConfiguration(containerConfiguration));
 

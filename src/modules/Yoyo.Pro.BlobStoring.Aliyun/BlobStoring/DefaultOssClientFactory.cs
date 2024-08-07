@@ -9,12 +9,7 @@ using Aliyun.Acs.Core.Auth.Sts;
 using Aliyun.Acs.Core.Http;
 using Aliyun.Acs.Core.Profile;
 using Aliyun.OSS;
-
-using JetBrains.Annotations;
 using Yoyo.Pro.Runtime.Security;
-using Microsoft.Extensions.Caching.Distributed;
-
-using System;
 
 using static Aliyun.Acs.Core.Auth.Sts.AssumeRoleResponse;
 

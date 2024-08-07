@@ -25,7 +25,7 @@ namespace Yoyo.Pro.PushServices
     /// </summary>
     public class TencentSmsService : ITencentSmsService
     {
-        private readonly ILogger _logger;
+        protected readonly ILogger _logger;
 
         public TencentSmsService(ILogger logger = null)
         {
@@ -37,7 +37,7 @@ namespace Yoyo.Pro.PushServices
         /// 官方地址：https://cloud.tencent.com/document/product/382/52071
         /// </summary>
         /// <param name="data"></param>
-        public async Task<SendSmsResponse> SendMessage(TencentSmsMessagePushData data)
+        public virtual async Task<SendSmsResponse> SendMessage(TencentSmsMessagePushData data)
         {
             try
             {

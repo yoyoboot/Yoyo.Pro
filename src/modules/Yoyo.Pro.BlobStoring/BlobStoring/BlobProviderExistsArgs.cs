@@ -1,9 +1,7 @@
-
+using System.Threading;
 using JetBrains.Annotations;
 
-using System.Threading;
-
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobProviderExistsArgs : BlobProviderArgs
     {
@@ -12,13 +10,12 @@ namespace Yoyo.Pro.BlobStoring
             [NotNull] BlobContainerConfiguration configuration,
             [NotNull] string blobName,
             CancellationToken cancellationToken = default)
-        : base(
-            containerName,
-            configuration,
-            blobName,
-            cancellationToken)
+            : base(
+                containerName,
+                configuration,
+                blobName,
+                cancellationToken)
         {
         }
     }
-
 }

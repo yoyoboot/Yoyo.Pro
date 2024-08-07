@@ -1,4 +1,4 @@
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobNormalizeNaming
     {
@@ -12,5 +12,4 @@ namespace Yoyo.Pro.BlobStoring
             BlobName = blobName;
         }
     }
-
 }

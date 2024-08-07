@@ -1,9 +1,7 @@
-
+using System.Threading;
 using JetBrains.Annotations;
 
-using System.Threading;
-
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobProviderGetArgs : BlobProviderArgs
     {
@@ -20,5 +18,4 @@ namespace Yoyo.Pro.BlobStoring
         {
         }
     }
-
 }

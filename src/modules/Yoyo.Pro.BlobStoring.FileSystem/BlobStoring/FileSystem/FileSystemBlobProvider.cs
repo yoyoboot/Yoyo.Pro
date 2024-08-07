@@ -1,13 +1,12 @@
-using Abp.Dependency;
+﻿using Abp.Dependency;
 using Abp.IO;
-
 using Polly;
-
-using System;
 using System.IO;
 using System.Threading.Tasks;
+using System;
+using Abp.IO.Extensions;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring.FileSystem
 {
     public class FileSystemBlobProvider : BlobProviderBase, ITransientDependency
     {
@@ -39,6 +38,7 @@ namespace Yoyo.Pro.BlobStoring
                 {
                     using (var fileStream = File.Open(filePath, fileMode, FileAccess.Write))
                     {
+
                         await args.BlobStream.CopyToAsync(
                             fileStream,
                             args.CancellationToken
@@ -46,20 +46,15 @@ namespace Yoyo.Pro.BlobStoring
 
                         await fileStream.FlushAsync();
                     }
+
                 });
         }
 
         public override Task<bool> DeleteAsync(BlobProviderDeleteArgs args)
         {
             var filePath = FilePathCalculator.Calculate(args);
-
-            if (!File.Exists(filePath))
-            {
-                return Task.FromResult(false);
-            }
-
-            FileHelper.DeleteIfExists(filePath);
-            return Task.FromResult(true);
+            return Task.FromResult(TryToDeleteIfExists(filePath));
+            //return Task.FromResult(FileHelper.TryToDeleteIfExists(filePath));
         }
 
         public override Task<bool> ExistsAsync(BlobProviderExistsArgs args)
@@ -92,6 +87,16 @@ namespace Yoyo.Pro.BlobStoring
         {
             return Task.FromResult(File.Exists(filePath));
         }
-    }
 
+        protected virtual bool TryToDeleteIfExists(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return false;
+            }
+
+            File.Delete(filePath);
+            return true;
+        }
+    }
 }

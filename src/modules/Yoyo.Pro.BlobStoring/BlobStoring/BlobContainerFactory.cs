@@ -1,10 +1,9 @@
+using System;
 using Abp.Dependency;
-using Abp.MultiTenancy;
+using Abp.Runtime.Session;
 using Abp.Threading;
 
-using System;
-
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobContainerFactory : IBlobContainerFactory, ITransientDependency
     {
@@ -12,7 +11,7 @@ namespace Yoyo.Pro.BlobStoring
 
         protected IBlobContainerConfigurationProvider ConfigurationProvider { get; }
 
-        protected ICurrentTenant CurrentTenant { get; }
+        protected IAbpSession CurrentTenant { get; }
 
         protected ICancellationTokenProvider CancellationTokenProvider { get; }
 
@@ -22,7 +21,7 @@ namespace Yoyo.Pro.BlobStoring
 
         public BlobContainerFactory(
             IBlobContainerConfigurationProvider configurationProvider,
-            ICurrentTenant currentTenant,
+            IAbpSession currentTenant,
             ICancellationTokenProvider cancellationTokenProvider,
             IBlobProviderSelector providerSelector,
             IServiceProvider serviceProvider,
@@ -51,6 +50,5 @@ namespace Yoyo.Pro.BlobStoring
             );
         }
     }
+
 }
-
-

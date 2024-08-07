@@ -1,3 +1,4 @@
+using Abp.BlobStoring;
 using Abp.Dependency;
 using Abp.Localization;
 
@@ -15,7 +16,7 @@ namespace Yoyo.Pro.BlobStoring
         /// </summary>
         public virtual string NormalizeContainerName(string containerName)
         {
-            using (CultureHelper.Use(CultureInfo.InvariantCulture))
+            using (CultureInfoHelper.Use(CultureInfo.InvariantCulture))
             {
                 // All letters in a container name must be lowercase.
                 containerName = containerName.ToLower();

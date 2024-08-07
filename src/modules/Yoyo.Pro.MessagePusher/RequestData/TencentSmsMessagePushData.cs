@@ -19,9 +19,9 @@ namespace Yoyo.Pro.RequestData
         /// </summary>
         public string SecretKey { get; set; }
         /// <summary>
-        /// 短信服务 API 的域名。
+        /// 短信服务 API 的域名。默认为：sms.tencentcloudapi.com
         /// </summary>
-        public string Endpoint => "sms.tencentcloudapi.com";
+        public string Endpoint { get; set; } = "sms.tencentcloudapi.com";
         /// <summary>
         /// 短信 SDK AppID，也就是应用 ID。
         /// </summary>

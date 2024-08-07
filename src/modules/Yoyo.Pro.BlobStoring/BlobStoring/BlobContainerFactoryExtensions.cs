@@ -1,4 +1,4 @@
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public static class BlobContainerFactoryExtensions
     {
@@ -18,6 +18,4 @@ namespace Yoyo.Pro.BlobStoring
             );
         }
     }
-
-
 }

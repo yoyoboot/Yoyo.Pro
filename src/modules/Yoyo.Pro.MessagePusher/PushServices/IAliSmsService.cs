@@ -21,14 +21,14 @@ namespace Yoyo.Pro.PushServices
     /// </summary>
     public interface IAliSmsService
     {
-        Task<SendSmsResponse> SendMessageAsync(AliSmsMessagePushData smsData);
+        Task<SendSmsResponse> SendMessage(AliSmsMessagePushData smsData);
     }
     /// <summary>
     /// 阿里云短信通知服务
     /// </summary>
     public class AliSmsService : IAliSmsService
     {
-        private readonly ILogger _logger;
+        protected readonly ILogger _logger;
         public AliSmsService(ILogger logger = null)
         {
             _logger = logger;
@@ -39,7 +39,7 @@ namespace Yoyo.Pro.PushServices
         /// 官方地址：https://help.aliyun.com/document_detail/419273.htm?spm=a2c4g.419298.0.0.25116cf0UnkFlr
         /// </summary>
         /// <param name="smsData">阿里云短信通知内容</param>
-        public async Task<SendSmsResponse> SendMessageAsync(AliSmsMessagePushData smsData)
+        public virtual async Task<SendSmsResponse> SendMessage(AliSmsMessagePushData smsData)
         {
             Client client = CreateClient(smsData.AccessKeyId, smsData.AccessKeySecret, smsData.Endpoint);
             SendSmsRequest sendSmsRequest = new SendSmsRequest
@@ -82,7 +82,7 @@ namespace Yoyo.Pro.PushServices
         /// <param name="accessKeySecret"></param>
         /// <param name="endpoint"></param>
         /// <returns></returns>
-        private Client CreateClient(string accessKeyId, string accessKeySecret, string endpoint)
+        protected virtual Client CreateClient(string accessKeyId, string accessKeySecret, string endpoint)
         {
             Config config = new Config
             {

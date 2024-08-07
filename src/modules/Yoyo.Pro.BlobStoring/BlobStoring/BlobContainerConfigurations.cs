@@ -1,12 +1,9 @@
-using Abp;
-using Abp.Collections.Extensions;
-
-using JetBrains.Annotations;
-
 using System;
 using System.Collections.Generic;
+using Abp.Collections.Extensions;
+using JetBrains.Annotations;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobContainerConfigurations
     {
@@ -33,8 +30,8 @@ namespace Yoyo.Pro.BlobStoring
         }
 
         public BlobContainerConfigurations Configure(
-            [NotNull] string name,
-            [NotNull] Action<BlobContainerConfiguration> configureAction)
+            string name,
+            Action<BlobContainerConfiguration> configureAction)
         {
             Check.NotNullOrWhiteSpace(name, nameof(name));
             Check.NotNull(configureAction, nameof(configureAction));
@@ -80,5 +77,4 @@ namespace Yoyo.Pro.BlobStoring
                    Default;
         }
     }
-
 }

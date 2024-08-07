@@ -1,4 +1,5 @@
-using Abp;
+﻿using Abp;
+using Abp.BlobStoring;
 
 namespace Yoyo.Pro.BlobStoring
 {

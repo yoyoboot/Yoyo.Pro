@@ -1,4 +1,4 @@
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public interface IBlobContainerConfigurationProvider
     {
@@ -9,7 +9,4 @@ namespace Yoyo.Pro.BlobStoring
         /// <returns>The configuration that should be used for the container</returns>
         BlobContainerConfiguration Get(string name);
     }
-
 }
-
-

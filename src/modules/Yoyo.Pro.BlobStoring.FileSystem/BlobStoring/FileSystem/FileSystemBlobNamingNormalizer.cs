@@ -1,21 +1,13 @@
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using Abp.Dependency;
 using Abp.Localization;
 
-using System.Globalization;
-using System.Runtime;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring.FileSystem
 {
     public class FileSystemBlobNamingNormalizer : IBlobNamingNormalizer, ITransientDependency
     {
-        private readonly IOSPlatformProvider _iosPlatformProvider;
-
-        public FileSystemBlobNamingNormalizer(IOSPlatformProvider iosPlatformProvider)
-        {
-            _iosPlatformProvider = iosPlatformProvider;
-        }
 
         public virtual string NormalizeContainerName(string containerName)
         {
@@ -29,10 +21,9 @@ namespace Yoyo.Pro.BlobStoring
 
         protected virtual string Normalize(string fileName)
         {
-            using (CultureHelper.Use(CultureInfo.InvariantCulture))
+            using (CultureInfoHelper.Use(CultureInfo.InvariantCulture))
             {
-                var os = _iosPlatformProvider.GetCurrentOSPlatform();
-                if (os == OSPlatform.Windows)
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     // A filename cannot contain any of the following characters: \ / : * ? " < > |
                     // In order to support the directory included in the blob name, remove / and \
@@ -43,6 +34,4 @@ namespace Yoyo.Pro.BlobStoring
             }
         }
     }
-
-
 }

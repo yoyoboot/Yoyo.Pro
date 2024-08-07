@@ -1,4 +1,4 @@
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public static class BlobContainerConfigurationProviderExtensions
     {
@@ -8,5 +8,4 @@ namespace Yoyo.Pro.BlobStoring
             return configurationProvider.Get(BlobContainerNameAttribute.GetContainerName<TContainer>());
         }
     }
-
 }
