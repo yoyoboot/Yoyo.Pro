@@ -1,12 +1,14 @@
-using Abp.Dependency;
+﻿using Abp.Dependency;
 using Abp.Extensions;
 
 using Minio;
 using Minio.Exceptions;
+using Minio.DataModel.Args;
 
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Abp.BlobStoring;
 
 namespace Yoyo.Pro.BlobStoring
 {
@@ -23,7 +25,7 @@ namespace Yoyo.Pro.BlobStoring
             BlobNormalizeNamingService = blobNormalizeNamingService;
         }
 
-        public override async Task SaveAsync(BlobProviderSaveArgs args)
+        public async override Task SaveAsync(BlobProviderSaveArgs args)
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var configuration = args.Configuration.GetMinioConfiguration();
@@ -47,7 +49,7 @@ namespace Yoyo.Pro.BlobStoring
                 .WithObjectSize(args.BlobStream.Length));
         }
 
-        public override async Task<bool> DeleteAsync(BlobProviderDeleteArgs args)
+        public async override Task<bool> DeleteAsync(BlobProviderDeleteArgs args)
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
@@ -63,7 +65,7 @@ namespace Yoyo.Pro.BlobStoring
 
         }
 
-        public override async Task<bool> ExistsAsync(BlobProviderExistsArgs args)
+        public async override Task<bool> ExistsAsync(BlobProviderExistsArgs args)
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
@@ -72,7 +74,7 @@ namespace Yoyo.Pro.BlobStoring
             return await BlobExistsAsync(client, containerName, blobName);
         }
 
-        public override async Task<Stream> GetOrNullAsync(BlobProviderGetArgs args)
+        public async override Task<Stream> GetOrNullAsync(BlobProviderGetArgs args)
         {
             var blobName = MinioBlobNameCalculator.Calculate(args);
             var client = GetMinioClient(args);
@@ -100,7 +102,7 @@ namespace Yoyo.Pro.BlobStoring
             return memoryStream;
         }
 
-        protected virtual MinioClient GetMinioClient(BlobProviderArgs args)
+        protected virtual IMinioClient GetMinioClient(BlobProviderArgs args)
         {
             var configuration = args.Configuration.GetMinioConfiguration();
 
@@ -116,7 +118,7 @@ namespace Yoyo.Pro.BlobStoring
             return client.Build();
         }
 
-        protected virtual async Task CreateBucketIfNotExists(MinioClient client, string containerName)
+        protected virtual async Task CreateBucketIfNotExists(IMinioClient client, string containerName)
         {
             if (!await client.BucketExistsAsync(new BucketExistsArgs().WithBucket(containerName)))
             {
@@ -124,7 +126,7 @@ namespace Yoyo.Pro.BlobStoring
             }
         }
 
-        protected virtual async Task<bool> BlobExistsAsync(MinioClient client, string containerName, string blobName)
+        protected virtual async Task<bool> BlobExistsAsync(IMinioClient client, string containerName, string blobName)
         {
             // Make sure Blob Container exists.
             if (await client.BucketExistsAsync(new BucketExistsArgs().WithBucket(containerName)))
@@ -155,7 +157,7 @@ namespace Yoyo.Pro.BlobStoring
 
             return configuration.BucketName.IsNullOrWhiteSpace()
                 ? args.ContainerName
-                : BlobNormalizeNamingService.NormalizeContainerName(args.Configuration, configuration.BucketName);
+                : BlobNormalizeNamingService.NormalizeContainerName(args.Configuration, configuration.BucketName!);
         }
     }
 }

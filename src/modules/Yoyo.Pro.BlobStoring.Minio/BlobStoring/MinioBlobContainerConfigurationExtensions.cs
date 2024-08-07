@@ -1,6 +1,6 @@
-
+﻿
+using Abp.BlobStoring;
 using Abp.Collections;
-
 using System;
 
 namespace Yoyo.Pro.BlobStoring
@@ -18,8 +18,8 @@ namespace Yoyo.Pro.BlobStoring
             Action<MinioBlobProviderConfiguration> minioConfigureAction)
         {
             containerConfiguration.ProviderType = typeof(MinioBlobProvider);
-            containerConfiguration.NamingNormalizers
-                .TryAdd<IBlobNamingNormalizer, MinioBlobNamingNormalizer>();
+            containerConfiguration.NamingNormalizers.TryAdd<IBlobNamingNormalizer, MinioBlobNamingNormalizer>();
+            //containerConfiguration.NamingNormalizers.TryAdd<MinioBlobNamingNormalizer>();
 
             minioConfigureAction(new MinioBlobProviderConfiguration(containerConfiguration));
 
