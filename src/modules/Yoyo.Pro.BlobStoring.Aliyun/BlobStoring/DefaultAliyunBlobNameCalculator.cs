@@ -1,23 +1,25 @@
 using Abp.Dependency;
 using Abp.MultiTenancy;
 using Abp;
+using Abp.Runtime.Session;
+using Abp.BlobStoring;
 
 namespace Yoyo.Pro.BlobStoring
 {
     public class DefaultAliyunBlobNameCalculator : IAliyunBlobNameCalculator, ITransientDependency
     {
-        protected ICurrentTenant CurrentTenant { get; }
+        protected IAbpSession Session { get; }
 
-        public DefaultAliyunBlobNameCalculator(ICurrentTenant currentTenant)
+        public DefaultAliyunBlobNameCalculator(IAbpSession session)
         {
-            CurrentTenant = currentTenant;
+            Session = session;
         }
 
         public virtual string Calculate(BlobProviderArgs args)
         {
-            return !CurrentTenant.Id.HasValue()
+            return !Session.TenantId.HasValue()
                 ? $"host/{args.BlobName}"
-                : $"tenants/{CurrentTenant.Id}/{args.BlobName}";
+                : $"tenants/{Session.TenantId}/{args.BlobName}";
         }
     }
 
