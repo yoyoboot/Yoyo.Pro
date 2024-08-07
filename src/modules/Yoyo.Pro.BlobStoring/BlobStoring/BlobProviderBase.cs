@@ -1,8 +1,9 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Abp.IO.Extensions;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public abstract class BlobProviderBase : IBlobProvider
     {
@@ -14,7 +15,8 @@ namespace Yoyo.Pro.BlobStoring
 
         public abstract Task<Stream> GetOrNullAsync(BlobProviderGetArgs args);
 
-        protected virtual async Task<Stream> TryCopyToMemoryStreamAsync(Stream stream, CancellationToken cancellationToken = default)
+        protected virtual async Task<Stream> TryCopyToMemoryStreamAsync(Stream stream,
+            CancellationToken cancellationToken = default)
         {
             if (stream == null)
             {
@@ -27,7 +29,4 @@ namespace Yoyo.Pro.BlobStoring
             return memoryStream;
         }
     }
-
 }
-
-

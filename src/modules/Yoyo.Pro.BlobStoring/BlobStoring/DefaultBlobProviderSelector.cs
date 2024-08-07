@@ -1,15 +1,12 @@
-
-using Abp;
-using Abp.Dependency;
-using Abp.Reflection;
-
-using JetBrains.Annotations;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Abp.Dependency;
+using Abp.Reflection;
+using Abp.Reflection.Extensions;
+using JetBrains.Annotations;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class DefaultBlobProviderSelector : IBlobProviderSelector, ITransientDependency
     {
@@ -19,10 +16,10 @@ namespace Yoyo.Pro.BlobStoring
 
         public DefaultBlobProviderSelector(
             IBlobContainerConfigurationProvider configurationProvider,
-            IEnumerable<IBlobProvider> blobProviders)
+            IIocResolver iocResolver)
         {
             ConfigurationProvider = configurationProvider;
-            BlobProviders = blobProviders;
+            BlobProviders = iocResolver.ResolveAll<IBlobProvider>();
         }
 
         [NotNull]
@@ -34,12 +31,17 @@ namespace Yoyo.Pro.BlobStoring
 
             if (!BlobProviders.Any())
             {
-                throw new AbpException("No BLOB Storage provider was registered! At least one provider must be registered to be able to use the Blog Storing System.");
+                throw new AbpException("No BLOB Storage provider was registered! At least one provider must be registered to be able to use the BLOB Storing System.");
+            }
+
+            if (configuration.ProviderType == null)
+            {
+                throw new AbpException("No BLOB Storage provider was used! At least one provider must be configured to be able to use the BLOB Storing System.");
             }
 
             foreach (var provider in BlobProviders)
             {
-                if (ProxyHelper.GetUnproxiedType(provider).IsAssignableTo(configuration.ProviderType))
+                if (ProxyHelper.UnProxy(provider).GetType().IsAssignableTo(configuration.ProviderType))
                 {
                     return provider;
                 }
@@ -51,5 +53,3 @@ namespace Yoyo.Pro.BlobStoring
         }
     }
 }
-
-

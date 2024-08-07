@@ -1,17 +1,14 @@
-
 using Abp.Dependency;
 
-using Microsoft.Extensions.Options;
-
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class DefaultBlobContainerConfigurationProvider : IBlobContainerConfigurationProvider, ITransientDependency
     {
         protected AbpBlobStoringOptions Options { get; }
 
-        public DefaultBlobContainerConfigurationProvider(IOptions<AbpBlobStoringOptions> options)
+        public DefaultBlobContainerConfigurationProvider(AbpBlobStoringOptions options)
         {
-            Options = options.Value;
+            Options = options;
         }
 
         public virtual BlobContainerConfiguration Get(string name)
@@ -19,7 +16,4 @@ namespace Yoyo.Pro.BlobStoring
             return Options.Containers.GetConfiguration(name);
         }
     }
-
 }
-
-

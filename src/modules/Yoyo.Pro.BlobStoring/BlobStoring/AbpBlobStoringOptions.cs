@@ -1,4 +1,4 @@
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class AbpBlobStoringOptions
     {

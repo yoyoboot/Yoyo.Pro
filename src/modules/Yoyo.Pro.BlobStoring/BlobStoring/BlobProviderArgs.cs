@@ -1,10 +1,7 @@
-using Abp;
-
+using System.Threading;
 using JetBrains.Annotations;
 
-using System.Threading;
-
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public abstract class BlobProviderArgs
     {
@@ -31,5 +28,4 @@ namespace Yoyo.Pro.BlobStoring
             CancellationToken = cancellationToken;
         }
     }
-
 }

@@ -1,11 +1,8 @@
-using Abp;
-
-using JetBrains.Annotations;
-
 using System.IO;
 using System.Threading;
+using JetBrains.Annotations;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobProviderSaveArgs : BlobProviderArgs
     {
@@ -31,5 +28,4 @@ namespace Yoyo.Pro.BlobStoring
             OverrideExisting = overrideExisting;
         }
     }
-
 }

@@ -1,8 +1,7 @@
-
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public interface IBlobProvider
     {
@@ -14,5 +13,4 @@ namespace Yoyo.Pro.BlobStoring
 
         Task<Stream> GetOrNullAsync(BlobProviderGetArgs args);
     }
-
 }

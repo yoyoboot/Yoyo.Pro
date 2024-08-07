@@ -1,32 +1,29 @@
-
-using Abp;
-using Abp.MultiTenancy;
-using Abp.Threading;
-
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Abp.Runtime.Session;
+using Abp.Threading;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobContainer<TContainer> : IBlobContainer<TContainer>
-where TContainer : class
+        where TContainer : class
     {
-        private readonly IBlobContainer _container;
+        protected readonly IBlobContainer Container;
 
         public BlobContainer(IBlobContainerFactory blobContainerFactory)
         {
-            _container = blobContainerFactory.Create<TContainer>();
+            Container = blobContainerFactory.Create<TContainer>();
         }
 
-        public Task SaveAsync(
+        public virtual Task SaveAsync(
             string name,
             Stream stream,
             bool overrideExisting = false,
             CancellationToken cancellationToken = default)
         {
-            return _container.SaveAsync(
+            return Container.SaveAsync(
                 name,
                 stream,
                 overrideExisting,
@@ -34,47 +31,46 @@ where TContainer : class
             );
         }
 
-        public Task<bool> DeleteAsync(
+        public virtual Task<bool> DeleteAsync(
             string name,
             CancellationToken cancellationToken = default)
         {
-            return _container.DeleteAsync(
+            return Container.DeleteAsync(
                 name,
                 cancellationToken
             );
         }
 
-        public Task<bool> ExistsAsync(
+        public virtual Task<bool> ExistsAsync(
             string name,
             CancellationToken cancellationToken = default)
         {
-            return _container.ExistsAsync(
+            return Container.ExistsAsync(
                 name,
                 cancellationToken
             );
         }
 
-        public Task<Stream> GetAsync(
+        public virtual Task<Stream> GetAsync(
             string name,
             CancellationToken cancellationToken = default)
         {
-            return _container.GetAsync(
+            return Container.GetAsync(
                 name,
                 cancellationToken
             );
         }
 
-        public Task<Stream> GetOrNullAsync(
+        public virtual Task<Stream> GetOrNullAsync(
             string name,
             CancellationToken cancellationToken = default)
         {
-            return _container.GetOrNullAsync(
+            return Container.GetOrNullAsync(
                 name,
                 cancellationToken
             );
         }
     }
-
 
     public class BlobContainer : IBlobContainer
     {
@@ -84,7 +80,7 @@ where TContainer : class
 
         protected IBlobProvider Provider { get; }
 
-        protected ICurrentTenant CurrentTenant { get; }
+        protected IAbpSession CurrentTenant { get; }
 
         protected ICancellationTokenProvider CancellationTokenProvider { get; }
 
@@ -96,7 +92,7 @@ where TContainer : class
             string containerName,
             BlobContainerConfiguration configuration,
             IBlobProvider provider,
-            ICurrentTenant currentTenant,
+            IAbpSession currentTenant,
             ICancellationTokenProvider cancellationTokenProvider,
             IBlobNormalizeNamingService blobNormalizeNamingService,
             IServiceProvider serviceProvider)
@@ -116,7 +112,7 @@ where TContainer : class
             bool overrideExisting = false,
             CancellationToken cancellationToken = default)
         {
-            using (CurrentTenant.Change(GetTenantIdOrNull()))
+            using (CurrentTenant.Use(GetTenantIdOrNull(), null))
             {
                 var blobNormalizeNaming = BlobNormalizeNamingService.NormalizeNaming(Configuration, ContainerName, name);
 
@@ -137,7 +133,7 @@ where TContainer : class
             string name,
             CancellationToken cancellationToken = default)
         {
-            using (CurrentTenant.Change(GetTenantIdOrNull()))
+            using (CurrentTenant.Use(GetTenantIdOrNull(), null))
             {
                 var blobNormalizeNaming =
                     BlobNormalizeNamingService.NormalizeNaming(Configuration, ContainerName, name);
@@ -157,7 +153,7 @@ where TContainer : class
             string name,
             CancellationToken cancellationToken = default)
         {
-            using (CurrentTenant.Change(GetTenantIdOrNull()))
+            using (CurrentTenant.Use(GetTenantIdOrNull(), null))
             {
                 var blobNormalizeNaming =
                     BlobNormalizeNamingService.NormalizeNaming(Configuration, ContainerName, name);
@@ -193,7 +189,7 @@ where TContainer : class
             string name,
             CancellationToken cancellationToken = default)
         {
-            using (CurrentTenant.Change(GetTenantIdOrNull()))
+            using (CurrentTenant.Use(GetTenantIdOrNull(), null))
             {
                 var blobNormalizeNaming =
                     BlobNormalizeNamingService.NormalizeNaming(Configuration, ContainerName, name);
@@ -216,9 +212,8 @@ where TContainer : class
                 return null;
             }
 
-            return CurrentTenant.Id;
+            return CurrentTenant.TenantId;
         }
     }
-
 
 }

@@ -2,10 +2,11 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
+
     public interface IBlobContainer<TContainer> : IBlobContainer
-     where TContainer : class
+        where TContainer : class
     {
 
     }
@@ -86,5 +87,3 @@ namespace Yoyo.Pro.BlobStoring
         //TODO: Create shortcut extension methods: GetAsArraryAsync, GetAsStringAsync(encoding) (and null versions)
     }
 }
-
-

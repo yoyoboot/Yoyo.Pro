@@ -1,9 +1,9 @@
-
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Abp.IO.Extensions;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public static class BlobContainerExtensions
     {
@@ -54,7 +54,4 @@ namespace Yoyo.Pro.BlobStoring
             }
         }
     }
-
 }
-
-

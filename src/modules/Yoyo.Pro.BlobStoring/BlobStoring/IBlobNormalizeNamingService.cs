@@ -1,4 +1,4 @@
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public interface IBlobNormalizeNamingService
     {
@@ -8,5 +8,4 @@ namespace Yoyo.Pro.BlobStoring
 
         string NormalizeBlobName(BlobContainerConfiguration configuration, string blobName);
     }
-
 }

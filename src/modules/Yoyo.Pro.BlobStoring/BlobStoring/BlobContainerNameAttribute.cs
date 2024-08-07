@@ -1,11 +1,8 @@
-using Abp;
-
-using JetBrains.Annotations;
-
 using System;
 using System.Reflection;
+using JetBrains.Annotations;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobContainerNameAttribute : Attribute
     {
@@ -41,5 +38,4 @@ namespace Yoyo.Pro.BlobStoring
             return nameAttribute.GetName(type);
         }
     }
-
 }

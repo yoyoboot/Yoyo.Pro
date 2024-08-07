@@ -1,13 +1,10 @@
-using Abp;
-using Abp.Collections;
-using Abp.Collections.Extensions;
-
-using JetBrains.Annotations;
-
 using System;
 using System.Collections.Generic;
+using Abp.Collections;
+using Abp.Collections.Extensions;
+using JetBrains.Annotations;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public class BlobContainerConfiguration
     {
@@ -76,6 +73,4 @@ namespace Yoyo.Pro.BlobStoring
             return this;
         }
     }
-
-
 }

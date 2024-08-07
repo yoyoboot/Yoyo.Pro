@@ -1,4 +1,4 @@
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring
 {
     public interface IBlobContainerFactory
     {
@@ -13,6 +13,4 @@ namespace Yoyo.Pro.BlobStoring
             string name
         );
     }
-
-
 }
