@@ -1,6 +1,6 @@
-using Abp;
+using Abp.BlobStoring;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring.FileSystem
 {
     public class FileSystemBlobProviderConfiguration
     {

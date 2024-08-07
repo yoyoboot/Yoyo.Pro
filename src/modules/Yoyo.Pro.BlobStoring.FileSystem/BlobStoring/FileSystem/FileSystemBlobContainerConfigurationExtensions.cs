@@ -1,8 +1,7 @@
+﻿using System;
 using Abp.Collections;
 
-using System;
-
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring.FileSystem
 {
     public static class FileSystemBlobContainerConfigurationExtensions
     {
@@ -17,13 +16,11 @@ namespace Yoyo.Pro.BlobStoring
             Action<FileSystemBlobProviderConfiguration> fileSystemConfigureAction)
         {
             containerConfiguration.ProviderType = typeof(FileSystemBlobProvider);
-            containerConfiguration.NamingNormalizers.TryAdd<IBlobNamingNormalizer, FileSystemBlobNamingNormalizer>();
+            containerConfiguration.NamingNormalizers.TryAdd<IBlobNamingNormalizer, FileSystemBlobNamingNormalizer>();            //containerConfiguration.NamingNormalizers.TryAdd<FileSystemBlobNamingNormalizer>();
 
             fileSystemConfigureAction(new FileSystemBlobProviderConfiguration(containerConfiguration));
 
             return containerConfiguration;
         }
     }
-
-
 }

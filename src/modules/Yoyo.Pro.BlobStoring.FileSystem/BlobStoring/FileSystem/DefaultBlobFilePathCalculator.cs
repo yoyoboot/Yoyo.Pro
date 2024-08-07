@@ -1,20 +1,16 @@
-using Abp.Dependency;
-using Abp.MultiTenancy;
-
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Abp;
+using Abp.Dependency;
+using Abp.Runtime.Session;
 
-namespace Yoyo.Pro.BlobStoring
+namespace Abp.BlobStoring.FileSystem
 {
     public class DefaultBlobFilePathCalculator : IBlobFilePathCalculator, ITransientDependency
     {
-        protected ICurrentTenant CurrentTenant { get; }
+        protected IAbpSession AbpSession { get; }
 
-        public DefaultBlobFilePathCalculator(ICurrentTenant currentTenant)
+        public DefaultBlobFilePathCalculator(IAbpSession session)
         {
-            CurrentTenant = currentTenant;
+            AbpSession = session;
         }
 
         public virtual string Calculate(BlobProviderArgs args)
@@ -22,14 +18,9 @@ namespace Yoyo.Pro.BlobStoring
             var fileSystemConfiguration = args.Configuration.GetFileSystemConfiguration();
             var blobPath = fileSystemConfiguration.BasePath;
 
-            if (!CurrentTenant.Id.HasValue())
-            {
-                blobPath = Path.Combine(blobPath, "host");
-            }
-            else
-            {
-                blobPath = Path.Combine(blobPath, "tenants", CurrentTenant.Id);
-            }
+            blobPath = AbpSession.TenantId == null
+                ? Path.Combine(blobPath, "host")
+                : Path.Combine(blobPath, "tenants", AbpSession.TenantId);
 
             if (fileSystemConfiguration.AppendContainerNameToBasePath)
             {
@@ -41,6 +32,4 @@ namespace Yoyo.Pro.BlobStoring
             return blobPath;
         }
     }
-
-
 }
