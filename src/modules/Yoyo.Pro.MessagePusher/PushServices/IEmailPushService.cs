@@ -37,10 +37,15 @@ namespace Yoyo.Pro.PushServices
         public virtual async Task<string> SendMessage(EmailMessagePushData data)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(data.FromName, data.UserName));
-            message.To.Add(new MailboxAddress(data.ToName, data.ToEmailAddress));
-            message.Subject = data.Subject;
 
+            message.From.Add(new MailboxAddress(data.FromName, data.UserName));
+            foreach (var email in data.EmailList)
+            {
+                message.To.Add(new MailboxAddress(email, email));
+            }
+
+
+            message.Subject = data.Subject;
             message.Body = new TextPart("plain")
             {
                 Text = data.Content
@@ -50,12 +55,13 @@ namespace Yoyo.Pro.PushServices
             {
                 using (var client = new SmtpClient())
                 {
-                    client.Connect(data.Host, data.Port, false);
+                    client.Connect(data.Host, data.Port, useSsl: data.UseSsl);
 
                     // Note: only needed if the SMTP server requires authentication
                     client.Authenticate(data.UserName, data.Password);
 
                     var result = await client.SendAsync(message);
+
                     client.Disconnect(true);
                     return result;
                 }

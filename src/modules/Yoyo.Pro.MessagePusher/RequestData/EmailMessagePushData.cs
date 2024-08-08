@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
+
 namespace Yoyo.Pro.RequestData
 {
     /// <summary>
@@ -18,6 +20,10 @@ namespace Yoyo.Pro.RequestData
         /// </summary>
         public int Port { get; set; }
         /// <summary>
+        /// 启用ssl
+        /// </summary>
+        public bool UseSsl { get; set; }
+        /// <summary>
         /// 发送者名称
         /// </summary>
         public string FromName { get; set; }
@@ -30,14 +36,6 @@ namespace Yoyo.Pro.RequestData
         /// </summary>
         public string Password { get; set; }
         /// <summary>
-        /// 接收者名称
-        /// </summary>
-        public string ToName { get; set; }
-        /// <summary>
-        /// 接收者邮箱地址
-        /// </summary>
-        public string ToEmailAddress { get; set; }
-        /// <summary>
         /// 主题
         /// </summary>
         public string Subject { get; set; }
@@ -45,5 +43,9 @@ namespace Yoyo.Pro.RequestData
         /// 内容
         /// </summary>
         public string Content { get; set; }
+        /// <summary>
+        /// 收件人邮箱列表
+        /// </summary>
+        public List<string> EmailList { get; set; } = new List<string>();
     }
 }
