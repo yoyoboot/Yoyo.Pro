@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using Abp.Configuration.Startup;
 using Abp.Localization.Dictionaries;
 using Abp.Localization.Dictionaries.Json;
@@ -10,7 +10,7 @@ namespace Yoyo.Pro.Localization
         public static void AddYoyoProIdentityLocalization(this ILocalizationConfiguration localization)
         {
             localization.Sources.Add(
-                new DictionaryBasedLocalizationSource(YoyoProIdentityConsts.LocalizationSourceName,
+                new DictionaryBasedLocalizationSource(YoyoProIdentityConfigs.Localization.SourceName,
                     new JsonEmbeddedFileLocalizationDictionaryProvider(
                       typeof(YoyoProIdentityLocalizationExtensions).Assembly,
                       "Yoyo.Pro.Localization.SourceFiles"

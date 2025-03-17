@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Abp.Authorization;
 using Abp.Authorization.Roles;
 using Abp.Domain.Repositories;
@@ -38,6 +38,7 @@ namespace Yoyo.Pro.Roles
                 unitOfWorkManager,
                 roleManagementConfig, organizationUnitRepository, organizationUnitRoleRepository)
         {
+            LocalizationSourceName = YoyoProIdentityConfigs.Localization.SourceName;
         }
     }
 }
