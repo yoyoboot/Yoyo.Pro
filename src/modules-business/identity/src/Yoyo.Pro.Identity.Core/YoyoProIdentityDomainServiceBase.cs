@@ -1,4 +1,4 @@
-// Licensed to the .NET under one or more agreements.
+﻿// Licensed to the .NET under one or more agreements.
 // The .NET licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -31,7 +31,7 @@ namespace Yoyo.Pro
 
         public YoyoProIdentityDomainServiceBase()
         {
-            LocalizationSourceName = YoyoProIdentityConsts.LocalizationSourceName;
+            LocalizationSourceName = YoyoProIdentityConfigs.Localization.SourceName;
             AbpSession = NullAbpSession.Instance;
         }
 
@@ -48,7 +48,7 @@ namespace Yoyo.Pro
         public IConfigurationProvider MapperProvider { get; set; }
 
         protected YoyoProIdentityDomainServiceBase(IServiceProvider serviceProvider)
-            : base(serviceProvider, YoyoProIdentityConsts.LocalizationSourceName)
+            : base(serviceProvider, YoyoProIdentityConfigs.Localization.SourceName)
         {
 
         }
@@ -63,7 +63,7 @@ namespace Yoyo.Pro
         public IConfigurationProvider MapperProvider { get; set; }
 
         protected YoyoProIdentityDomainServiceBase(IServiceProvider serviceProvider)
-            : base(serviceProvider, YoyoProIdentityConsts.LocalizationSourceName)
+            : base(serviceProvider, YoyoProIdentityConfigs.Localization.SourceName)
         {
         }
     }
