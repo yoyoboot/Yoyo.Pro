@@ -136,6 +136,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.LowCode.Shared.EntityF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yoyo.LowCode.Shared.Web.Core", "src\modules-business\lowcode\Yoyo.LowCode.Shared.Web.Core\Yoyo.LowCode.Shared.Web.Core.csproj", "{F258862F-8EE9-4FC6-AE17-F6CE66854742}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yoyo.Pro.ExternalAuth", "src\modules\Yoyo.Pro.ExternalAuth\Yoyo.Pro.ExternalAuth.csproj", "{50DF016A-3A95-4066-B10B-5C27B8B7F8C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yoyo.Pro.ExternalAuth.FeiShu", "src\modules\Yoyo.Pro.ExternalAuth.FeiShu\Yoyo.Pro.ExternalAuth.FeiShu.csproj", "{A8E39189-2DA0-E818-61FF-B147799246CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yoyo.Pro.ExternalAuth.DingTalk", "src\modules\Yoyo.Pro.ExternalAuth.DingTalk\Yoyo.Pro.ExternalAuth.DingTalk.csproj", "{6F0385FE-706C-0108-A8B2-DA96C89A5892}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yoyo.Pro.ExternalAuth.OAuth", "src\modules\Yoyo.Pro.ExternalAuth.OAuth\Yoyo.Pro.ExternalAuth.OAuth.csproj", "{4009A968-ED61-471C-9CB4-666D29B1D41D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -314,6 +322,22 @@ Global
 		{F258862F-8EE9-4FC6-AE17-F6CE66854742}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F258862F-8EE9-4FC6-AE17-F6CE66854742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F258862F-8EE9-4FC6-AE17-F6CE66854742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50DF016A-3A95-4066-B10B-5C27B8B7F8C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50DF016A-3A95-4066-B10B-5C27B8B7F8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50DF016A-3A95-4066-B10B-5C27B8B7F8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50DF016A-3A95-4066-B10B-5C27B8B7F8C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8E39189-2DA0-E818-61FF-B147799246CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8E39189-2DA0-E818-61FF-B147799246CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8E39189-2DA0-E818-61FF-B147799246CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8E39189-2DA0-E818-61FF-B147799246CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F0385FE-706C-0108-A8B2-DA96C89A5892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F0385FE-706C-0108-A8B2-DA96C89A5892}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F0385FE-706C-0108-A8B2-DA96C89A5892}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F0385FE-706C-0108-A8B2-DA96C89A5892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4009A968-ED61-471C-9CB4-666D29B1D41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4009A968-ED61-471C-9CB4-666D29B1D41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4009A968-ED61-471C-9CB4-666D29B1D41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4009A968-ED61-471C-9CB4-666D29B1D41D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -370,6 +394,10 @@ Global
 		{89313A70-18B6-4520-B2C6-5C6C52C12734} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
 		{7531B4D4-5123-4D1B-9C28-EEE52E7F7CA2} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
 		{F258862F-8EE9-4FC6-AE17-F6CE66854742} = {7E418DD7-A6A7-4D4D-A38F-A10A20615778}
+		{50DF016A-3A95-4066-B10B-5C27B8B7F8C5} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
+		{A8E39189-2DA0-E818-61FF-B147799246CD} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
+		{6F0385FE-706C-0108-A8B2-DA96C89A5892} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
+		{4009A968-ED61-471C-9CB4-666D29B1D41D} = {BBE71AF6-7F5A-4226-B055-BA6B329FB489}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46186319-8E37-4438-A5A8-D63664D81EBF}
