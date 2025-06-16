@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\abpversion.props"></Import>
+  <Import Project="..\modulecommon.props"></Import>
+
+  <PropertyGroup>
+    <TargetFramework>$(DotNetVersion)</TargetFramework>
+    <RootNamespace>Yoyo.Pro</RootNamespace>
+  </PropertyGroup>
+  
+	<ItemGroup>
+		<ProjectReference Include="..\Yoyo.Pro.ExternalAuth.OAuth\Yoyo.Pro.ExternalAuth.OAuth.csproj" />
+	</ItemGroup>
+
+</Project>

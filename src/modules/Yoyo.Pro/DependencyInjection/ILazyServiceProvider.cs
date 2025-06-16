@@ -1,23 +1,40 @@
-// Licensed to the .NET under one or more agreements.
+﻿// Licensed to the .NET under one or more agreements.
 // The .NET licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Abp.Collections.Extensions;
 using Abp.Dependency;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Yoyo.Pro.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public class AbpLazyServiceProvider : IAbpLazyServiceProvider, ITransientDependency
+    public interface ILazyServiceProvider
+    {
+        T LazyGetRequiredService<T>();
+
+        object LazyGetRequiredService(Type serviceType);
+
+        T LazyGetService<T>();
+
+        object LazyGetService(Type serviceType);
+
+        T LazyGetService<T>(T defaultValue);
+
+        object LazyGetService(Type serviceType, object defaultValue);
+
+        object LazyGetService(Type serviceType, Func<IServiceProvider, object> factory);
+
+        T LazyGetService<T>(Func<IServiceProvider, object> factory);
+    }
+
+    public class LazyServiceProvider : ILazyServiceProvider, ITransientDependency
     {
         protected IDictionary<Type, object> CachedServices { get; set; }
 
         protected IServiceProvider ServiceProvider { get; set; }
 
-        public AbpLazyServiceProvider(IServiceProvider serviceProvider)
+        public LazyServiceProvider(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
             CachedServices = new Dictionary<Type, object>();
@@ -63,5 +80,4 @@ namespace Yoyo.Pro.DependencyInjection
             return CachedServices.GetOrAdd(serviceType, () => factory(ServiceProvider));
         }
     }
-
 }
