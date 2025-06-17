@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 using Abp.MultiTenancy;
 using Abp.Timing;
 using Yoyo.Pro.Users;
@@ -25,14 +26,25 @@ namespace Yoyo.Pro.MultiTenancy
         #region 字段
 
         /// <summary>
+        /// 租户编码
+        /// </summary>
+        public override string TenancyName { get; set; }
+
+        /// <summary>
+        /// 标准化处理之后的租户编码
+        /// </summary>
+        [MaxLength(64)]
+        public virtual string NormalizedTenancyName { get; set; }
+
+        /// <summary>
         /// 订阅结束时间
         /// </summary>
-        public DateTime? SubscriptionEndUtc { get; set; }
+        public virtual DateTime? SubscriptionEndUtc { get; set; }
 
         /// <summary>
         /// 是否试用
         /// </summary>
-        public bool IsInTrialPeriod { get; set; }
+        public virtual bool IsInTrialPeriod { get; set; }
 
         /// <summary>
         /// 自定义cssId
@@ -53,6 +65,7 @@ namespace Yoyo.Pro.MultiTenancy
         #endregion
 
 
+
         public Tenant()
         {
         }
@@ -60,7 +73,7 @@ namespace Yoyo.Pro.MultiTenancy
         public Tenant(string tenancyName, string name)
             : base(tenancyName, name)
         {
-
+            this.SetNormalizedNames();
         }
 
 
@@ -109,7 +122,16 @@ namespace Yoyo.Pro.MultiTenancy
         public virtual bool HasUnlimitedTimeSubscription()
         {
             return SubscriptionEndUtc == null;
-        } 
+        }
+
+        /// <summary>
+        /// 标准化租户名称
+        /// </summary>
+        public virtual void SetNormalizedNames()
+        {
+            NormalizedTenancyName = TenancyName.ToUpperInvariant();
+        }
+
 
         #endregion
     }

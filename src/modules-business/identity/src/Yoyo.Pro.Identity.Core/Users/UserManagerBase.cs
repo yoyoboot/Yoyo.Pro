@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -75,6 +75,8 @@ namespace Yoyo.Pro.Users
         {
             _unitOfWorkManager = unitOfWorkManager;
             _settingManager = settingManager;
+
+            LocalizationSourceName = YoyoProIdentityConfigs.Localization.SourceName;
         }
 
 
