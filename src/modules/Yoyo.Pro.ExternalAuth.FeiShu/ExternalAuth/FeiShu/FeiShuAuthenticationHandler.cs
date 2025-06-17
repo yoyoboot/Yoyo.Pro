@@ -49,7 +49,7 @@ namespace Yoyo.Pro.ExternalAuth.FeiShu
                         var dataJson = payload.RootElement.GetString("data");
                         payload = JsonDocument.Parse(dataJson);
 
-                        base.Logger.LogInformation("FeiShu 用户信息：" + payload.RootElement);
+                        this.Logger.LogInformation("FeiShu 用户信息：" + payload.RootElement);
 
                         var principal = new ClaimsPrincipal(identity);
                         var context = new OAuthCreatingTicketContext(principal, properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);

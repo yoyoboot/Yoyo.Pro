@@ -43,7 +43,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             get => GetValueOrDefault(nameof(AppId));
             set => SetValue(nameof(AppId), value);
         }
-        
+
         public string AppSecret
         {
             get => GetValueOrDefault(nameof(AppSecret));

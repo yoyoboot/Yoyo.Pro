@@ -31,7 +31,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
 
         protected override async Task<AuthenticationTicket> CreateTicketAsync(ClaimsIdentity identity, AuthenticationProperties properties, OAuthTokenResponse tokens)
         {
-            var userInfo = await GetUserInfoByCode(base.Context.Request.Query["code"]);
+            var userInfo = await GetUserInfoByCode(this.Context.Request.Query["code"]);
             if (userInfo == null)
             {
                 throw new HttpRequestException($"未能检索钉钉的用户信息,请检查参数是否正确。");
@@ -39,10 +39,10 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             var content = userInfo.RootElement.GetString("user_info");
 
             var jsonDocument = JsonDocument.Parse(content);
-            base.Logger.LogInformation("DingTalk 用户信息：" + jsonDocument.RootElement);
+            this.Logger.LogInformation("DingTalk 用户信息：" + jsonDocument.RootElement);
 
             #region 获取用户详细信息，暂时不用(只能获取内部员工)
-            if (base.Options.IsEmployee)
+            if (this.Options.IsEmployee)
             {
                 var uninoid = jsonDocument.RootElement.GetString("unionid");
                 var userid = await GetUserId(uninoid, tokens.AccessToken);
@@ -51,31 +51,38 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                     throw new HttpRequestException($"未能检索钉钉的用户id信息,请检查参数是否正确。");
                 }
                 jsonDocument = await GetUserInfoById(userid, tokens.AccessToken);
-                base.Logger.LogInformation("用户信息：" + jsonDocument.RootElement);
+                this.Logger.LogInformation("用户信息：" + jsonDocument.RootElement);
             }
 
             #endregion
 
 
-            var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, base.Context, base.Scheme, (OAuthOptions)base.Options, base.Backchannel, tokens, jsonDocument.RootElement);
+            var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, this.Context, this.Scheme, (OAuthOptions)this.Options, this.Backchannel, tokens, jsonDocument.RootElement);
             context.RunClaimActions();
-            await base.Events.CreatingTicket(context);
-            return new AuthenticationTicket(context.Principal, context.Properties, base.Scheme.Name);
+            await this.Events.CreatingTicket(context);
+            return new AuthenticationTicket(context.Principal, context.Properties, this.Scheme.Name);
         }
 
         protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(OAuthCodeExchangeContext context)
         {
-            if (base.Options.IsEmployee)
+            Logger.LogInformation($"{this.GetType().Name} ExchangeCodeAsync 1");
+
+            this.ExternalAuthProviderInfo = await this.GetExternalAuthProviderInfo();
+
+            // 配置公共信息
+            this.ConfigureOptions();
+
+            if (this.Options.IsEmployee)
             {
                 Exception ex = new Exception("换取access_token失败，content：");
                 Dictionary<string, string> dictionary = new Dictionary<string, string>
                 {
-                    ["appkey"] = base.Options.ClientId,
-                    ["appsecret"] = base.Options.ClientSecret,
+                    ["appkey"] = this.ExternalAuthProviderInfo.ClientId,
+                    ["appsecret"] = this.ExternalAuthProviderInfo.ClientSecret,
 
                 };
-                string endpoint = QueryHelpers.AddQueryString(base.Options.TokenEndpoint, dictionary);
-                HttpResponseMessage response = await base.Backchannel.GetAsync(endpoint, base.Context.RequestAborted);
+                string endpoint = QueryHelpers.AddQueryString(this.Options.TokenEndpoint, dictionary);
+                HttpResponseMessage response = await this.Backchannel.GetAsync(endpoint, this.Context.RequestAborted);
 
                 string text = await response.Content.ReadAsStringAsync();
 
@@ -85,7 +92,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                     if (jsonDocument.RootElement.GetString("errcode") != "0")
                     {
                         ex = new Exception("换取access_token失败，content：" + text);
-                        base.Logger.LogError(ex, "DingDingHandler ExchangeCodeAsync");
+                        this.Logger.LogError(ex, "DingDingHandler ExchangeCodeAsync");
                         return OAuthTokenResponse.Failed(ex);
                     }
                     return OAuthTokenResponse.Success(jsonDocument);
@@ -99,17 +106,18 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             {
                 ["access_token"] = context.Code,
             };
+
+            Logger.LogInformation($"{this.GetType().Name} ExchangeCodeAsync 2");
+
             return OAuthTokenResponse.Success(JsonDocument.Parse(JsonSerializer.Serialize(dictionarytoken)));
-
-
         }
 
         protected override string BuildChallengeUrl(AuthenticationProperties properties, [NotNull] string redirectUri)
         {
-            string value = base.Options.StateDataFormat.Protect(properties);
+            string value = this.Options.StateDataFormat.Protect(properties);
             Dictionary<string, string> dictionary = new Dictionary<string, string>
             {
-                ["appid"] = base.Options.AppId,
+                ["appid"] = this.Options.AppId,
                 ["scope"] = FormatScope(),
                 ["response_type"] = "code",
                 ["redirect_uri"] = redirectUri,
@@ -121,13 +129,13 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                 dictionary.Add("loginTmpCode", parameter);
             }
 
-            redirectUri = QueryHelpers.AddQueryString(base.Options.AuthorizationEndpoint, dictionary);
+            redirectUri = QueryHelpers.AddQueryString(this.Options.AuthorizationEndpoint, dictionary);
             return redirectUri;
         }
 
         protected override string FormatScope()
         {
-            return string.Join(",", base.Options.Scope);
+            return string.Join(",", this.Options.Scope);
         }
         /// <summary>
         /// 根据code获取用户信息
@@ -139,11 +147,11 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             DateTimeOffset dto = new DateTimeOffset(DateTime.Now);
             var timestamp = dto.ToUnixTimeMilliseconds().ToString();
 
-            var signature = EncryptWithSHA256(base.Options.AppSecret, timestamp);
+            var signature = EncryptWithSHA256(this.Options.AppSecret, timestamp);
 
             Dictionary<string, string> dictionary = new Dictionary<string, string>
             {
-                ["accessKey"] = base.Options.AppId,
+                ["accessKey"] = this.Options.AppId,
                 ["timestamp"] = timestamp,
                 ["signature"] = signature,
             };
@@ -154,12 +162,12 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             };
             string json = JsonSerializer.Serialize(content);
             StringContent stringContent = new StringContent(json);
-            var requestUri = QueryHelpers.AddQueryString(base.Options.UserInformationByCodeEndpoint, dictionary);
+            var requestUri = QueryHelpers.AddQueryString(this.Options.UserInformationByCodeEndpoint, dictionary);
 
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             httpRequestMessage.Content = stringContent;
-            HttpResponseMessage response = await base.Backchannel.SendAsync(httpRequestMessage, base.Context.RequestAborted);
+            HttpResponseMessage response = await this.Backchannel.SendAsync(httpRequestMessage, this.Context.RequestAborted);
             string text = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -167,7 +175,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                 if (jsonDocument.RootElement.GetString("errcode") != "0")
                 {
                     Exception ex = new Exception("使用code获取用户信息失败，content：" + text);
-                    base.Logger.LogError(ex, "DingDingHandler ExchangeCodeAsync");
+                    this.Logger.LogError(ex, "DingDingHandler ExchangeCodeAsync");
                     return null;
                 }
 
@@ -196,12 +204,12 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                 ["unionid"] = unionid,
             };
 
-            var requestUri = QueryHelpers.AddQueryString(base.Options.UserIdByUnionidEndpoint, queryStringMap);
+            var requestUri = QueryHelpers.AddQueryString(this.Options.UserIdByUnionidEndpoint, queryStringMap);
 
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             httpRequestMessage.Content = new StringContent(JsonSerializer.Serialize(requestBodyMap));
-            var response = await base.Backchannel.SendAsync(httpRequestMessage, base.Context.RequestAborted);
+            var response = await this.Backchannel.SendAsync(httpRequestMessage, this.Context.RequestAborted);
             var text = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -209,7 +217,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                 if (jsonDocument.RootElement.GetString("errcode") != "0")
                 {
                     Exception ex = new Exception("使用unionid获取userid失败，content：" + text);
-                    base.Logger.LogError(ex, "DingDingHandler GetUserId");
+                    this.Logger.LogError(ex, "DingDingHandler GetUserId");
                     return null;
                 }
                 var result = jsonDocument.RootElement.GetString("result");
@@ -221,7 +229,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             else
             {
                 var ex = new Exception("使用unionid获取userid失败，content：" + text);
-                base.Logger.LogError(ex, "DingDingHandler GetUserId");
+                this.Logger.LogError(ex, "DingDingHandler GetUserId");
             }
             return null;
         }
@@ -247,12 +255,12 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
 
             };
 
-            var requestUri = QueryHelpers.AddQueryString(base.Options.UserInformationEndpoint, queryStringMap);
+            var requestUri = QueryHelpers.AddQueryString(this.Options.UserInformationEndpoint, queryStringMap);
 
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             httpRequestMessage.Content = new StringContent(JsonSerializer.Serialize(requestBodyMap));
-            var response = await base.Backchannel.SendAsync(httpRequestMessage, base.Context.RequestAborted);
+            var response = await this.Backchannel.SendAsync(httpRequestMessage, this.Context.RequestAborted);
             var text = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -260,7 +268,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                 if (jsonDocument.RootElement.GetString("errcode") != "0")
                 {
                     var ex = new Exception("使用userid获取用户信息失败，content：" + text);
-                    base.Logger.LogError(ex, "DingDingHandler GetUserInfoById");
+                    this.Logger.LogError(ex, "DingDingHandler GetUserInfoById");
                     return null;
                 }
                 var result = jsonDocument.RootElement.GetString("result");

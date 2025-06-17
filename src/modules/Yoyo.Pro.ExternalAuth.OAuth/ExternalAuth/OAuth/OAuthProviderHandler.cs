@@ -44,11 +44,12 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
 
         protected override async Task InitializeHandlerAsync()
         {
+            Logger.LogInformation($"{this.GetType().Name} InitializeHandlerAsync 1");
+
             await base.InitializeHandlerAsync();
 
-            this.ExternalAuthProviderInfo = await this.GetExternalAuthProviderInfo();
-
             // 配置公共信息
+            this.ExternalAuthProviderInfo = await this.GetExternalAuthProviderInfo();
             this.ConfigureOptions();
 
             // 初始化事件信息
@@ -73,10 +74,27 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
                 // 标识已经处理过了
                 e.HandleResponse();
             };
+
+            Logger.LogInformation($"{this.GetType().Name} InitializeHandlerAsync 2");
+        }
+
+        protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(OAuthCodeExchangeContext context)
+        {
+            Logger.LogInformation($"{this.GetType().Name} ExchangeCodeAsync 1");
+
+            // 配置公共信息
+            this.ExternalAuthProviderInfo = await this.GetExternalAuthProviderInfo();
+            this.ConfigureOptions();
+
+            Logger.LogInformation($"{this.GetType().Name} ExchangeCodeAsync 2");
+
+            return await base.ExchangeCodeAsync(context);
         }
 
         protected virtual void ConfigureOptions()
         {
+            Logger.LogInformation($"{this.GetType().Name} ConfigureOptions 1");
+
             this.Options.CallbackPath = this._externalAuthOptions.Value.CallbackPath;
 
             this.Options.ClientId = this.ExternalAuthProviderInfo.ClientId;
@@ -85,6 +103,9 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
             this.Options.AuthorizationEndpoint = this.ExternalAuthProviderInfo.AuthorizationEndpoint;
             this.Options.TokenEndpoint = this.ExternalAuthProviderInfo.TokenEndpoint;
             this.Options.UserInformationEndpoint = this.ExternalAuthProviderInfo.UserInformationEndpoint;
+            this.Options.CorrelationCookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+
+            Logger.LogInformation($"{this.GetType().Name} ConfigureOptions 2");
         }
 
         protected abstract Task<TExternalAuthProviderInfo> GetExternalAuthProviderInfo();
