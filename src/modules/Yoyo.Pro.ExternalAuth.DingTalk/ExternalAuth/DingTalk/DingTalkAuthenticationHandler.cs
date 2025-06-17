@@ -1,6 +1,4 @@
-﻿using Yoyo.Pro.ExternalAuth.OAuth;
-
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -8,15 +6,19 @@ using Microsoft.Extensions.Options;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
+
+using Yoyo.Pro.ExternalAuth.OAuth;
+
+using static Yoyo.Pro.ExternalAuth.DingTalk.DingTalkAuthenticationConstants;
 
 namespace Yoyo.Pro.ExternalAuth.DingTalk
 {
@@ -29,23 +31,21 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
 
         protected override async Task<AuthenticationTicket> CreateTicketAsync(ClaimsIdentity identity, AuthenticationProperties properties, OAuthTokenResponse tokens)
         {
-
-
             var userInfo = await GetUserInfoByCode(base.Context.Request.Query["code"]);
             if (userInfo == null)
             {
                 throw new HttpRequestException($"未能检索钉钉的用户信息,请检查参数是否正确。");
             }
-            string content = userInfo.RootElement.GetString("user_info");
+            var content = userInfo.RootElement.GetString("user_info");
 
-            JsonDocument jsonDocument = JsonDocument.Parse(content);
-            base.Logger.LogInformation("用户信息：" + jsonDocument.RootElement);
+            var jsonDocument = JsonDocument.Parse(content);
+            base.Logger.LogInformation("DingTalk 用户信息：" + jsonDocument.RootElement);
 
             #region 获取用户详细信息，暂时不用(只能获取内部员工)
             if (base.Options.IsEmployee)
             {
-                string uninoid = jsonDocument.RootElement.GetString("unionid");
-                string userid = await GetUserId(uninoid, tokens.AccessToken);
+                var uninoid = jsonDocument.RootElement.GetString("unionid");
+                var userid = await GetUserId(uninoid, tokens.AccessToken);
                 if (userid == null)
                 {
                     throw new HttpRequestException($"未能检索钉钉的用户id信息,请检查参数是否正确。");
@@ -57,7 +57,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             #endregion
 
 
-            OAuthCreatingTicketContext context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, base.Context, base.Scheme, (OAuthOptions)base.Options, base.Backchannel, tokens, jsonDocument.RootElement);
+            var context = new OAuthCreatingTicketContext(new ClaimsPrincipal(identity), properties, base.Context, base.Scheme, (OAuthOptions)base.Options, base.Backchannel, tokens, jsonDocument.RootElement);
             context.RunClaimActions();
             await base.Events.CreatingTicket(context);
             return new AuthenticationTicket(context.Principal, context.Properties, base.Scheme.Name);
@@ -97,8 +97,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             //如果不获取内部员工无需配置获取token
             Dictionary<string, string> dictionarytoken = new Dictionary<string, string>
             {
-                ["access_token"] = "abcd",
-
+                ["access_token"] = context.Code,
             };
             return OAuthTokenResponse.Success(JsonDocument.Parse(JsonSerializer.Serialize(dictionarytoken)));
 
@@ -140,11 +139,13 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             DateTimeOffset dto = new DateTimeOffset(DateTime.Now);
             var timestamp = dto.ToUnixTimeMilliseconds().ToString();
 
+            var signature = EncryptWithSHA256(base.Options.AppSecret, timestamp);
+
             Dictionary<string, string> dictionary = new Dictionary<string, string>
             {
                 ["accessKey"] = base.Options.AppId,
                 ["timestamp"] = timestamp,
-                ["signature"] = EncryptWithSHA256(base.Options.AppSecret, timestamp),
+                ["signature"] = signature,
             };
             Dictionary<string, string> content = new Dictionary<string, string>
             {
@@ -182,46 +183,44 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
         /// <returns></returns>
         private async Task<string> GetUserId(string unionid, string access_token)
         {
-            DateTimeOffset dto = new DateTimeOffset(DateTime.Now);
+            var dto = new DateTimeOffset(DateTime.Now);
             var timestamp = dto.ToUnixTimeMilliseconds().ToString();
 
-            Dictionary<string, string> dictionary = new Dictionary<string, string>
+            var queryStringMap = new Dictionary<string, string>
             {
                 ["access_token"] = access_token,
 
             };
-            Dictionary<string, string> content = new Dictionary<string, string>
+            var requestBodyMap = new Dictionary<string, string>
             {
                 ["unionid"] = unionid,
-
             };
-            string json = JsonSerializer.Serialize(content);
-            StringContent stringContent = new StringContent(json);
-            var requestUri = QueryHelpers.AddQueryString(base.Options.UserIdByUnionidEndpoint, dictionary);
 
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
+            var requestUri = QueryHelpers.AddQueryString(base.Options.UserIdByUnionidEndpoint, queryStringMap);
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpRequestMessage.Content = stringContent;
-            HttpResponseMessage response = await base.Backchannel.SendAsync(httpRequestMessage, base.Context.RequestAborted);
-            string text = await response.Content.ReadAsStringAsync();
+            httpRequestMessage.Content = new StringContent(JsonSerializer.Serialize(requestBodyMap));
+            var response = await base.Backchannel.SendAsync(httpRequestMessage, base.Context.RequestAborted);
+            var text = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                JsonDocument jsonDocument = JsonDocument.Parse(text);
+                var jsonDocument = JsonDocument.Parse(text);
                 if (jsonDocument.RootElement.GetString("errcode") != "0")
                 {
                     Exception ex = new Exception("使用unionid获取userid失败，content：" + text);
                     base.Logger.LogError(ex, "DingDingHandler GetUserId");
                     return null;
                 }
-                string result = jsonDocument.RootElement.GetString("result");
+                var result = jsonDocument.RootElement.GetString("result");
 
-                JsonDocument resultDocument = JsonDocument.Parse(result);
-                string userid = resultDocument.RootElement.GetString("userid");
+                var resultDocument = JsonDocument.Parse(result);
+                var userid = resultDocument.RootElement.GetString("userid");
                 return userid;
             }
             else
             {
-                Exception ex = new Exception("使用unionid获取userid失败，content：" + text);
+                var ex = new Exception("使用unionid获取userid失败，content：" + text);
                 base.Logger.LogError(ex, "DingDingHandler GetUserId");
             }
             return null;
@@ -234,44 +233,44 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
         /// <returns></returns>
         private async Task<JsonDocument> GetUserInfoById(string userid, string access_token)
         {
-            DateTimeOffset dto = new DateTimeOffset(DateTime.Now);
+            var dto = new DateTimeOffset(DateTime.Now);
             var timestamp = dto.ToUnixTimeMilliseconds().ToString();
 
-            Dictionary<string, string> dictionary = new Dictionary<string, string>
+            var queryStringMap = new Dictionary<string, string>
             {
                 ["access_token"] = access_token,
 
             };
-            Dictionary<string, string> content = new Dictionary<string, string>
+            var requestBodyMap = new Dictionary<string, string>
             {
                 ["userid"] = userid,
 
             };
-            string json = JsonSerializer.Serialize(content);
-            StringContent stringContent = new StringContent(json);
-            var requestUri = QueryHelpers.AddQueryString(base.Options.UserInformationEndpoint, dictionary);
 
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
+            var requestUri = QueryHelpers.AddQueryString(base.Options.UserInformationEndpoint, queryStringMap);
+
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpRequestMessage.Content = stringContent;
-            HttpResponseMessage response = await base.Backchannel.SendAsync(httpRequestMessage, base.Context.RequestAborted);
-            string text = await response.Content.ReadAsStringAsync();
+            httpRequestMessage.Content = new StringContent(JsonSerializer.Serialize(requestBodyMap));
+            var response = await base.Backchannel.SendAsync(httpRequestMessage, base.Context.RequestAborted);
+            var text = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                JsonDocument jsonDocument = JsonDocument.Parse(text);
+                var jsonDocument = JsonDocument.Parse(text);
                 if (jsonDocument.RootElement.GetString("errcode") != "0")
                 {
-                    Exception ex = new Exception("使用userid获取用户信息失败，content：" + text);
+                    var ex = new Exception("使用userid获取用户信息失败，content：" + text);
                     base.Logger.LogError(ex, "DingDingHandler GetUserInfoById");
                     return null;
                 }
                 var result = jsonDocument.RootElement.GetString("result");
 
-                JsonDocument resultDocument = JsonDocument.Parse(result);
+                var resultDocument = JsonDocument.Parse(result);
                 return resultDocument;
             }
             return null;
         }
+
         /// <summary>
         /// 签名
         /// </summary>
@@ -280,12 +279,12 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
         /// <returns></returns>
         protected virtual string EncryptWithSHA256(string accessKey, string timestamp)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(accessKey);
-            byte[] bytes2 = Encoding.UTF8.GetBytes(timestamp);
-            using (HMACSHA256 hMACSHA = new HMACSHA256(bytes))
+            var keyBytes = Encoding.UTF8.GetBytes(accessKey);
+            var strBytes = Encoding.UTF8.GetBytes(timestamp);
+            using (var hmacsha256 = new HMACSHA256(keyBytes))
             {
-                byte[] inArray = hMACSHA.ComputeHash(bytes2);
-                return Convert.ToBase64String(inArray);
+                var hashmessage = hmacsha256.ComputeHash(strBytes);
+                return Convert.ToBase64String(hashmessage);
             }
         }
 
@@ -299,11 +298,35 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
         protected override void ConfigureOptions()
         {
             base.ConfigureOptions();
-            this.Options.UserInformationByCodeEndpoint = this.ExternalAuthProviderInfo.UserInformationByCodeEndpoint;
-            this.Options.UserIdByUnionidEndpoint = this.ExternalAuthProviderInfo.UserIdByUnionidEndpoint;
-            this.Options.IsEmployee = this.ExternalAuthProviderInfo.IsEmployee;
-            this.Options.AppId = this.ExternalAuthProviderInfo.AppId;
-            this.Options.AppSecret = this.ExternalAuthProviderInfo.AppSecret;
+
+            ConfigureOptionAction?.Invoke(this.Options, this.ExternalAuthProviderInfo);
         }
+
+
+        public static Action<DingTalkAuthenticationOptions, DingTalkProviderInfo> ConfigureOptionAction { get; set; } = (options, providerInfo) =>
+        {
+            options.UserInformationByCodeEndpoint = providerInfo.UserInformationByCodeEndpoint;
+            options.UserIdByUnionidEndpoint = providerInfo.UserIdByUnionidEndpoint;
+            options.IsEmployee = providerInfo.IsEmployee;
+            options.AppId = providerInfo.AppId ?? providerInfo.ClientId;
+            options.AppSecret = providerInfo.AppSecret ?? providerInfo.ClientSecret;
+
+            options.ClaimActions.Clear();
+
+            if (options.IsEmployee)
+            {
+                options.ClaimActions.MapJsonKey(Claims.UnionId, "unionid");
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "unionid");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+
+                options.ClaimActions.MapJsonKey(ClaimTypes.MobilePhone, "mobile");
+            }
+            else
+            {
+                options.ClaimActions.MapJsonKey(Claims.UnionId, "unionid");
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "unionid");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "nick");
+            }
+        };
     }
 }

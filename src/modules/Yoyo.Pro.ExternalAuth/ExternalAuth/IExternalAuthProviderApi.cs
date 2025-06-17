@@ -55,6 +55,7 @@ namespace Yoyo.Pro.ExternalAuth
                 var subject = validatedToken.GetClaimByMapping(options.ClaimsMapping, ClaimTypes.NameIdentifier)?.Value;
                 var fullName = validatedToken.GetClaimByMapping(options.ClaimsMapping, ClaimTypes.Name)?.Value;
                 var email = validatedToken.GetClaimByMapping(options.ClaimsMapping, ClaimTypes.Email)?.Value;
+                var mobilePhone = validatedToken.GetClaimByMapping(options.ClaimsMapping, ClaimTypes.MobilePhone)?.Value;
 
                 if (string.IsNullOrEmpty(subject))
                 {
@@ -75,6 +76,7 @@ namespace Yoyo.Pro.ExternalAuth
                     Provider = providerName,
                     ProviderKey = subject,
                     EmailAddress = email,
+                    MobilePhone = mobilePhone,
                     Name = fullNameParts[0],
                     Surname = ((fullNameParts.Length > 1) ? fullNameParts[1] : fullNameParts[0]),
                     Claims = validatedToken.Claims.Select((Claim c) => new ExternalAuthClaim(c.Type, c.Value)).ToList()

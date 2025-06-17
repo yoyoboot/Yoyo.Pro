@@ -1,5 +1,5 @@
-﻿using Abp.Runtime.Session;
-
+﻿using Abp;
+using Abp.Runtime.Session;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,6 +64,7 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
 
                 // 生成重定向地址
                 var redirectUri = $"{this._externalAuthOptions.Value.SignInSuccessRedirectUri}?tenantId={this.TenantId ?? string.Empty}&authProvider={this.ProviderName}&providerKey={providerKey}&providerAccessCode={accessToken}";
+                redirectUri = redirectUri.ReplaceUrlTenancyName(this.ExternalAuthProviderInfo.TenancyName);
 
                 // 重定向
                 e.Response.Redirect(redirectUri);
