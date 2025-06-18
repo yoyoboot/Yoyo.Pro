@@ -12,6 +12,11 @@ namespace Yoyo.Pro.ExternalAuth
     public class ExternalAuthOptions
     {
         /// <summary>
+        /// 强制https
+        /// </summary>
+        public bool AlwaysHttps { get; set; }
+
+        /// <summary>
         /// 登录调用地址，默认值： /api/ExternalAuth/SignInByProvider
         /// </summary>
         public string SignInPath { get; set; }

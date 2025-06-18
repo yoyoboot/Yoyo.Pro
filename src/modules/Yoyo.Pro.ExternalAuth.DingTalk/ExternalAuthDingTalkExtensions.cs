@@ -1,11 +1,8 @@
 ﻿using Yoyo.Pro.ExternalAuth;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Yoyo.Pro.ExternalAuth.DingTalk;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Abp;
-
 
 namespace Yoyo.Pro
 {
@@ -32,17 +29,21 @@ namespace Yoyo.Pro
             externalAuthConfiguration.AddProviderInfo(providerInfo);
 
             // 添加处理服务
-            return builder.AddOAuth<DingTalkAuthenticationOptions, DingTalkAuthenticationHandler>(authenticationScheme, (options) =>
-              {
-                  options.CallbackPath = externalAuthOptions.CallbackPath;
+            return builder.AddOAuth<DingTalkAuthenticationOptions, DingTalkAuthenticationHandler>(authenticationScheme,
+                (options) =>
+                {
+                    options.CallbackPath = externalAuthOptions.CallbackPath;
 
-                  options.ClientId = providerInfo.ClientId;
-                  options.ClientSecret = providerInfo.ClientSecret;
+                    options.ClientId = providerInfo.ClientId;
+                    options.ClientSecret = providerInfo.ClientSecret;
 
-                  options.AuthorizationEndpoint = providerInfo.AuthorizationEndpoint;
-                  options.TokenEndpoint = providerInfo.TokenEndpoint;
-                  options.UserInformationEndpoint = providerInfo.UserInformationEndpoint;
-              });
+                    options.AuthorizationEndpoint = providerInfo.AuthorizationEndpoint;
+                    options.TokenEndpoint = providerInfo.TokenEndpoint;
+                    options.UserInformationEndpoint = providerInfo.UserInformationEndpoint;
+
+                    options.DataProtectionProvider = new ExternalAuthDataProtectionProvider();
+                    options.StateDataFormat = new ExternalAuthStateDataFormat(options.DataProtectionProvider.CreateProtector(null));
+                });
         }
     }
 }

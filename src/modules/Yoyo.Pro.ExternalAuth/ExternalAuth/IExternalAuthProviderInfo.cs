@@ -37,6 +37,11 @@ namespace Yoyo.Pro.ExternalAuth
         /// </summary>
         Dictionary<string, string> AdditionalParams { get; set; }
 
+        /// <summary>
+        /// 租户名称
+        /// </summary>
+        public string TenancyName { get; set; }
+
         string GetValueOrDefault(string key);
 
         T GetValueOrDefault<T>(string key);

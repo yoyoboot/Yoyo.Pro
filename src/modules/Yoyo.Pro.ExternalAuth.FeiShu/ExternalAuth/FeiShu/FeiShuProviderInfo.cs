@@ -37,6 +37,7 @@ namespace Yoyo.Pro.ExternalAuth.FeiShu
             instance.RequireHttpsMetadata = info.RequireHttpsMetadata;
             instance.ClaimsMapping = info.ClaimsMapping;
             instance.AdditionalParams = info.AdditionalParams;
+            instance.TenancyName = info.TenancyName;
 
             return instance;
         }

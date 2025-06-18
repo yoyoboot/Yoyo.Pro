@@ -38,13 +38,15 @@ namespace Yoyo.Pro.ExternalAuth
         /// </summary>
         public List<ExternalAuthClaimsMapping> ClaimsMapping { get; set; }
 
-
         /// <summary>
         /// 附加数据
         /// </summary>
         public Dictionary<string, string> AdditionalParams { get; set; }
 
-
+        /// <summary>
+        /// 租户名称
+        /// </summary>
+        public string TenancyName { get; set; }
 
 
         #region 构造函数，配置默认值
