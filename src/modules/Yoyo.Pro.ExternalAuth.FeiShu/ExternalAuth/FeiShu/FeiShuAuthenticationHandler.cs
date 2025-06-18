@@ -1,17 +1,17 @@
-﻿using Yoyo.Pro.ExternalAuth.OAuth;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Yoyo.Pro.ExternalAuth.OAuth;
 
 namespace Yoyo.Pro.ExternalAuth.FeiShu
 {
@@ -67,6 +67,16 @@ namespace Yoyo.Pro.ExternalAuth.FeiShu
 
                 }
             }
+        }
+
+        protected override string BuildChallengeUrl(AuthenticationProperties properties, [NotNull] string redirectUri)
+        {
+            if (this._externalAuthOptions.Value.AlwaysHttps)
+            {
+                redirectUri = redirectUri?.Replace("http://", "https://");
+            }
+
+            return base.BuildChallengeUrl(properties, redirectUri);
         }
 
         protected override async Task<FeiShuProviderInfo> GetExternalAuthProviderInfo()

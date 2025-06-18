@@ -1,15 +1,13 @@
-﻿using Abp;
+﻿using System;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Abp.Runtime.Session;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
-using System;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Yoyo.Pro.ExternalAuth.OAuth
 {
@@ -30,7 +28,6 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
 
         protected TExternalAuthProviderInfo ExternalAuthProviderInfo { get; set; }
 
-        //HandleRemoteAuthenticateAsync
         public OAuthProviderHandler(IServiceProvider serviceProvider, IOptionsMonitor<TOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
@@ -41,11 +38,18 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
             _externalAuthProviderInfoStore = this._serviceProvider.GetLazy<IExternalAuthProviderInfoStore>();
         }
 
+        public override Task<bool> ShouldHandleRequestAsync()
+        {
+            var pathMatched = this.Options.CallbackPath.Value.EndsWith(Request.Path);
+
+            var providerInfoNameMatched = this.ExternalAuthProviderInfo.Name == this.Request.Cookies["ExternalAuthProvider"];
+
+            return Task.FromResult(pathMatched && providerInfoNameMatched);
+        }
+
 
         protected override async Task InitializeHandlerAsync()
         {
-            Logger.LogInformation($"{this.GetType().Name} InitializeHandlerAsync 1");
-
             await base.InitializeHandlerAsync();
 
             // 配置公共信息
@@ -74,27 +78,26 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
                 // 标识已经处理过了
                 e.HandleResponse();
             };
+        }
 
-            Logger.LogInformation($"{this.GetType().Name} InitializeHandlerAsync 2");
+        protected override async Task<HandleRequestResult> HandleRemoteAuthenticateAsync()
+        {
+            return await base.HandleRemoteAuthenticateAsync();
         }
 
         protected override async Task<OAuthTokenResponse> ExchangeCodeAsync(OAuthCodeExchangeContext context)
         {
-            Logger.LogInformation($"{this.GetType().Name} ExchangeCodeAsync 1");
 
             // 配置公共信息
             this.ExternalAuthProviderInfo = await this.GetExternalAuthProviderInfo();
             this.ConfigureOptions();
 
-            Logger.LogInformation($"{this.GetType().Name} ExchangeCodeAsync 2");
-
-            return await base.ExchangeCodeAsync(context);
+            var res = await base.ExchangeCodeAsync(context);
+            return res;
         }
 
         protected virtual void ConfigureOptions()
         {
-            Logger.LogInformation($"{this.GetType().Name} ConfigureOptions 1");
-
             this.Options.CallbackPath = this._externalAuthOptions.Value.CallbackPath;
 
             this.Options.ClientId = this.ExternalAuthProviderInfo.ClientId;
@@ -104,8 +107,6 @@ namespace Yoyo.Pro.ExternalAuth.OAuth
             this.Options.TokenEndpoint = this.ExternalAuthProviderInfo.TokenEndpoint;
             this.Options.UserInformationEndpoint = this.ExternalAuthProviderInfo.UserInformationEndpoint;
             this.Options.CorrelationCookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-
-            Logger.LogInformation($"{this.GetType().Name} ConfigureOptions 2");
         }
 
         protected abstract Task<TExternalAuthProviderInfo> GetExternalAuthProviderInfo();

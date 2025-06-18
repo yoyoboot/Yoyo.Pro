@@ -28,21 +28,18 @@
         /// <summary>
         /// Default value for <see cref="OAuthOptions.AuthorizationEndpoint"/>.
         /// </summary>
-        public static readonly string AuthorizationEndpoint = "https://oapi.dingtalk.com/connect/qrconnect";
+        public static readonly string AuthorizationEndpoint = "https://login.dingtalk.com/oauth2/auth";
 
         /// <summary>
         /// Default value for <see cref="OAuthOptions.TokenEndpoint"/>.
         /// </summary>
-        public static readonly string TokenEndpoint = "https://oapi.dingtalk.com/gettoken";
+        public static readonly string TokenEndpoint = "https://api.dingtalk.com/v1.0/oauth2/userAccessToken";
 
         /// <summary>
         /// Default value for <see cref="OAuthOptions.UserInformationEndpoint"/>.
         /// </summary>
-        public static readonly string UserInformationEndpoint = "https://oapi.dingtalk.com/topapi/v2/user/get";
+        public static readonly string UserInformationEndpoint = "https://api.dingtalk.com/v1.0/contact/users/me";
 
-        public static readonly string UserInformationByCodeEndpoint = "https://oapi.dingtalk.com/sns/getuserinfo_bycode";
-
-        public static readonly string UserIdByUnionidEndpoint = "https://oapi.dingtalk.com/topapi/user/getbyunionid";
     }
 
 }
