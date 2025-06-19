@@ -119,7 +119,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                 ["response_type"] = "code",
                 ["redirect_uri"] = redirectUri,
                 ["state"] = value,
-                ["client_id"] = this.Options.ClientSecret,
+                ["client_id"] = this.Options.ClientId,
                 ["prompt"] = "consent"
             };
             string parameter = properties.GetParameter<string>("loginTmpCode");
