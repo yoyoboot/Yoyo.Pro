@@ -120,7 +120,7 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
                 ["redirect_uri"] = redirectUri,
                 ["state"] = value,
                 ["client_id"] = this.Options.ClientId,
-                ["prompt"] = "consent"
+                ["prompt"] = "login"
             };
             string parameter = properties.GetParameter<string>("loginTmpCode");
             if (!string.IsNullOrWhiteSpace(parameter))
