@@ -1,11 +1,9 @@
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using Abp.Domain.Services;
 using Abp.UI;
 using Aliyun.Acs.Core;
 using Aliyun.Acs.Core.Profile;
 using Aliyun.Acs.vod.Model.V20170321;
-using Mren.Aliyun;
 using Yoyo.Pro.Configuration;
 
 namespace Yoyo.Pro.Vod
@@ -13,15 +11,15 @@ namespace Yoyo.Pro.Vod
     /// <summary>
     /// 阿里云VOD的领域服务
     /// </summary>
-    public class AliyunVodManager:DomainService
+    public class AliyunVodManager : DomainService
     {
-        
+
 
         public string InitMethod()
-    {
+        {
 
-        return "方法注册成功";
-    }
+            return "方法注册成功";
+        }
 
         #region 初始化获取Vod服务
         /// <summary>
@@ -33,7 +31,7 @@ namespace Yoyo.Pro.Vod
         {
             var profile = DefaultProfile.GetProfile(regionId, AliyunAccessConfigInfo.AccessKeyId, AliyunAccessConfigInfo.AccessKeySecret);
             profile.AddEndpoint(regionId, regionId, "vod", "vod." + regionId + ".aliyuncs.com");
-            var client= new DefaultAcsClient(profile);
+            var client = new DefaultAcsClient(profile);
             return client;
         }
 
@@ -54,16 +52,16 @@ namespace Yoyo.Pro.Vod
                 Console.WriteLine(e);
                 throw new UserFriendlyException(e.Message);
             }
-          
+
         }
 
-        
+
 
         #endregion
 
-    
 
- 
+
+
         /// <summary>
         /// 获取视频的播放信息
         /// </summary>
@@ -92,10 +90,10 @@ namespace Yoyo.Pro.Vod
         ///  获取视频播放的凭证信息，加密播放。
         /// </summary>
         /// <param name="input">参数：https://help.aliyun.com/document_detail/52833.html?spm=a2c4g.11186623.2.15.140f6872F2JNHX</param>
-        public GetVideoPlayAuthResponse GetVideoPlayAuth(GetVideoPlayAuthRequest  input)
+        public GetVideoPlayAuthResponse GetVideoPlayAuth(GetVideoPlayAuthRequest input)
         {
             var client = InitVodClient();
-           var   response = client.GetAcsResponse(input);
+            var response = client.GetAcsResponse(input);
 
             return response;
 
@@ -131,7 +129,7 @@ namespace Yoyo.Pro.Vod
         /// <returns></returns>
         public UpdateCategoryResponse UpdateMediaCategory(UpdateCategoryRequest input)
         {
-          
+
 
             var client = InitVodClient();
             var model = client.GetAcsResponse(input);
@@ -148,7 +146,7 @@ namespace Yoyo.Pro.Vod
             var client = InitVodClient();
 
             GetCategoriesResponse response = client.GetAcsResponse(input);
-             
+
 
             return response;
 
@@ -194,9 +192,9 @@ namespace Yoyo.Pro.Vod
             var client = InitVodClient();
 
 
-           var response = client.GetAcsResponse(input);
+            var response = client.GetAcsResponse(input);
 
-           return response;
+            return response;
         }
 
         /// <summary>
@@ -208,11 +206,11 @@ namespace Yoyo.Pro.Vod
         {
             var client = InitVodClient();
 
-              
+
 
             GetVideoInfoResponse response = client.GetAcsResponse(input);
 
-            
+
 
 
             return response;
@@ -240,18 +238,18 @@ namespace Yoyo.Pro.Vod
         /// <param name="input"></param>
         /// <returns></returns>
 
-        public  DeleteVideoResponse  DeleteAliyunVodInfo(DeleteVideoRequest input)
+        public DeleteVideoResponse DeleteAliyunVodInfo(DeleteVideoRequest input)
         {
 
-       
+
             // 初始化客户端
             var client = InitVodClient();
             // 发起请求，并得到 response
-         
-                DeleteVideoResponse response = client.GetAcsResponse(input);
-                return response;
-            
-        
+
+            DeleteVideoResponse response = client.GetAcsResponse(input);
+            return response;
+
+
         }
 
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,13 +10,13 @@ namespace Yoyo.Pro
     /// <summary>
     /// 获取配置信息的帮助类
     /// </summary>
-    public static  class ConfigHelper
+    public static class ConfigHelper
     {
         private static readonly IConfiguration AppConfiguration;
- 
+
         static ConfigHelper()
-        {              
-            
+        {
+
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             AppConfiguration = new ConfigurationBuilder()
