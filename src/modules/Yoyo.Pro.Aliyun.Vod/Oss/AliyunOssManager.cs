@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using Abp.Domain.Services;
 using Abp.UI;
@@ -10,12 +10,12 @@ namespace Yoyo.Pro.Oss
     /// <summary>
     /// 阿里云OSS的服务类
     /// </summary>
-    public class AliyunOssManager:DomainService
+    public class AliyunOssManager : DomainService
     {
         private static readonly OssClient Client = new OssClient(AliyunOssConfigInfo.Endpoint, AliyunOssConfigInfo.AccessKeyId, AliyunOssConfigInfo.AccessKeySecret);
 
 
-        public  OssFileData UpLoad(string key, string fileToUpload)
+        public OssFileData UpLoad(string key, string fileToUpload)
         {
             var fileExtensionName = Path.GetExtension(fileToUpload);//文件扩展名
             var filePath = $"{key}{fileExtensionName}";//云文件保存路径  

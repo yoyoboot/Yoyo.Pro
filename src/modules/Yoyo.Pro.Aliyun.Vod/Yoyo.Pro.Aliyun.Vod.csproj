@@ -5,14 +5,13 @@
   <PropertyGroup>
     <TargetFramework>$(DotNetVersion)</TargetFramework>
     <RootNamespace>Yoyo.Pro</RootNamespace>
-    
+
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mren.Aliyun" Version="1.0.8" />
     <PackageReference Include="aliyun-net-sdk-core" Version="1.5.11" />
     <PackageReference Include="aliyun-net-sdk-vod" Version="2.16.9" />
-    <!--<PackageReference Include="aliyun.oss.sdk.core" Version="2.5.3" />-->
+    <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.13.0" />
   </ItemGroup>
 
   <ItemGroup>
