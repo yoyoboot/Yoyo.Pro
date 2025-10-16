@@ -1,4 +1,6 @@
-﻿namespace Yoyo.Pro.ExternalAuth.DingTalk
+﻿using System.Collections.Generic;
+
+namespace Yoyo.Pro.ExternalAuth.DingTalk
 {
     /// <summary>
     /// Default values for DingTalk authentication.
@@ -40,6 +42,18 @@
         /// </summary>
         public static readonly string UserInformationEndpoint = "https://api.dingtalk.com/v1.0/contact/users/me";
 
+        /// <summary>
+        /// 默认授权范围
+        /// </summary>
+        public static List<string> ScopeList { get; set; } = new List<string>()
+        {
+            "snsapi_login"
+        };
+
+        /// <summary>
+        /// 登录认证方式
+        /// </summary>
+        public static string Prompt { get; set; } = "login consent";
     }
 
 }
