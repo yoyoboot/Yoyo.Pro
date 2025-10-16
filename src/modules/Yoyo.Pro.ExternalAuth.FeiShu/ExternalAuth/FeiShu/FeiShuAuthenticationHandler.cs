@@ -28,44 +28,53 @@ namespace Yoyo.Pro.ExternalAuth.FeiShu
           [NotNull] AuthenticationProperties properties,
           [NotNull] OAuthTokenResponse tokens)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, Options.UserInformationEndpoint))
+            try
             {
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
-
-
-                using (var response = await Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, Context.RequestAborted))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, Options.UserInformationEndpoint))
                 {
-                    if (!response.IsSuccessStatusCode)
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
+
+
+                    using (var response = await Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, Context.RequestAborted))
                     {
-                        await LoggingExtensions.UserProfileErrorAsync(Logger, response, Context.RequestAborted);
-                        throw new HttpRequestException("An error occurred while retrieving the user profile.");
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            await LoggingExtensions.UserProfileErrorAsync(Logger, response, Context.RequestAborted);
+                            throw new HttpRequestException("An error occurred while retrieving the user profile.");
+                        }
+
+                        var responseJson = await response.Content.ReadAsStringAsync(Context.RequestAborted);
+                        try
+                        {
+                            var payload = JsonDocument.Parse(responseJson);
+                            var dataJson = payload.RootElement.GetString("data");
+                            payload = JsonDocument.Parse(dataJson);
+
+                            this.Logger.LogInformation("FeiShu 用户信息：" + payload.RootElement);
+
+                            var principal = new ClaimsPrincipal(identity);
+                            var context = new OAuthCreatingTicketContext(principal, properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);
+                            context.RunClaimActions();
+
+                            await Events.CreatingTicket(context);
+                            return new AuthenticationTicket(context.Principal!, context.Properties, Scheme.Name);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new HttpRequestException($"未能检索飞书的用户信息,请检查参数是否正确。{responseJson}", ex);
+                        }
+
+
                     }
-
-                    var responseJson = await response.Content.ReadAsStringAsync(Context.RequestAborted);
-                    try
-                    {
-                        var payload = JsonDocument.Parse(responseJson);
-                        var dataJson = payload.RootElement.GetString("data");
-                        payload = JsonDocument.Parse(dataJson);
-
-                        this.Logger.LogInformation("FeiShu 用户信息：" + payload.RootElement);
-
-                        var principal = new ClaimsPrincipal(identity);
-                        var context = new OAuthCreatingTicketContext(principal, properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);
-                        context.RunClaimActions();
-
-                        await Events.CreatingTicket(context);
-                        return new AuthenticationTicket(context.Principal!, context.Properties, Scheme.Name);
-
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new HttpRequestException($"未能检索飞书的用户信息,请检查参数是否正确。{responseJson}", ex);
-                    }
-
-
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"FeiShuAuthenticationHandler CreateTicketAsync:\r\nAccessToken:{tokens.AccessToken}");
+
+                throw;
             }
         }
 
