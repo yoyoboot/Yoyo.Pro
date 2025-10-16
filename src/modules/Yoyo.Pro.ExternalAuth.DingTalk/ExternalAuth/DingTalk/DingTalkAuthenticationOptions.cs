@@ -21,7 +21,10 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
             TokenEndpoint = DingTalkAuthenticationDefaults.TokenEndpoint;
             UserInformationEndpoint = DingTalkAuthenticationDefaults.UserInformationEndpoint;
 
-            Scope.Add("snsapi_login");
+            foreach (var scope in DingTalkAuthenticationDefaults.ScopeList)
+            {
+                Scope.Add(scope);
+            }
 
             ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "unionid");
             ClaimActions.MapJsonKey(ClaimTypes.Name, "nick");
