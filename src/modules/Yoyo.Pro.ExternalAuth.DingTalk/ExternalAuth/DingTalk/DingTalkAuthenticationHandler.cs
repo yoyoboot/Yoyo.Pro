@@ -30,40 +30,47 @@ namespace Yoyo.Pro.ExternalAuth.DingTalk
 
         protected override async Task<AuthenticationTicket> CreateTicketAsync(ClaimsIdentity identity, AuthenticationProperties properties, OAuthTokenResponse tokens)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, Options.UserInformationEndpoint))
+            try
             {
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                request.Headers.Add("x-acs-dingtalk-access-token", tokens.AccessToken);
-                //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
-
-
-                using (var response = await Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, Context.RequestAborted))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, Options.UserInformationEndpoint))
                 {
-                    if (!response.IsSuccessStatusCode)
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    request.Headers.Add("x-acs-dingtalk-access-token", tokens.AccessToken);
+                    //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
+
+
+                    using (var response = await Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, Context.RequestAborted))
                     {
-                        await LoggingExtensions.UserProfileErrorAsync(Logger, response, Context.RequestAborted);
-                        throw new HttpRequestException("An error occurred while retrieving the user profile.");
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            await LoggingExtensions.UserProfileErrorAsync(Logger, response, Context.RequestAborted);
+                            throw new HttpRequestException("An error occurred while retrieving the user profile.");
+                        }
+
+                        var responseJson = await response.Content.ReadAsStringAsync(Context.RequestAborted);
+                        try
+                        {
+                            var payload = JsonDocument.Parse(responseJson);
+                            var principal = new ClaimsPrincipal(identity);
+                            var context = new OAuthCreatingTicketContext(principal, properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);
+                            context.RunClaimActions();
+
+                            await Events.CreatingTicket(context);
+                            return new AuthenticationTicket(context.Principal!, context.Properties, Scheme.Name);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new HttpRequestException($"未能检索钉钉的用户信息,请检查参数是否正确。{responseJson}", ex);
+                        }
                     }
-
-                    var responseJson = await response.Content.ReadAsStringAsync(Context.RequestAborted);
-                    try
-                    {
-                        var payload = JsonDocument.Parse(responseJson);
-                        var principal = new ClaimsPrincipal(identity);
-                        var context = new OAuthCreatingTicketContext(principal, properties, Context, Scheme, Options, Backchannel, tokens, payload.RootElement);
-                        context.RunClaimActions();
-
-                        await Events.CreatingTicket(context);
-                        return new AuthenticationTicket(context.Principal!, context.Properties, Scheme.Name);
-
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new HttpRequestException($"未能检索钉钉的用户信息,请检查参数是否正确。{responseJson}", ex);
-                    }
-
-
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, $"DingTalkAuthenticationHandler CreateTicketAsync:\r\nAccessToken:{tokens.AccessToken}");
+
+                throw;
             }
         }
 
