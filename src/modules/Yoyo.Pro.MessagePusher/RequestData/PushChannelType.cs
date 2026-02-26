@@ -26,6 +26,8 @@ namespace Yoyo.Pro.RequestData
         [Description("Email")]
         Email,
         [Description("Firebase")]
-        Firebase
+        Firebase,
+        [Description("RobotDingdingQY")]
+        RobotDingdingQY,
     }
 }
