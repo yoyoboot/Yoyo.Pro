@@ -12,7 +12,7 @@ namespace EFCore.BulkExtensions.Tests.IncludeGraph;
 
 public class IncludeGraphTests : IDisposable
 {
-    private readonly static WorkOrder WorkOrder1 = new ()
+    private static readonly WorkOrder WorkOrder1 = new()
     {
         Description = "Fix belt",
         Asset = new Asset
@@ -45,7 +45,7 @@ public class IncludeGraphTests : IDisposable
             }
     };
 
-    private static readonly WorkOrder WorkOrder2 = new ()
+    private static readonly WorkOrder WorkOrder2 = new()
     {
         Description = "Fix toilets",
         Asset = new Asset
@@ -78,7 +78,7 @@ public class IncludeGraphTests : IDisposable
         }
     };
 
-    [Theory]
+    [Theory(Skip = "Requires external SQLServer instance.")]
     [InlineData(DbServerType.SQLServer)]
     //[InlineData(DbServer.Sqlite)]
     public async Task BulkInsertOrUpdate_EntityWithNestedObjectGraph_SavesGraphToDatabase(DbServerType dbServer)
