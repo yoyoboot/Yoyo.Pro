@@ -103,7 +103,7 @@ public class OracleAdapter : ISqlOperationsAdapter
         {
             tableInfo.InsertToTempTable = true;
 
-            var sqlCreateTableCopy = SqlQueryBuilderOracle.CreateTableCopy(tableInfo.FullTableName, tableInfo.FullTempTableName, tableInfo.InsertToTempTable);
+            var sqlCreateTableCopy = SqlQueryBuilderOracle.CreateTableCopy(tableInfo.FullTableName, tableInfo.FullTempTableName, tableInfo.InsertToTempTable, tableInfo.BulkConfig);
             if (isAsync)
             {
                 await context.Database.ExecuteSqlRawAsync(sqlCreateTableCopy, cancellationToken).ConfigureAwait(false);
@@ -138,7 +138,7 @@ public class OracleAdapter : ISqlOperationsAdapter
         {
             tableInfo.InsertToTempTable = true;
             var sqlCreateOutputTableCopy = SqlQueryBuilderOracle.CreateTableCopy(tableInfo.FullTableName,
-                tableInfo.FullTempOutputTableName, tableInfo.InsertToTempTable);
+                tableInfo.FullTempOutputTableName, tableInfo.InsertToTempTable, tableInfo.BulkConfig);
             if (isAsync)
             {
                 await context.Database.ExecuteSqlRawAsync(sqlCreateOutputTableCopy, cancellationToken)
@@ -216,7 +216,7 @@ public class OracleAdapter : ISqlOperationsAdapter
             {
                 if (tableInfo.CreatedOutputTable)
                 {
-                    var sqlDropOutputTable = SqlQueryBuilderOracle.DropTable(tableInfo.FullTempOutputTableName, tableInfo.InsertToTempTable);
+                    var sqlDropOutputTable = SqlQueryBuilderOracle.DropTable(tableInfo.FullTempOutputTableName, tableInfo.InsertToTempTable, tableInfo.BulkConfig);
                     if (isAsync)
                     {
                         await context.Database.ExecuteSqlRawAsync(sqlDropOutputTable, cancellationToken).ConfigureAwait(false);
@@ -228,7 +228,7 @@ public class OracleAdapter : ISqlOperationsAdapter
                 }
                 if (tableInfo.BulkConfig.CustomSourceTableName == null)
                 {
-                    var sqlDropTable = SqlQueryBuilderOracle.DropTable(tableInfo.FullTempTableName, tableInfo.InsertToTempTable);
+                    var sqlDropTable = SqlQueryBuilderOracle.DropTable(tableInfo.FullTempTableName, tableInfo.InsertToTempTable, tableInfo.BulkConfig);
                     if (isAsync)
                     {
                         await context.Database.ExecuteSqlRawAsync(sqlDropTable, cancellationToken).ConfigureAwait(false);
@@ -270,7 +270,7 @@ public class OracleAdapter : ISqlOperationsAdapter
     {
         Dictionary<string, string> previousPropertyColumnNamesDict = tableInfo.ConfigureBulkReadTableInfo();
 
-        var sqlCreateTableCopy = SqlQueryBuilderOracle.CreateTableCopy(tableInfo.FullTableName, tableInfo.FullTempTableName, tableInfo.InsertToTempTable);
+        var sqlCreateTableCopy = SqlQueryBuilderOracle.CreateTableCopy(tableInfo.FullTableName, tableInfo.FullTempTableName, tableInfo.InsertToTempTable, tableInfo.BulkConfig);
         if (isAsync)
         {
             await context.Database.ExecuteSqlRawAsync(sqlCreateTableCopy, cancellationToken).ConfigureAwait(false);
@@ -322,7 +322,7 @@ public class OracleAdapter : ISqlOperationsAdapter
         {
             if (!tableInfo.BulkConfig.UseTempDB)
             {
-                var sqlDropTable = SqlQueryBuilderOracle.DropTable(tableInfo.FullTempTableName, tableInfo.BulkConfig.UseTempDB);
+                var sqlDropTable = SqlQueryBuilderOracle.DropTable(tableInfo.FullTempTableName, tableInfo.BulkConfig.UseTempDB, tableInfo.BulkConfig);
                 if (isAsync)
                 {
                     await context.Database.ExecuteSqlRawAsync(sqlDropTable, cancellationToken).ConfigureAwait(false);
@@ -338,14 +338,14 @@ public class OracleAdapter : ISqlOperationsAdapter
     /// <inheritdoc/>
     public void Truncate(DbContext context, TableInfo tableInfo)
     {
-        var sqlTruncateTable = SqlQueryBuilderOracle.TruncateTable(tableInfo.FullTableName);
+        var sqlTruncateTable = SqlQueryBuilderOracle.TruncateTable(tableInfo.FullTableName, tableInfo.BulkConfig);
         context.Database.ExecuteSqlRaw(sqlTruncateTable);
     }
 
     /// <inheritdoc/>
     public async Task TruncateAsync(DbContext context, TableInfo tableInfo, CancellationToken cancellationToken)
     {
-        var sqlTruncateTable = SqlQueryBuilderOracle.TruncateTable(tableInfo.FullTableName);
+        var sqlTruncateTable = SqlQueryBuilderOracle.TruncateTable(tableInfo.FullTableName, tableInfo.BulkConfig);
         await context.Database.ExecuteSqlRawAsync(sqlTruncateTable, cancellationToken).ConfigureAwait(false);
     }
 

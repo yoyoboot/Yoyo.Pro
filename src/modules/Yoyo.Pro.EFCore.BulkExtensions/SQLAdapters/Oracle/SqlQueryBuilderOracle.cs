@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions.SqlAdapters;
 
 namespace EFCore.BulkExtensions.SqlAdapters.Oracle;
 
@@ -20,14 +21,13 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
     /// <param name="newTableName"></param>
     /// <param name="useTempDb"></param>
     /// <returns></returns>
-    public static string CreateTableCopy(string existingTableName, string newTableName, bool useTempDb)
+    public static string CreateTableCopy(string existingTableName, string newTableName, bool useTempDb, BulkConfig bulkConfig)
     {
         string keywordTemp = useTempDb ? "GLOBAL TEMPORARY " : "";
         string typeTemp = useTempDb ? " ON COMMIT PRESERVE ROWS " : "";
         var query = $"CREATE {keywordTemp}TABLE {newTableName} {typeTemp}" +
                 $"AS SELECT* FROM {existingTableName} WHERE 1 = 2;";
-        query = query.Replace("[", "").Replace("]", "");
-        return query;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(query, bulkConfig, DbServerType.Oracle);
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
     /// <param name="tableName"></param>
     /// <param name="isTempTable"></param>
     /// <returns></returns>
-    public static string DropTable(string tableName, bool isTempTable)
+    public static string DropTable(string tableName, bool isTempTable, BulkConfig bulkConfig)
     {
         string query;
 
@@ -56,9 +56,7 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
                    END;";
         }
 
-        query = query.Replace("[", "").Replace("]", "");
-
-        return query;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(query, bulkConfig, DbServerType.Oracle);
     }
 
     /// <summary>
@@ -119,7 +117,7 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
             ? ",(CASE $action WHEN 'UPDATE' THEN 1 Else 0 END),(CASE $action WHEN 'DELETE' THEN 1 Else 0 END)"
             : string.Empty;
         string query;
-        var firstPrimaryKey = tableInfo.PrimaryKeysPropertyColumnNameDict.FirstOrDefault().Key;
+        var firstPrimaryKey = tableInfo.PrimaryKeysPropertyColumnNameDict.FirstOrDefault().Value;
         if (operationType == OperationType.Delete)
         {
             query = $"delete FROM {tableInfo.FullTableName} WHERE " +
@@ -162,8 +160,6 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
             query += ";";
         }
 
-        query = query.Replace("[", "").Replace("]", "");
-
         Dictionary<string, string>? sourceDestinationMappings = tableInfo.BulkConfig.CustomSourceDestinationMappingColumns;
         if (tableInfo.BulkConfig.CustomSourceTableName != null && sourceDestinationMappings != null && sourceDestinationMappings.Count > 0)
         {
@@ -187,7 +183,7 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
                 query = query.Replace(qSegment, qSegmentUpdated);
             }
         }
-        return query;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(query, tableInfo.BulkConfig, DbServerType.Oracle);
     }
 
     /// <summary>
@@ -199,8 +195,7 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
     {
         List<string> columnsNames = tableInfo.OutputPropertyColumnNamesDict.Values.ToList();
         var query = $"SELECT {SqlQueryBuilder.GetCommaSeparatedColumns(columnsNames)} FROM {tableInfo.FullTempOutputTableName} WHERE [{tableInfo.PrimaryKeysPropertyColumnNameDict.Select(x => x.Value).FirstOrDefault()}] IS NOT NULL";
-        query = query.Replace("[", "").Replace("]", "");
-        return query;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(query, tableInfo.BulkConfig, DbServerType.Oracle);
     }
 
     /// <summary>
@@ -209,24 +204,23 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
     /// <param name="tableInfo"></param>
     public static string CreateUniqueConstrain(TableInfo tableInfo)
     {
-        var tableName = tableInfo.TableName;
-        var schemaFormated = tableInfo.Schema == null ? "" : $@"`{tableInfo.Schema}`.";
-        var fullTableNameFormated = $@"{schemaFormated}`{tableName}`";
+        var tableName = IdentifierFormatter.NormalizeIdentifierName(tableInfo.TableName ?? string.Empty, tableInfo.BulkConfig, DbServerType.Oracle);
+        var schema = tableInfo.Schema == null ? null : IdentifierFormatter.NormalizeIdentifierName(tableInfo.Schema, tableInfo.BulkConfig, DbServerType.Oracle);
+        var schemaFormated = schema == null ? "" : $"\"{schema}\".";
+        var fullTableNameFormated = $"{schemaFormated}\"{tableName}\"";
 
-        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList();
+        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values
+            .Select(column => IdentifierFormatter.NormalizeIdentifierName(column, tableInfo.BulkConfig, DbServerType.Oracle))
+            .ToList();
         var uniqueColumnNamesDash = string.Join("_", uniqueColumnNames);
-        var schemaDash = tableInfo.Schema == null ? "" : $"{tableInfo.Schema}_";
+        var schemaDash = schema == null ? "" : $"{schema}_";
         var uniqueConstrainName = $"tempUniqueIndex_{schemaDash}{tableName}_{uniqueColumnNamesDash}";
 
-        var uniqueColumnNamesComma = string.Join(",", uniqueColumnNames); // TODO When Column is string without defined max length, it should be UNIQUE (`Name`(255)); otherwise exception: BLOB/TEXT column 'Name' used in key specification without a key length'
-        uniqueColumnNamesComma = "`" + uniqueColumnNamesComma;
-        uniqueColumnNamesComma = uniqueColumnNamesComma.Replace(",", "`, `");
-        var uniqueColumnNamesFormated = uniqueColumnNamesComma.TrimEnd(',');
-        uniqueColumnNamesFormated = uniqueColumnNamesFormated + "`";
+        var uniqueColumnNamesFormated = string.Join(", ", uniqueColumnNames.Select(column => $"\"{column}\""));
 
-        var q = $@"ALTER TABLE {fullTableNameFormated} " +
-                $@"ADD CONSTRAINT `{uniqueConstrainName}` " +
-                $@"UNIQUE ({uniqueColumnNamesFormated})";
+        var q = $"ALTER TABLE {fullTableNameFormated} " +
+            $"ADD CONSTRAINT \"{uniqueConstrainName}\" " +
+            $"UNIQUE ({uniqueColumnNamesFormated})";
         return q;
     }
 
@@ -236,16 +230,18 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
     /// <param name="tableInfo"></param>
     public static string DropUniqueConstrain(TableInfo tableInfo)
     {
-        var tableName = tableInfo.TableName;
-        var schemaFormated = tableInfo.Schema == null ? "" : $@"`{tableInfo.Schema}`.";
-        var fullTableNameFormated = $@"{schemaFormated}`{tableName}`";
+        var tableName = IdentifierFormatter.NormalizeIdentifierName(tableInfo.TableName ?? string.Empty, tableInfo.BulkConfig, DbServerType.Oracle);
+        var schema = tableInfo.Schema == null ? null : IdentifierFormatter.NormalizeIdentifierName(tableInfo.Schema, tableInfo.BulkConfig, DbServerType.Oracle);
 
-        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList();
+        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values
+            .Select(column => IdentifierFormatter.NormalizeIdentifierName(column, tableInfo.BulkConfig, DbServerType.Oracle))
+            .ToList();
         var uniqueColumnNamesDash = string.Join("_", uniqueColumnNames);
-        var schemaDash = tableInfo.Schema == null ? "" : $"{tableInfo.Schema}_";
+        var schemaDash = schema == null ? "" : $"{schema}_";
         var uniqueConstrainName = $"tempUniqueIndex_{schemaDash}{tableName}_{uniqueColumnNamesDash}";
 
-        var q = $@"DROP INDEX `{uniqueConstrainName}`;";
+        var fullTableNameFormated = $"{(schema == null ? "" : $"\"{schema}\".")}\"{tableName}\"";
+        var q = $"ALTER TABLE {fullTableNameFormated} DROP CONSTRAINT \"{uniqueConstrainName}\"";
         return q;
     }
 
@@ -327,7 +323,7 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
         var q = $"SELECT {GetCommaSeparatedColumns(columnsNames, "S")} FROM {sourceTable} AS S " +
                 $"JOIN {joinTable} AS J " +
                 $"ON {GetANDSeparatedColumns(selectByPropertyNames, "S", "J", tableInfo.UpdateByPropertiesAreNullable)}";
-        return q;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(q, tableInfo.BulkConfig, DbServerType.Oracle);
     }
 
     /// <summary>
@@ -335,10 +331,10 @@ public class SqlQueryBuilderOracle : QueryBuilderExtensions
     /// </summary>
     /// <param name="tableName"></param>
     /// <returns></returns>
-    public static string TruncateTable(string tableName)
+    public static string TruncateTable(string tableName, BulkConfig bulkConfig)
     {
         var q = $"TRUNCATE TABLE {tableName};";
-        return q;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(q, bulkConfig, DbServerType.Oracle);
     }
 
     // propertColumnsNamesDict used with Sqlite for @parameter to be save from non valid charaters ('', '!', ...) that are allowed as column Names in Sqlite

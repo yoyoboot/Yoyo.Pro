@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using EFCore.BulkExtensions.SqlAdapters;
 
 namespace EFCore.BulkExtensions.SqlAdapters.PostgreSql;
 
@@ -16,14 +17,13 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     /// <param name="existingTableName"></param>
     /// <param name="newTableName"></param>
     /// <param name="useTempDb"></param>
-    public static string CreateTableCopy(string existingTableName, string newTableName, bool useTempDb)
+    public static string CreateTableCopy(string existingTableName, string newTableName, bool useTempDb, BulkConfig bulkConfig)
     {
         string keywordTEMP = useTempDb ? "TEMP " : ""; // "TEMP " or "TEMPORARY "
         var q = $"CREATE {keywordTEMP}TABLE {newTableName} " +
                 $"AS TABLE {existingTableName} " +
                 $"WITH NO DATA;";
-        q = q.Replace("[", @"""").Replace("]", @"""");
-        return q;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(q, bulkConfig, DbServerType.PostgreSQL);
     }
 
     /// <summary>
@@ -35,17 +35,16 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     public static string InsertIntoTable(TableInfo tableInfo, OperationType operationType, string? tableName = null)
     {
         tableName ??= tableInfo.InsertToTempTable ? tableInfo.FullTempTableName : tableInfo.FullTableName;
-        tableName = tableName.Replace("[", @"""").Replace("]", @"""");
 
         var columnsList = GetColumnList(tableInfo, operationType);
 
-        var commaSeparatedColumns = SqlQueryBuilder.GetCommaSeparatedColumns(columnsList).Replace("[", @"""").Replace("]", @"""");
+        var commaSeparatedColumns = SqlQueryBuilder.GetCommaSeparatedColumns(columnsList);
 
         var q = $"COPY {tableName} " +
                 $"({commaSeparatedColumns}) " +
                 $"FROM STDIN (FORMAT BINARY)";
 
-        return q + ";";
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(q + ";", tableInfo.BulkConfig, DbServerType.PostgreSQL);
     }
 
     /// <summary>
@@ -77,7 +76,6 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
         {
             var deleteByColumns = SqlQueryBuilder.GetCommaSeparatedColumns(tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList(), tableInfo.FullTableName, tableInfo.FullTempTableName);
             deleteByColumns = deleteByColumns.Replace(",", " AND");
-            deleteByColumns = deleteByColumns.Replace("[", @"""").Replace("]", @"""");
 
             q = $"DELETE FROM {tableInfo.FullTableName} " +
                 $"USING {tableInfo.FullTempTableName} " +
@@ -85,13 +83,13 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
         }
         else
         {
-            var commaSeparatedColumns = SqlQueryBuilder.GetCommaSeparatedColumns(columnsList).Replace("[", @"""").Replace("]", @"""");
+            var commaSeparatedColumns = SqlQueryBuilder.GetCommaSeparatedColumns(columnsList);
 
-            var updateByColumns = SqlQueryBuilder.GetCommaSeparatedColumns(tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList()).Replace("[", @"""").Replace("]", @"""");
+            var updateByColumns = SqlQueryBuilder.GetCommaSeparatedColumns(tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList());
 
             var columnsListEquals = GetColumnList(tableInfo, OperationType.Insert);
             var columnsToUpdate = columnsListEquals.Where(c => tableInfo.PropertyColumnNamesUpdateDict.ContainsValue(c)).ToList();
-            var equalsColumns = SqlQueryBuilder.GetCommaSeparatedColumns(columnsToUpdate, equalsTable: "EXCLUDED").Replace("[", @"""").Replace("]", @"""");
+            var equalsColumns = SqlQueryBuilder.GetCommaSeparatedColumns(columnsToUpdate, equalsTable: "EXCLUDED");
 
             bool applySubqueryLimit = columnsToUpdate.Count == 0 || string.IsNullOrWhiteSpace(equalsColumns);
             var subqueryText = applySubqueryLimit ? "LIMIT 1 " : "";
@@ -105,18 +103,18 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
 
             if (tableInfo.BulkConfig.OnConflictUpdateWhereSql != null)
             {
-                q += $" WHERE {tableInfo.BulkConfig.OnConflictUpdateWhereSql(tableInfo.FullTableName.Replace("[", @"""").Replace("]", @""""), "EXCLUDED")}";
+                var tableNameQuoted = IdentifierFormatter.ConvertSquareBracketIdentifiers(tableInfo.FullTableName, tableInfo.BulkConfig, DbServerType.PostgreSQL);
+                q += $" WHERE {tableInfo.BulkConfig.OnConflictUpdateWhereSql(tableNameQuoted, "EXCLUDED")}";
             }
 
             if (tableInfo.CreatedOutputTable)
             {
                 var allColumnsList = tableInfo.PropertyColumnNamesDict.Values.ToList();
-                string commaSeparatedColumnsNames = SqlQueryBuilder.GetCommaSeparatedColumns(allColumnsList).Replace("[", @"""").Replace("]", @"""");
+                string commaSeparatedColumnsNames = SqlQueryBuilder.GetCommaSeparatedColumns(allColumnsList);
                 q += $" RETURNING {commaSeparatedColumnsNames}";
             }
         }
 
-        q = q.Replace("[", @"""").Replace("]", @"""");
         q += ";";
 
         Dictionary<string, string>? sourceDestinationMappings = tableInfo.BulkConfig.CustomSourceDestinationMappingColumns;
@@ -129,12 +127,12 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
             var qSegmentUpdated = qSegment;
             foreach (var mapping in sourceDestinationMappings)
             {
-                var propertyFormated = $@"""{mapping.Value}""";
-                var sourceProperty = mapping.Key;
+                var propertyFormated = $"[{mapping.Value}]";
+                var sourceProperty = $"[{mapping.Key}]";
 
                 if (qSegment.Contains(propertyFormated))
                 {
-                    qSegmentUpdated = qSegmentUpdated.Replace(propertyFormated, $@"""{sourceProperty}""");
+                    qSegmentUpdated = qSegmentUpdated.Replace(propertyFormated, sourceProperty);
                 }
             }
             if (qSegment != qSegmentUpdated)
@@ -143,7 +141,7 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
             }
         }
 
-        return q;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(q, tableInfo.BulkConfig, DbServerType.PostgreSQL);
     }
 
     /// <summary>
@@ -180,22 +178,20 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     /// Generates SQL query to truncate a table
     /// </summary>
     /// <param name="tableName"></param>
-    public static string TruncateTable(string tableName)
+    public static string TruncateTable(string tableName, BulkConfig bulkConfig)
     {
         var q = $"TRUNCATE {tableName} RESTART IDENTITY;";
-        q = q.Replace("[", @"""").Replace("]", @"""");
-        return q;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(q, bulkConfig, DbServerType.PostgreSQL);
     }
 
     /// <summary>
     /// Generates SQL query to drop a table
     /// </summary>
     /// <param name="tableName"></param>
-    public static string DropTable(string tableName)
+    public static string DropTable(string tableName, BulkConfig bulkConfig)
     {
         string q = $"DROP TABLE IF EXISTS {tableName}";
-        q = q.Replace("[", @"""").Replace("]", @"""");
-        return q;
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(q, bulkConfig, DbServerType.PostgreSQL);
     }
 
     /// <summary>
@@ -204,7 +200,10 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     /// <param name="tableInfo"></param>
     public static string CountUniqueConstrain(TableInfo tableInfo)
     {
-        var primaryKeysColumns = tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList();
+        var primaryKeysColumns = tableInfo.PrimaryKeysPropertyColumnNameDict.Values
+            .Select(column => IdentifierFormatter.NormalizeIdentifierName(column, tableInfo.BulkConfig, DbServerType.PostgreSQL))
+            .ToList();
+        var tableName = IdentifierFormatter.NormalizeIdentifierName(tableInfo.TableName ?? string.Empty, tableInfo.BulkConfig, DbServerType.PostgreSQL);
 
         var q = $"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc ";
         foreach (var (pkColumn, index) in primaryKeysColumns.Select((value, i) => (value, i)))
@@ -216,7 +215,7 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
 
         q = q +
             $"WHERE (tc.CONSTRAINT_TYPE = 'UNIQUE' OR tc.CONSTRAINT_TYPE = 'PRIMARY KEY') " +
-            $"AND tc.TABLE_NAME = '{tableInfo.TableName}' ";
+            $"AND tc.TABLE_NAME = '{tableName}' ";
 
         return q;
     }
@@ -227,14 +226,17 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     /// <param name="tableInfo"></param>
     public static string CreateUniqueIndex(TableInfo tableInfo)
     {
-        var tableName = tableInfo.TableName;
-        var schemaFormated = tableInfo.Schema == null ? "" : $@"""{tableInfo.Schema}"".";
+        var tableName = IdentifierFormatter.NormalizeIdentifierName(tableInfo.TableName ?? string.Empty, tableInfo.BulkConfig, DbServerType.PostgreSQL);
+        var schema = tableInfo.Schema == null ? null : IdentifierFormatter.NormalizeIdentifierName(tableInfo.Schema, tableInfo.BulkConfig, DbServerType.PostgreSQL);
+        var schemaFormated = schema == null ? "" : $@"""{schema}"".";
         var fullTableNameFormated = $@"{schemaFormated}""{tableName}""";
 
-        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList();
+        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values
+            .Select(column => IdentifierFormatter.NormalizeIdentifierName(column, tableInfo.BulkConfig, DbServerType.PostgreSQL))
+            .ToList();
         var uniqueColumnNamesDash = string.Join("_", uniqueColumnNames);
         var uniqueColumnNamesFormated = @"""" + string.Join(@""", """, uniqueColumnNames) + @"""";
-        var schemaDash = tableInfo.Schema == null ? "" : $"{tableInfo.Schema}_";
+        var schemaDash = schema == null ? "" : $"{schema}_";
 
         var q = $@"CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS ""tempUniqueIndex_{schemaDash}{tableName}_{uniqueColumnNamesDash}"" " +
                 $@"ON {fullTableNameFormated} ({uniqueColumnNamesFormated})";
@@ -247,13 +249,16 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     /// <param name="tableInfo"></param>
     public static string CreateUniqueConstrain(TableInfo tableInfo)
     {
-        var tableName = tableInfo.TableName;
-        var schemaFormated = tableInfo.Schema == null ? "" : $@"""{tableInfo.Schema}"".";
+        var tableName = IdentifierFormatter.NormalizeIdentifierName(tableInfo.TableName ?? string.Empty, tableInfo.BulkConfig, DbServerType.PostgreSQL);
+        var schema = tableInfo.Schema == null ? null : IdentifierFormatter.NormalizeIdentifierName(tableInfo.Schema, tableInfo.BulkConfig, DbServerType.PostgreSQL);
+        var schemaFormated = schema == null ? "" : $@"""{schema}"".";
         var fullTableNameFormated = $@"{schemaFormated}""{tableName}""";
 
-        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList();
+        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values
+            .Select(column => IdentifierFormatter.NormalizeIdentifierName(column, tableInfo.BulkConfig, DbServerType.PostgreSQL))
+            .ToList();
         var uniqueColumnNamesDash = string.Join("_", uniqueColumnNames);
-        var schemaDash = tableInfo.Schema == null ? "" : $"{tableInfo.Schema}_";
+        var schemaDash = schema == null ? "" : $"{schema}_";
         var uniqueConstrainName = $"tempUniqueIndex_{schemaDash}{tableName}_{uniqueColumnNamesDash}";
 
         var q = $@"ALTER TABLE {fullTableNameFormated} " +
@@ -268,13 +273,16 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     /// <param name="tableInfo"></param>
     public static string DropUniqueConstrain(TableInfo tableInfo)
     {
-        var tableName = tableInfo.TableName;
-        var schemaFormated = tableInfo.Schema == null ? "" : $@"""{tableInfo.Schema}"".";
+        var tableName = IdentifierFormatter.NormalizeIdentifierName(tableInfo.TableName ?? string.Empty, tableInfo.BulkConfig, DbServerType.PostgreSQL);
+        var schema = tableInfo.Schema == null ? null : IdentifierFormatter.NormalizeIdentifierName(tableInfo.Schema, tableInfo.BulkConfig, DbServerType.PostgreSQL);
+        var schemaFormated = schema == null ? "" : $@"""{schema}"".";
         var fullTableNameFormated = $@"{schemaFormated}""{tableName}""";
 
-        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values.ToList();
+        var uniqueColumnNames = tableInfo.PrimaryKeysPropertyColumnNameDict.Values
+            .Select(column => IdentifierFormatter.NormalizeIdentifierName(column, tableInfo.BulkConfig, DbServerType.PostgreSQL))
+            .ToList();
         var uniqueColumnNamesDash = string.Join("_", uniqueColumnNames);
-        var schemaDash = tableInfo.Schema == null ? "" : $"{tableInfo.Schema}_";
+        var schemaDash = schema == null ? "" : $"{schema}_";
         var uniqueConstrainName = $"tempUniqueIndex_{schemaDash}{tableName}_{uniqueColumnNamesDash}";
 
         var q = $@"ALTER TABLE {fullTableNameFormated} " +
@@ -356,7 +364,8 @@ public class SqlQueryBuilderPostgreSql : SqlAdapters.QueryBuilderExtensions
     /// <returns></returns>
     public override string SelectFromOutputTable(TableInfo tableInfo)
     {
-        return SqlQueryBuilder.SelectFromOutputTable(tableInfo);
+        var sql = SqlQueryBuilder.SelectFromOutputTable(tableInfo);
+        return IdentifierFormatter.ConvertSquareBracketIdentifiers(sql, tableInfo.BulkConfig, DbServerType.PostgreSQL);
     }
 
     /// <summary>
