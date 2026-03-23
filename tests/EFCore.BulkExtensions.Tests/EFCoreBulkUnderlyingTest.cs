@@ -1,4 +1,4 @@
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ public class EFCoreBulkUnderlyingTest
     private static readonly Func<TestContext, Item?> LastItemQuery = EF.CompileQuery<TestContext, Item?>(ctx => ctx.Item.OrderBy(i => i.ItemId).LastOrDefault());
     private static readonly Func<TestContext, IEnumerable<Item>> AllItemsQuery = EF.CompileQuery<TestContext, IEnumerable<Item>>(ctx => ctx.Item.AsNoTracking());
 
-    [Theory]
+    [Theory(Skip = "Requires external SQLServer instance.")]
     [InlineData(true)]
     public void OperationsTest(bool isBulk)
     {
@@ -49,7 +49,7 @@ public class EFCoreBulkUnderlyingTest
         var subEntities = new List<ItemHistory>();
         for (int i = 1; i < EntitiesNumber; i++)
         {
-            var entity = new Item (
+            var entity = new Item(
                 isBulk ? i : 0,
                 "name " + i,
                 string.Concat("info ", Guid.NewGuid().ToString().AsSpan(0, 3)),
@@ -245,9 +245,9 @@ class MyCommand : DbCommand
     }
 
     public override string CommandText
-    { 
+    {
         get => UnderlyingCommand.CommandText ?? string.Empty;
-        [param:AllowNull]
+        [param: AllowNull]
 #pragma warning disable CS8765 // Complains about a false nullability
         set => UnderlyingCommand.CommandText = value ?? string.Empty;
 #pragma warning restore CS8765 // Complains about a false nullability

@@ -72,7 +72,7 @@ public class Issue547DbContext : DbContext
 
 public class Issue547 : IDisposable
 {
-    [Theory]
+    [Theory(Skip = "Requires external SQLServer instance.")]
     [InlineData(DbServerType.SQLServer)]
     public async Task Test(DbServerType dbServer)
     {
@@ -132,7 +132,7 @@ public class Issue547 : IDisposable
             Assert.NotNull(re.Owned.ChildId);
             Assert.NotNull(re.Owned.Child);
             Assert.NotEmpty(re.Owned.Child.Name);
-            
+
             Assert.NotNull(re.OwnedInSeparateTable);
             Assert.NotEmpty(re.OwnedInSeparateTable.Flowers);
         }

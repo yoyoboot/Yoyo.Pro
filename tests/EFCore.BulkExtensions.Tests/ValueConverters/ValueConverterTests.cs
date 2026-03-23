@@ -10,7 +10,6 @@ namespace EFCore.BulkExtensions.Tests.ValueConverters;
 public class ValueConverterTests: IDisposable
 {
     [Theory]
-    [InlineData(DbServerType.SQLServer)]
     [InlineData(DbServerType.SQLite)]
     public void BulkInsertOrUpdate_EntityUsingBuiltInEnumToStringConverter_SavesToDatabase(DbServerType dbServer)
     {
@@ -36,7 +35,6 @@ public class ValueConverterTests: IDisposable
     }
 
     [Theory]
-    [InlineData(DbServerType.SQLServer)]
     [InlineData(DbServerType.SQLite)]
     public void BatchUpdate_EntityUsingBuiltInEnumToStringConverter_UpdatesDatabaseWithEnumStringValue(DbServerType dbServer)
     {
@@ -68,7 +66,6 @@ public class ValueConverterTests: IDisposable
     }
 
     [Theory]
-    [InlineData(DbServerType.SQLServer)]
     [InlineData(DbServerType.SQLite)]
     public void BatchDelete_UsingWhereExpressionWithValueConverter_Deletes(DbServerType dbServer)
     {

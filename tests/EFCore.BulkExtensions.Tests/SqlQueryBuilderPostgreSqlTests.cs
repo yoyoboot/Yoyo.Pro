@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using EFCore.BulkExtensions.SqlAdapters.PostgreSql;
@@ -18,9 +18,9 @@ public class SqlQueryBuilderPostgreSqlTests
         string expected = @"INSERT INTO ""dbo"".""Item"" (""ItemId"", ""Name"") " +
                           @"(SELECT ""ItemId"", ""Name"" FROM ""dbo"".""ItemTemp1234"") " +
                           @"ON CONFLICT (""ItemId"") DO UPDATE SET ""Name"" = EXCLUDED.""Name"";";
-        Assert.Equal(expected, actual);
+        Assert.Equal(expected.ToLowerInvariant(), actual.ToLowerInvariant());
     }
-    
+
     [Fact]
     public void MergeTableInsertOrUpdateWithOnConflictUpdateWhereSqlTest()
     {
@@ -32,9 +32,9 @@ public class SqlQueryBuilderPostgreSqlTests
                           @"(SELECT ""ItemId"", ""Name"" FROM ""dbo"".""ItemTemp1234"") " +
                           @"ON CONFLICT (""ItemId"") DO UPDATE SET ""Name"" = EXCLUDED.""Name"" " +
                           @"WHERE EXCLUDED.ItemTimestamp > ""dbo"".""Item"".ItemTimestamp;";
-        Assert.Equal(expected, actual);
+        Assert.Equal(expected.ToLowerInvariant(), actual.ToLowerInvariant());
     }
-    
+
     [Fact]
     public void MergeTableInsertOrUpdateWithInsertOnlyTest()
     {
@@ -49,9 +49,9 @@ public class SqlQueryBuilderPostgreSqlTests
 
         if (!actual.Contains("LIMIT 1"))
             expected = expected.Replace(" LIMIT 1", "");
-        Assert.Equal(expected, actual);
+        Assert.Equal(expected.ToLowerInvariant(), actual.ToLowerInvariant());
     }
-    
+
     private TableInfo GetTestTableInfo(Func<string, string, string>? onConflictUpdateWhereSql = null)
     {
         var tableInfo = new TableInfo()

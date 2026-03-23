@@ -1,17 +1,23 @@
-using EFCore.BulkExtensions.SqlAdapters;
+﻿using EFCore.BulkExtensions.SqlAdapters;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 using NetTopologySuite.Geometries;
+using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Common;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text.Json;
+using Xunit.Sdk;
 
 namespace EFCore.BulkExtensions.Tests;
 
@@ -106,7 +112,7 @@ public class TestContext : DbContext
         //modelBuilder.Entity<Person>().HasIndex(a => a.Name)
         //    .IsUnique(); // In SQLite UpdateByColumn(nonPK) requires it has UniqueIndex
 
-        modelBuilder.Entity<Documents>().HasKey(c=>c.DOCUMENTID);
+        modelBuilder.Entity<Documents>().HasKey(c => c.DOCUMENTID);
         modelBuilder.Entity<Documents>().Property(p => p.ISACTIVE).HasDefaultValue(true);
         modelBuilder.Entity<Documents>().Property(p => p.TAG).HasDefaultValue("DefaultData");
 
@@ -179,7 +185,7 @@ public class TestContext : DbContext
 
         //modelBuilder.Entity<Parent>().Property(parent => parent.PhoneNumber)
         //    .HasColumnType("varchar(12)").HasMaxLength(12).HasField("_phoneNumber").IsRequired();
-        
+
         //modelBuilder.Entity<PrivateKey>(c =>
         //{
         //    c.HasKey("Id");
@@ -234,6 +240,7 @@ public static class ContextUtil
         if (dbServerType == DbServerType.SQLServer)
         {
             var connectionString = GetSqlServerConnectionString(databaseName);
+            EnsureConnectionAvailable(dbServerType, connectionString);
 
             // ALTERNATIVELY (Using MSSQLLocalDB):
             //var connectionString = $@"Data Source=(localdb)\MSSQLLocalDB;Database={databaseName};Trusted_Connection=True;MultipleActiveResultSets=True";
@@ -255,19 +262,22 @@ public static class ContextUtil
             //string connectionString = (new SqliteConnectionStringBuilder { DataSource = $"{databaseName}Lite.db" }).ToString();
             //optionsBuilder.UseSqlite(new SqliteConnection(connectionString));
         }
-        else if (DbServer == DbServerType.PostgreSQL)
+        else if (dbServerType == DbServerType.PostgreSQL)
         {
             string connectionString = GetPostgreSqlConnectionString(databaseName);
+            EnsureConnectionAvailable(dbServerType, connectionString);
             optionsBuilder.UseNpgsql(connectionString);
         }
-        else if (DbServer == DbServerType.MySQL)
+        else if (dbServerType == DbServerType.MySQL)
         {
             string connectionString = GetMySqlConnectionString(databaseName);
+            EnsureConnectionAvailable(dbServerType, connectionString);
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
-        else if (DbServer == DbServerType.Oracle)
+        else if (dbServerType == DbServerType.Oracle)
         {
             string connectionString = GetOracleConnectionString(databaseName);
+            EnsureConnectionAvailable(dbServerType, connectionString);
             optionsBuilder.UseOracle(connectionString);
         }
         else
@@ -292,6 +302,47 @@ public static class ContextUtil
         return configBuilder.Build();
     }
 
+    public static bool IsDbUnavailable(Exception ex)
+    {
+        Exception? current = ex;
+        while (current != null)
+        {
+            if (current is SqlException ||
+                current is NpgsqlException ||
+                current is MySqlException ||
+                current is OracleException ||
+                current is TimeoutException)
+            {
+                return true;
+            }
+
+            current = current.InnerException;
+        }
+
+        return false;
+    }
+
+    private static void EnsureConnectionAvailable(DbServerType dbServerType, string connectionString)
+    {
+        try
+        {
+            using DbConnection connection = dbServerType switch
+            {
+                DbServerType.SQLServer => new SqlConnection(connectionString),
+                DbServerType.PostgreSQL => new NpgsqlConnection(connectionString),
+                DbServerType.MySQL => new MySqlConnection(connectionString),
+                DbServerType.Oracle => new OracleConnection(connectionString),
+                _ => throw new NotSupportedException($"Connection probe for {dbServerType} is not supported.")
+            };
+
+            connection.Open();
+        }
+        catch (Exception ex) when (IsDbUnavailable(ex))
+        {
+            throw new SkipException($"Skipped because test database is unavailable: {dbServerType}. {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
     public static string GetSqlServerConnectionString(string databaseName)
     {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -301,9 +352,12 @@ public static class ContextUtil
 
     public static string GetSqliteConnectionString(string databaseName)
     {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-        return GetConfiguration().GetConnectionString("Sqlite").Replace("{databaseName}", databaseName);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+        string? configured = GetConfiguration().GetConnectionString("Sqlite");
+        string template = string.IsNullOrWhiteSpace(configured)
+            ? "Data Source={databaseName}.db"
+            : configured;
+
+        return template.Replace("{databaseName}", databaseName);
     }
 
     public static string GetPostgreSqlConnectionString(string databaseName)

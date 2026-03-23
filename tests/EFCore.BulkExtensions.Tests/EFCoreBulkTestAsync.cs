@@ -1,4 +1,4 @@
-using EFCore.BulkExtensions.SqlAdapters;
+﻿using EFCore.BulkExtensions.SqlAdapters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -21,14 +21,13 @@ public class EFCoreBulkTestAsync
     private static readonly Func<TestContext, IEnumerable<Item>> AllItemsQuery = EF.CompileQuery<TestContext, IEnumerable<Item>>(ctx => ctx.Item.AsNoTracking());
 
     [Theory]
-    [InlineData(DbServerType.SQLServer, true)]
     [InlineData(DbServerType.SQLite, true)]
     //[InlineData(DatabaseType.SqlServer, false)] // for speed comparison with Regular EF CUD operations
     public async Task OperationsTestAsync(DbServerType dbServer, bool isBulk)
     {
         ContextUtil.DbServer = dbServer;
 
-        //await DeletePreviousDatabaseAsync().ConfigureAwait(false);
+        await DeletePreviousDatabaseAsync().ConfigureAwait(false);
         //await new EFCoreBatchTestAsync().RunDeleteAllAsync(dbServer);
 
         // Test can be run individually by commenting others and running each separately in order one after another
@@ -45,7 +44,7 @@ public class EFCoreBulkTestAsync
         //await RunDeleteAsync(isBulk, dbServer);
     }
 
-    [Theory]
+    [Theory(Skip = "Requires external SQLServer instance.")]
     [InlineData(DbServerType.SQLServer)]
     //[InlineData(DbServer.Sqlite)] // has to be run separately as single test, otherwise throws (SQLite Error 1: 'table "#MyTempTable1" already exists'.)
     public async Task SideEffectsTestAsync(DbServerType dbServer)
@@ -275,7 +274,7 @@ public class EFCoreBulkTestAsync
             await context.BulkInsertOrUpdateOrDeleteAsync(entities, bulkConfig);
             Assert.Equal(0, bulkConfig.StatsInfo?.StatsNumberInserted);
             Assert.Equal(EntitiesNumber / 2, bulkConfig.StatsInfo?.StatsNumberUpdated);
-            Assert.Equal((EntitiesNumber / 2) -1, bulkConfig.StatsInfo?.StatsNumberDeleted);
+            Assert.Equal((EntitiesNumber / 2) - 1, bulkConfig.StatsInfo?.StatsNumberDeleted);
         }
         else
         {
@@ -354,7 +353,7 @@ public class EFCoreBulkTestAsync
             entities.Add(new Item { Name = "name " + i });
         }
 
-        var bulkConfig = new BulkConfig { UpdateByProperties = new List<string> { nameof(Item.Name) }};
+        var bulkConfig = new BulkConfig { UpdateByProperties = new List<string> { nameof(Item.Name) } };
         await context.BulkReadAsync(entities, bulkConfig).ConfigureAwait(false);
 
         Assert.Equal(1, entities[0].ItemId);
