@@ -207,7 +207,7 @@ public class PostgreSqlAdapter : ISqlOperationsAdapter
         {
             tableInfo.InsertToTempTable = true;
 
-            var sqlCreateTableCopy = SqlQueryBuilderPostgreSql.CreateTableCopy(tableInfo.FullTableName, tableInfo.FullTempTableName, false); //  tableInfo.BulkConfig.UseTempDB
+            var sqlCreateTableCopy = SqlQueryBuilderPostgreSql.CreateTableCopy(tableInfo.FullTableName, tableInfo.FullTempTableName, false, tableInfo.BulkConfig); //  tableInfo.BulkConfig.UseTempDB
             if (isAsync)
             {
                 await context.Database.ExecuteSqlRawAsync(sqlCreateTableCopy, cancellationToken).ConfigureAwait(false);
@@ -300,7 +300,7 @@ public class PostgreSqlAdapter : ISqlOperationsAdapter
                 {
                     if (tableInfo.BulkConfig.CustomSourceTableName == null)
                     {
-                        var sqlDropTable = SqlQueryBuilderPostgreSql.DropTable(tableInfo.FullTempTableName);
+                        var sqlDropTable = SqlQueryBuilderPostgreSql.DropTable(tableInfo.FullTempTableName, tableInfo.BulkConfig);
                         if (isAsync)
                         {
                             await context.Database.ExecuteSqlRawAsync(sqlDropTable, cancellationToken)
@@ -335,14 +335,14 @@ public class PostgreSqlAdapter : ISqlOperationsAdapter
     /// <inheritdoc/>
     public void Truncate(DbContext context, TableInfo tableInfo)
     {
-        var sqlTruncateTable = SqlQueryBuilderPostgreSql.TruncateTable(tableInfo.FullTableName);
+        var sqlTruncateTable = SqlQueryBuilderPostgreSql.TruncateTable(tableInfo.FullTableName, tableInfo.BulkConfig);
         context.Database.ExecuteSqlRaw(sqlTruncateTable);
     }
 
     /// <inheritdoc/>
     public async Task TruncateAsync(DbContext context, TableInfo tableInfo, CancellationToken cancellationToken)
     {
-        var sqlTruncateTable = SqlQueryBuilderPostgreSql.TruncateTable(tableInfo.FullTableName);
+        var sqlTruncateTable = SqlQueryBuilderPostgreSql.TruncateTable(tableInfo.FullTableName, tableInfo.BulkConfig);
         await context.Database.ExecuteSqlRawAsync(sqlTruncateTable, cancellationToken).ConfigureAwait(false);
     }
     #endregion

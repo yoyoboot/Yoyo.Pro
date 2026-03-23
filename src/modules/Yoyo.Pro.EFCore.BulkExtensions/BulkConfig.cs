@@ -265,6 +265,17 @@ public class BulkConfig
     public bool ReplaceReadEntities { get; set; }
 
     /// <summary>
+    ///     Enables automatic identifier case handling for providers that keep quoted identifiers case-sensitive.
+    ///     When set to <c>false</c>, identifiers are only quoted and their input case is preserved.
+    /// </summary>
+    public bool EnableIdentifierAutoCaseResolve { get; set; } = true;
+
+    /// <summary>
+    ///     Controls how quoted identifier names are cased before SQL generation.
+    /// </summary>
+    public IdentifierCaseStrategy IdentifierCaseStrategy { get; set; } = IdentifierCaseStrategy.Auto;
+
+    /// <summary>
     ///     Enum with [Flags] attribute which enables specifying one or more options.
     /// </summary>
     /// <value>
@@ -322,6 +333,32 @@ public class BulkConfig
     internal object? SynchronizeFilter { get; private set; }
 
     internal object? SynchronizeSoftDelete { get; private set; }
+}
+
+/// <summary>
+/// Strategy for applying case normalization to SQL identifiers.
+/// </summary>
+public enum IdentifierCaseStrategy
+{
+    /// <summary>
+    /// Resolve by provider default: Oracle upper-case, PostgreSQL lower-case.
+    /// </summary>
+    Auto = 0,
+
+    /// <summary>
+    /// Keep incoming identifier casing.
+    /// </summary>
+    Preserve = 1,
+
+    /// <summary>
+    /// Force identifier names to upper-case.
+    /// </summary>
+    Upper = 2,
+
+    /// <summary>
+    /// Force identifier names to lower-case.
+    /// </summary>
+    Lower = 3
 }
 
 /// <summary>
