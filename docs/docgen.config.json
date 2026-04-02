@@ -1,0 +1,17 @@
+{
+  "outputDir": "docs/generated",
+  "openApiSources": [
+    {
+      "name": "yoyopro-local-hostapi",
+      "url": "http://localhost:5000/swagger/v1/swagger.json",
+      "description": "Enable this source after the local Host API is ready.",
+      "enabled": false
+    }
+  ],
+  "sourceRoots": [
+    "src"
+  ],
+  "moduleReadmes": [
+    "README.md"
+  ]
+}
