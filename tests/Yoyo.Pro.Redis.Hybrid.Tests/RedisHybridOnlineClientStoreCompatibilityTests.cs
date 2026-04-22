@@ -1,6 +1,7 @@
 using System;
 using Abp.RealTime;
 using Abp.Runtime.Caching.Redis;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using Newtonsoft.Json;
 using Shouldly;
@@ -49,6 +50,46 @@ public class RedisHybridOnlineClientStoreCompatibilityTests
         onlineClient.ConnectTime.ShouldBe(connectTime);
     }
 
+    [Fact]
+    public void GetOrDefault_Should_Bypass_Level1_Cache_When_Level1CacheExpiration_Is_Null()
+    {
+        var originalLevel1CacheExpiration = RedisHybridCache.Level1CacheExpiration;
+
+        try
+        {
+            RedisHybridCache.Level1CacheExpiration = null;
+
+            var serializedValue = (RedisValue)"serialized-value";
+            var expected = new object();
+            var memoryCache = new TrackingRedisHybridMemoryCache();
+
+            var database = new Mock<IDatabase>();
+            database
+                .Setup(x => x.StringGet("n:test-cache,c:test-key", CommandFlags.None))
+                .Returns(serializedValue);
+
+            var serializer = new Mock<IRedisCacheSerializer>();
+            serializer
+                .Setup(x => x.Deserialize(serializedValue))
+                .Returns(expected);
+
+            var databaseProvider = new Mock<IAbpRedisCacheDatabaseProvider>();
+            databaseProvider.Setup(x => x.GetDatabase()).Returns(database.Object);
+
+            var cache = new RedisHybridCache("test-cache", databaseProvider.Object, memoryCache, serializer.Object);
+
+            var value = cache.GetOrDefault("test-key");
+
+            value.ShouldBeSameAs(expected);
+            memoryCache.TryGetValueCalls.ShouldBe(0);
+            memoryCache.CreateEntryCalls.ShouldBe(0);
+        }
+        finally
+        {
+            RedisHybridCache.Level1CacheExpiration = originalLevel1CacheExpiration;
+        }
+    }
+
     private sealed class ThrowingRedisCacheSerializer : IRedisCacheSerializer
     {
         public RedisValue Serialize(object value, Type type)
@@ -59,6 +100,37 @@ public class RedisHybridOnlineClientStoreCompatibilityTests
         public object Deserialize(RedisValue objbyte)
         {
             throw new JsonException("serializer failed");
+        }
+    }
+
+    private sealed class TrackingRedisHybridMemoryCache : IRedisHybridMemoryCache
+    {
+        private readonly MemoryCache _innerCache = new(new MemoryCacheOptions());
+
+        public int TryGetValueCalls { get; private set; }
+
+        public int CreateEntryCalls { get; private set; }
+
+        public bool TryGetValue(object key, out object value)
+        {
+            TryGetValueCalls++;
+            return _innerCache.TryGetValue(key, out value);
+        }
+
+        public ICacheEntry CreateEntry(object key)
+        {
+            CreateEntryCalls++;
+            return _innerCache.CreateEntry(key);
+        }
+
+        public void Remove(object key)
+        {
+            _innerCache.Remove(key);
+        }
+
+        public void Dispose()
+        {
+            _innerCache.Dispose();
         }
     }
 }
