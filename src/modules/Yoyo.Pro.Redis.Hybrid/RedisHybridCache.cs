@@ -18,7 +18,9 @@ namespace Yoyo.Pro
         /// <summary>
         /// 默认30秒
         /// </summary>
-        public static TimeSpan Level1CacheExpiration { get; set; } = TimeSpan.FromSeconds(30);
+        public static TimeSpan? Level1CacheExpiration { get; set; } = TimeSpan.FromSeconds(30);
+
+        private static bool IsLevel1CacheEnabled => Level1CacheExpiration.HasValue;
 
         private readonly IDatabase _database;
         private readonly IRedisHybridMemoryCache _memoryCache;
@@ -333,6 +335,12 @@ namespace Yoyo.Pro
 
         private bool TryGetFromLevel1Cache(string key, out object value)
         {
+            if (!IsLevel1CacheEnabled)
+            {
+                value = null;
+                return false;
+            }
+
             return _memoryCache.TryGetValue(GetLevel1CacheKey(key), out value);
         }
 
@@ -342,6 +350,11 @@ namespace Yoyo.Pro
             TimeSpan? slidingExpireTime = null,
             DateTimeOffset? absoluteExpireTime = null)
         {
+            if (!IsLevel1CacheEnabled)
+            {
+                return;
+            }
+
             var memoryKey = GetLevel1CacheKey(key);
             _level1Keys[memoryKey] = 0;
             _memoryCache.Set(memoryKey, value, CreateLevel1CacheOptions(memoryKey, slidingExpireTime, absoluteExpireTime));
@@ -385,7 +398,7 @@ namespace Yoyo.Pro
             DateTimeOffset? absoluteExpireTime)
         {
             var now = DateTimeOffset.UtcNow;
-            var level1AbsoluteExpiration = now.Add(Level1CacheExpiration);
+            var level1AbsoluteExpiration = now.Add(Level1CacheExpiration.GetValueOrDefault());
 
             if (absoluteExpireTime.HasValue && absoluteExpireTime.Value < level1AbsoluteExpiration)
             {
